@@ -51,3 +51,7 @@ Następnie w skrypcie bucket.sh, do do FILE_INPUT przypisać random_gene_normali
 Uruchomić skript_R_clean.R (linie 211-253) skrypt wczytuje random_gene_normalize_bucket.tsv, tworzy tabelę dla znaczących i losowych genów i toworzy wykres.
 
 ![Kiku](signification_random_gene_plot.jpeg)
+
+![Kiku](signification_random_gene_normalize.jpeg)
+
+![Kiku](signification_random_gene_relative_change.jpeg)
