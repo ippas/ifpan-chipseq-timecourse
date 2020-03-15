@@ -1,4 +1,6 @@
 # ifpan-chipseq-timecourse
+###### Mateusz Zięba
+---
 
 Dane do RNA-seq dla dexamethazonu (12 plików) pobrano z [https://www.ncbi.nlm.nih.gov/gds/?term=tim+reddy+dexamethasone+rna-seq](https://www.ncbi.nlm.nih.gov/gds/?term=tim+reddy+dexamethasone+rna-seq) na podstawie plików przygotowano plik raw_macierz.txt i sample.info.txt
 Z esembla ściągnięto plik zwierający: 
@@ -17,9 +19,9 @@ Z esembla ściągnięto plik zawierający:
 
 Zmieniono nazwę pliku z mart.export.txt na gene_chromosome_start_end_strand.txt
 Uruchomić skrypt z R: skript_R_clean.R (od 1-123 lini) skrypt wczytuje  pliki raw_macierz.txt (zapisuje do raw.data),  sample.info.txt(zapisuje do samples) i ID_ID.version_gene.txt (zapisuje do ID_ID.version_gene). Wykonuje anove na raw.data, i przy FDR_THRESHOLD=0.001, zostaje wybranych 737 genów (dla dwóch nie została przypisana nazwa, została odrzucone i zostało 735).  Skrypt tworzy heatmap dla RNA-seq dla wybranych transkryptów (z dwoma klastrami), 
-![Kiku](hetmap_signification_gene_plot.jpeg)
+![Kiku](PLOTS/hetmap_signification_gene_plot.jpeg)
 oraz wykres liniowy pokazujący jak zmienia się zawartość transkryptów dla obu klastrów w czasie.
-![Kiku](change_transcript_cluster_lineplot.jpeg)
+![Kiku](PLOTS/change_transcript_cluster_lineplot.jpeg)
 
 Chip-seq
 Dane dla Chip-seq ściągnięto z:
@@ -50,8 +52,8 @@ W skrypcie bigwig_genomic_range_extract_normalize_totsv.sh do GENES_INFO_FILE_NA
 Następnie w skrypcie bucket.sh, do do FILE_INPUT przypisać random_gene_normalize.txt, a do FILE_OUTPUT random_gene_normalize_bucket.tsv. 
 Uruchomić skript_R_clean.R (linie 211-253) skrypt wczytuje random_gene_normalize_bucket.tsv, tworzy tabelę dla znaczących i losowych genów i toworzy wykres.
 
-![Kiku](signification_random_gene_plot.jpeg)
+![Kiku](PLOTS/signification_random_gene_plot.jpeg)
 
-![Kiku](signification_random_gene_normalize.jpeg)
+![Kiku](PLOTS/signification_random_gene_normalize.jpeg)
 
-![Kiku](signification_random_gene_relative_change.jpeg)
+![Kiku](PLOTS/signification_random_gene_relative_change.jpeg)
