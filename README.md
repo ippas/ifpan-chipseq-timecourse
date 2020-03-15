@@ -39,7 +39,7 @@ Skrypty do normalizacji ściągnięto z:
 [https://github.com/porchard/normalize_bedgraph](https://github.com/porchard/normalize_bedgraph)
 oraz skrypty: bigWigToBedGraph, bedGraphToBigWig.
 Uruchomić skrypt z R (linie 141-173) w którym zostaje obliczone RPKM (średnia ilość transkryptu) dla signification_gene.txt zgodnie ze wzorem znajdującym sie na stronie: [https://www.biostars.org/p/273537/](https://www.biostars.org/p/273537/), oraz wygenerowany zostaje wykres w skali logarytmiczej,  ukazujący średnią długość transkryptów.
-![Kiku](logmean_transcriptlength_signification_gene.jpeg)
+![Kiku](PLOTS/logmean_transcriptlength_signification_gene.jpeg)
 Następnie urochomienie kodu od 176-196 skript_R_clean.R w którym zostaje obliczone RPKM dla wszystkich transkryptów, oraz zostaje wylosowana próba losowa 1000 genów (których RPKM znajduję sie pomiędzy 2 a 8192 - ponieważ w takiej wiekości mieściły się transkrypty dla signification_gene, odczytano z wykresu)
 
 Uruchomienie skript_R_clean.R  (linie 199 -209) przygotuje stworzy plik random_gene.txt zawierający:
