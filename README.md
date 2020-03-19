@@ -70,7 +70,14 @@ Uruchomić skript_R_clean.R (linie 211-253) skrypt wczytuje random_gene_normaliz
 
 ### Peak dla enhancerów
 Wycięto peaki dla enhancerów dla genów upregulowanych, dla NR3C1 z pierwszej godziny przy pomocy polecenia:
-
 ```console
 bedtools intersect -a GSM2421929_ENCFF835HHK_peaks_GRCh38.bed.gz -b up_regulated_gene.BED -wb | cut -f1,2,3,14 | awk '{print $1"\t"$2-1000"\t"$3+1000"\t"$4}'  > upregulatedgne_peaks_NR3C1_time60_file1.tsv
+```
+dla trzech plików:
+```console
+grep 'NR3C1.60.f' chipseq-file-info.txt | sort -k2 -n | awk '{print $4"_RAW.tar"}' | xargs -i bash -c "tar -tf {} | grep bed.gz" |  xargs -i bash -c 'bedtools intersect -a {} -b up_regulated_gene.BED'
+```
+Następnie uruchomić skrypt:
+```console
+./peak_NR3C1_normalize.sh > peaks_NR3C1_normalize_file1_time60.tsv
 ```
