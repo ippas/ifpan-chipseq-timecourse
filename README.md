@@ -1,6 +1,7 @@
 # ifpan-chipseq-timecourse
 ###### Mateusz Zięba
 ---
+### RNA-seq
 
 Dane do RNA-seq dla dexamethazonu (12 plików) pobrano z [https://www.ncbi.nlm.nih.gov/gds/?term=tim+reddy+dexamethasone+rna-seq](https://www.ncbi.nlm.nih.gov/gds/?term=tim+reddy+dexamethasone+rna-seq) na podstawie plików przygotowano plik raw_macierz.txt i sample.info.txt
 Z esembla ściągnięto plik zwierający: 
@@ -23,7 +24,8 @@ Uruchomić skrypt z R: skript_R_clean.R (od 1-123 lini) skrypt wczytuje  pliki r
 oraz wykres liniowy pokazujący jak zmienia się zawartość transkryptów dla obu klastrów w czasie.
 ![Kiku](PLOTS/change_transcript_cluster_lineplot.jpeg)
 
-Chip-seq
+### Chip-seq
+
 Dane dla Chip-seq ściągnięto z:
 [https://www.ncbi.nlm.nih.gov/gds/?term=tim+reddy+dexamethasone+chip-seq+nr3c1](https://www.ncbi.nlm.nih.gov/gds/?term=tim+reddy+dexamethasone+chip-seq+nr3c1), dane dla poszczególnych plików znajdują się w pliku: chipseq-file-info.txt (przygotowano go przy pomocy pliku gds.results.txt ściągniętego z powyższej strony i komendy: 
 ```console
@@ -64,3 +66,11 @@ Uruchomić skript_R_clean.R (linie 211-253) skrypt wczytuje random_gene_normaliz
 ![Kiku](PLOTS/signification_random_gene_normalize.jpeg)
 
 ![Kiku](PLOTS/signification_random_gene_relative_change.jpeg)
+
+
+### Peak dla enhancerów
+Wycięto peaki dla enhancerów dla genów upregulowanych, dla NR3C1 z pierwszej godziny przy pomocy polecenia:
+
+```console
+bedtools intersect -a GSM2421929_ENCFF835HHK_peaks_GRCh38.bed.gz -b up_regulated_gene.BED -wb | cut -f1,2,3,14 | awk '{print $1"\t"$2-1000"\t"$3+1000"\t"$4}'  > upregulatedgne_peaks_NR3C1_time60_file1.tsv
+```
