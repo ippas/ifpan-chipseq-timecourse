@@ -81,3 +81,13 @@ Następnie uruchomić skrypt:
 ```console
 ./peak_NR3C1_normalize.sh > peaks_NR3C1_normalize_file1_time60.tsv
 ```
+Wybieranie randomowych peaków (154) przy pomocy:
+```console
+zcat GSM2421929_ENCFF835HHK_peaks_GRCh38.bed.gz | shuf -n 154 | cut -f1,2,3 | awk '{print $1"\t"$2-1000"\t"$3+1000"\tRANDOM"}' > random_peaks_NR3C1_time60_file1.tsv
+
+```
+
+Uruchomić skrypt wyciągający peaki dla randomowych:
+```console
+./peak_NR3C1_normalize.sh > random_peaks_NR3C1_time60_file1_normalize.tsv 
+```
