@@ -91,3 +91,12 @@ Uruchomić skrypt wyciągający peaki dla randomowych:
 ```console
 ./peak_NR3C1_normalize.sh > random_peaks_NR3C1_time60_file1_normalize.tsv 
 ```
+Pliki: 
+- peaks_NR3C1_normalize_file1_time60.tsv
+- random_peaks_NR3C1_time60_file1_normalize.tsv  
+wczytano do R i zrobiono wykresy: 
+
+![Kiku](PLOTS/upregulatedgene_peak_NR3C1_file1_time60.jpeg)
+
+![Kiku](PLOTS/random_peak_NR3C1_file1_time60.jpeg)
+
