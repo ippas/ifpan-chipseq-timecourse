@@ -100,6 +100,21 @@ wczytano do R i zrobiono wykresy:
 
 ![Kiku](PLOTS/random_peak_NR3C1_file1_time60.jpeg)
 
+zapisanie peaków wspólnych, z trzech plików dla NR3C1 po jednej godzinie 
+
 ```console
-bedtools intersect -a up_regulated_gene.BED -b GSM2421929_ENCFF835HHK_peaks_GRCh38.bed.gz GSM2421930_ENCFF044MLR_peaks_GRCh38.bed.gz GSM2421931_ENCFF597LEE_peaks_GRCh38.bed.gz -u
+bedtools intersect -a up_regulated_gene.BED -b GSM2421929_ENCFF835HHK_peaks_GRCh38.bed.gz GSM2421930_ENCFF044MLR_peaks_GRCh38.bed.gz GSM2421931_ENCFF597LEE_peaks_GRCh38.bed.gz -u > upregulated_gene_allfiles_peaks_NR3C1.tsv
+
+```
+wyciągnięcie peaków, i przygotowanie do puszczenia w skrypcie
+```console
+bedtools intersect -a upregulated_gene_allfiles_peaks_NR3C1.tsv -b GSM2421929_ENCFF835HHK_peaks_GRCh38.bed.gz -wb | awk '{print $1"\t"$6-1000"\t"$7+1000"\t"$4}' > upregulatedgene_peak_NR3C1_time60_allfile_intoskript.tsv
+```
+
+
+Uruchomienie skryptu:
+
+```console
+./peak_NR3C1_normalize.sh > upregulated_peaks_NR3C1_allfile_time60_allTF.tsv
+
 ```
