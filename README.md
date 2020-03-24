@@ -100,3 +100,6 @@ wczytano do R i zrobiono wykresy:
 
 ![Kiku](PLOTS/random_peak_NR3C1_file1_time60.jpeg)
 
+```console
+bedtools intersect -a up_regulated_gene.BED -b GSM2421929_ENCFF835HHK_peaks_GRCh38.bed.gz GSM2421930_ENCFF044MLR_peaks_GRCh38.bed.gz GSM2421931_ENCFF597LEE_peaks_GRCh38.bed.gz -u
+```
