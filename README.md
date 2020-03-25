@@ -118,3 +118,23 @@ Uruchomienie skryptu:
 ./peak_NR3C1_normalize.sh > upregulated_peaks_NR3C1_allfile_time60_allTF.tsv
 
 ```
+grep 'NR3C1.60.f' chipseq-file-info.txt | awk '{print $4"_RAW.tar"}' | xargs -i bash -c "tar -tf {} | grep bed.gz" | echo $(cat) | xargs -i bash -c 'bedtools intersect -a down_regulated_gene.BED -b {} -wb -wa' | head
+
+tworzenie pliku części wspólnej plików: 
+- GSM2421929_ENCFF835HHK_peaks_GRCh38.bed.gz 
+- GSM2421930_ENCFF044MLR_peaks_GRCh38.bed.gz 
+- GSM2421931_ENCFF597LEE_peaks_GRCh38.bed.gz
+oraz wyciągnięcie i zapisanie peaków down i up regulowanych
+
+```console
+bedtools intersect -a  GSM2421929_ENCFF835HHK_peaks_GRCh38.bed.gz -b GSM2421930_ENCFF044MLR_peaks_GRCh38.bed.gz > tmp_peak_file1-2.tsv
+bedtools intersect -a GSM2421931_ENCFF597LEE_peaks_GRCh38.bed.gz -b tmp_peak_file1-2.tsv > peaks_allfile_NR3C1_time60.bed
+bedtools intersect -a up_regulated_gene.BED -b peaks_allfile_NR3C1_time60.bed -wb | awk '{print $1"\t"$6-1000"\t"$7+1000"\t"$4}' > upregulated_peak_NR3C1_time60_allfile.tsv
+down_regulated_gene.BED -b peaks_allfile_NR3C1_time60.bed -wb | awk '{print $1"\t"$6-1000"\t"$7+1000"\t"$4}' > downregulated_peak_NR3C1_time60_allfile.tsv
+
+```
+puszczenie skryptu
+```console
+./peak_NR3C1_normalize.sh > upregulated_peaks_NR3C1_allfile_time60_allTF_normalize.tsv
+```
+sprawdzić i poprawić co nie potrzebne
