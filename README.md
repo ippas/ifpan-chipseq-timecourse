@@ -138,3 +138,8 @@ puszczenie skryptu
 ./peak_NR3C1_normalize.sh > upregulated_peaks_NR3C1_allfile_time60_allTF_normalize.tsv
 ```
 sprawdzić i poprawić co nie potrzebne
+
+komenda wyciągająca największą wartość z wiersza, test
+```bash
+for((i=1;i<=100;i+=1)); do cat upregulated_peaks_NR3C1_allfile_time60_allTF_normalize.tsv | cut -f8-3000 | head -100 | head -n$i | tail -1 | sed 's/\t/\n/g' | sort | tail -1; done 
+```
