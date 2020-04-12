@@ -158,3 +158,13 @@ awk 'FNR==NR { a[FNR""] = $0; next } { print a[FNR""]"\t" $0 }' <(cat upregulate
 Wykres boxplot dla peaków upregulowanych NR3C1 time60(BED): 
 
 ![Kiku](PLOTS/boxplot_peak_upregulated_NR3C1_allTF_time60.jpeg)
+
+
+Wyciągnięcie 1000 randomowych peaków
+```bash
+cat peaks_allfile_NR3C1_time60.bed | shuf -n 1000 | cut -f1,2,3 | awk '{print $1"\t"$2-1000"\t"$3+1000"\tRANDOM"}' > random1000_peak.tsv
+```
+uruchomienie skryptu
+```bash
+./peak_amplitude_NR3C1_normalize.sh random1000_peak.tsv > random1000_peaks_NR3C1_allTF_amplitude_time60.tsv
+```
