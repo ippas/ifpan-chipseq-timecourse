@@ -176,6 +176,8 @@ bedtools intersect -a random_gene_into_peak.tsv -b peaks_allfile_NR3C1_time60.be
 
 uruchomienie skryptu wyciągającego amplitudę dla peaku
 ```bash
+```
+
 
 ![Kiku](PLOTS/barplot_downregulated_amplitude_peak_allTF_NR3C1_time60.jpeg)
 ![Kiku](PLOTS/boxplot_downregulated_amplitude_peak_allTF_NR3C1_time60.jpeg)
