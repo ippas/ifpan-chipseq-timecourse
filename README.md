@@ -155,9 +155,7 @@ cat upregulated_peaks_NR3C1_allfile_time60_allTF_normalize.tsv | head -1 | cut -
 ```bash
 awk 'FNR==NR { a[FNR""] = $0; next } { print a[FNR""]"\t" $0 }' <(cat upregulated_peaks_NR3C1_allfile_time60_allTF_normalize.tsv | cut -f1-7) <(for((i=1;i<=395968;i+=1)); do cat upregulated_peaks_NR3C1_allfile_time60_allTF_normalize.tsv | cut -f8-3560 | head -n$i | tail -1 | sed 's/\t/\n/g' | sort -n | tail -1; done) > upregulated_peaks_NR3C1_allTF_amplitude_time60.tsv
 ```
-Wykres boxplot dla peaków upregulowanych NR3C1 time60(BED): 
 
-![Kiku](PLOTS/boxplot_peak_upregulated_NR3C1_allTF_time60.jpeg)
 
 
 Wyciągnięcie 1000 randomowych peaków
@@ -179,14 +177,17 @@ uruchomienie skryptu wyciągającego amplitudę dla peaku
 ```
 
 
-![Kiku](PLOTS/barplot_downregulated_amplitude_peak_allTF_NR3C1_time60.jpeg)
-![Kiku](PLOTS/boxplot_downregulated_amplitude_peak_allTF_NR3C1_time60.jpeg)
-![Kiku](PLOTS/boxplot_freey_downregulated_amplitude_peak_allTF_NR3C1_time60.jpeg)
-
-![Kiku](PLOTS/barplot_random1000_amplitude_peak_allTF_NR3C1_time60.jpeg)
-![Kiku](PLOTS/boxplot_random1000_amplitude_peak_allTF_NR3C1_time60.jpeg)
-![Kiku](PLOTS/boxplot_freey_random1000_amplitude_peak_allTF_NR3C1_time60.jpeg)
-
 ![Kiku](PLOTS/barplot_upregulated_amplitude_peak_allTF_NR3C1_time60.jpeg)
+![Kiku](PLOTS/barplot_downregulated_amplitude_peak_allTF_NR3C1_time60.jpeg)
+![Kiku](PLOTS/barplot_random1000_amplitude_peak_allTF_NR3C1_time60.jpeg)
+![Kiku](PLOTS/barplot_random_gen_amplitude_peak_allTF_NR3C1_time60.jpeg)
+
 ![Kiku](PLOTS/boxplot_upregulated_amplitude_peak_allTF_NR3C1_time60.jpeg)
+![Kiku](PLOTS/boxplot_downregulated_amplitude_peak_allTF_NR3C1_time60.jpeg)
+![Kiku](PLOTS/boxplot_random1000_amplitude_peak_allTF_NR3C1_time60.jpeg)
+![Kiku](PLOTS/boxplot_random_gen_amplitude_peak_allTF_NR3C1_time60.jpeg)
+
 ![Kiku](PLOTS/boxplot_freey_upregulated_amplitude_peak_allTF_NR3C1_time60.jpeg)
+![Kiku](PLOTS/boxplot_freey_downregulated_amplitude_peak_allTF_NR3C1_time60.jpeg)
+![Kiku](PLOTS/boxplot_freey_random1000_amplitude_peak_allTF_NR3C1_time60.jpeg)
+![Kiku](PLOTS/boxplot_freey_random_gen_amplitude_peak_allTF_NR3C1_time60.jpeg)
