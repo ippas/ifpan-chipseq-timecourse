@@ -3,7 +3,30 @@
 ---
 ### RNA-seq
 
-Dane do RNA-seq dla dexamethazonu (12 plików) pobrano z [https://www.ncbi.nlm.nih.gov/gds/?term=tim+reddy+dexamethasone+rna-seq](https://www.ncbi.nlm.nih.gov/gds/?term=tim+reddy+dexamethasone+rna-seq) na podstawie plików przygotowano plik raw_macierz.txt i sample.info.txt
+Dane do RNA-seq dla dexamethazonu (12 plików) pobrano z [https://www.ncbi.nlm.nih.gov/gds/?term=tim+reddy+dexamethasone+rna-seq](https://www.ncbi.nlm.nih.gov/gds/?term=tim+reddy+dexamethasone+rna-seq) 
+
+Pobrano plik tekstowy powyższej strony i zapisano jako info-RNA-seq.txt
+
+Przy pomocy komendy przygotowano plik (mRNA_seq-file-info.txt) z informacjami potrzebnymi do pobrania plików.
+
+```bash
+cat info-RNA-seq.txt | 
+   tail +2 | 
+   sed 'N;N;N;N;N;N;N;s/\n/ /g' | 
+   grep 'mRNA-seq'  | 
+   awk '{print $19"\t"$21*60"\t"$56"suppl/"$59"_RAW.tar\t"$59}' | 
+   sort -n -k2 > mRNA_seq-file-info.txt
+```
+
+Przy pomocy polecenia pliki RNA-seq dla deksametazonu
+
+```bash
+cat mRNA_seq-file-info.txt | 
+   cut -f3 | 
+   xargs -i bash -c 'wget {}'
+```
+
+Na podstawie plików przygotowano plik raw_macierz.txt i sample.info.txt
 Z esembla ściągnięto plik zwierający: 
 -Gene stable ID
 -Gene stable ID version
