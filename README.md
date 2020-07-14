@@ -33,6 +33,40 @@ ls ~/dexamethasone/DOWNLOAD/*tar |
    xargs -i bash -c 'tar -C ~/dexamethasone/EXTRACT -xvf {}'
 ```
 
+Tworzenie pliku sample.info.txt, który zawiera: "samplied", "time" i "replicate". Wykonano przy użyciu komendy:
+
+```bash
+ls ~/dexamethasone/EXTRACT/*.tsv.gz | 
+   xargs -i bash -c 'zcat {} | 
+   head -1' | grep 'rep' | 
+   cut -d "/" -f31 | 
+   cut -c2- | 
+   sed 's/_/\t/' | 
+   awk '{print "t"$1"_"$2"\t"$1"\t"$2}' | 
+   sed 's/05/0\.5/g2' | 
+   awk '{print $1"\t"$2*60"\t"$3}' | 
+   sort -k2 -n | 
+   sed '1 i\samplied\ttime\treplicate' > ~/dexamethasone/IMPORTANT_FILE/sample.info.txt
+```
+
+```bash
+ls ~/dexamethasone/EXTRACT/*.tsv.gz | 
+   xargs -i bash -c ' zgrep -H "rep" {} | 
+   head -1' | 
+   cut -d "/" -f6,36 | 
+   sed  's/:/\t/; s/\//\t/' | 
+   awk '{print $6"\t"$1}' | 
+   sed 's/_/\t/' | 
+   cut -c2- | 
+   awk '{print "t"$1"_"$2"\t"$1"\t"$2"\t"$3}' | 
+   sed 's/05/0\.5/g2' | 
+   awk '{print $1"\t"$2*60"\t"$3"\t"$4}' | 
+   sort -k2 -n > ~/dexamethasone/IMPORTANT_FILE/sample.info.tsv
+```
+
+cat ~/dexamethasone/IMPORTANT_FILE/mRNA_seq-file-info.tsv | awk '{print $2"\t" $4"_RAW.tar"}' | xargs -i bash -c 'echo {} | cut -d " " -f2 | echo {}'
+cat ~/dexamethasone/IMPORTANT_FILE/mRNA_seq-file-info.tsv | awk '{print $4"_RAW.tar"}' | xargs -i bash -c 'tar -tf {}'
+
 
 
 Na podstawie plików przygotowano plik raw_macierz.txt i sample.info.txt
