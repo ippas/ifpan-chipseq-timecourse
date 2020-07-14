@@ -10,21 +10,30 @@ Pobrano plik tekstowy powyższej strony i zapisano jako info-RNA-seq.txt
 Przy pomocy komendy przygotowano plik (mRNA_seq-file-info.txt) z informacjami potrzebnymi do pobrania plików.
 
 ```bash
-cat info-RNA-seq.txt | 
+cat ~/dexamethasone/IMPORTANT_FILE/info-RNA-seq-to-download.txt | 
    tail +2 | 
    sed 'N;N;N;N;N;N;N;s/\n/ /g' | 
    grep 'mRNA-seq'  | 
    awk '{print $19"\t"$21*60"\t"$56"suppl/"$59"_RAW.tar\t"$59}' | 
-   sort -n -k2 > mRNA_seq-file-info.txt
+   sort -n -k2 > ~/dexamethasone/IMPORTANT_FILE/mRNA_seq-file-info.tsv
 ```
 
-Przy pomocy polecenia pliki RNA-seq dla deksametazonu
+Przy pomocy polecenia pobrno pliki RNA-seq dla deksametazonu
 
 ```bash
-cat mRNA_seq-file-info.txt | 
+cat ~/dexamethasone/IMPORTANT_FILE/mRNA_seq-file-info.tsv | 
    cut -f3 | 
-   xargs -i bash -c 'wget {}'
+   xargs -i bash -c 'wget {} -P ~/dexamethasone/DOWNLOAD/'
 ```
+
+Rozpakowano do folderu EXTRACT, komendą:
+
+```bash
+ls ~/dexamethasone/DOWNLOAD/*tar | 
+   xargs -i bash -c 'tar -C ~/dexamethasone/EXTRACT -xvf {}'
+```
+
+
 
 Na podstawie plików przygotowano plik raw_macierz.txt i sample.info.txt
 Z esembla ściągnięto plik zwierający: 
