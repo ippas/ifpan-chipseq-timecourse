@@ -61,8 +61,18 @@ ls ~/dexamethasone/EXTRACT/*.tsv.gz |
    awk '{print "t"$1"_"$2"\t"$1"\t"$2"\t"$3}' | 
    sed 's/05/0\.5/g2' | 
    awk '{print $1"\t"$2*60"\t"$3"\t"$4}' | 
-   sort -k2 -n > ~/dexamethasone/IMPORTANT_FILE/sample.info.tsv
+   sort -k2 -n |
+   sed '1 i\samplied\ttime\treplicate\tfile ' > ~/dexamethasone/IMPORTANT_FILE/sample.info.tsv
 ```
+```bash
+awk 'FNR==NR { a[FNR""] = $0; next } { print a[FNR""]"\t" $0 }' <(cat sample.info.tsv | head -2 | tail +2 | cut -f4 | xargs -i bash -c 'zcat ~/dexamethasone/EXTRACT/{}' |  tail +3 | cut -f1,6 ) <(cat sample.info.tsv | cut -f4 | tail +2 | xargs -i bash -c 'zcat ~/dexamethasone/EXTRACT/{} | tail +3 | cut -f7' | awk -v row=$(cat sample.info.tsv | head -2 | tail -1 | cut -f4 | xargs -i bash -c 'zcat ~/dexamethasone/EXTRACT/{}' | wc -l | xargs -i bash -c 'echo $(({}-2))') '{A[(NR-1)%row]=A[(NR-1)%row]$0"\t ";next}END{for(i in A)print A[i]}') | awk -i inplace -v first=$(cat sample.info.tsv | cut -f1 | tail +2 | sed '1 i\Genedit\nLength' | tr "\n" ":" ) 'BEGINFILE{print first}{print}'  | cat | sed 's/:/\t/g'
+```
+
+komendy do macierzy
+awk 'FNR==NR { a[FNR""] = $0; next } { print a[FNR""]"\t" $0 }' <(cat sample.info.tsv | head -2 | tail +2 | cut -f4 | xargs -i bash -c 'zcat ~/dexamethasone/EXTRACT/{}' |  tail +3 | cut -f1,6 ) <(cat sample.info.tsv | cut -f4 | tail +2 | xargs -i bash -c 'zcat ~/dexamethasone/EXTRACT/{} | tail +3 | cut -f7' | awk -v row=$(cat sample.info.tsv | head -2 | tail -1 | cut -f4 | xargs -i bash -c 'zcat ~/dexamethasone/EXTRACT/{}' | wc -l | xargs -i bash -c 'echo $(({}-2))') '{A[(NR-1)%row]=A[(NR-1)%row]$0"\t ";next}END{for(i in A)print A[i]}') | head | cut -f1-20 
+
+cat sample.info.tsv | cut -f1 | tail +2 | tr "\n" "\t" | awk '{print "Geneid\tLength\t"$0}'
+cat sample.info.tsv | cut -f1 | tail +2 | sed '1 i\Genedit\nLength' | tr "\n" "\t" 
 
 cat ~/dexamethasone/IMPORTANT_FILE/mRNA_seq-file-info.tsv | awk '{print $2"\t" $4"_RAW.tar"}' | xargs -i bash -c 'echo {} | cut -d " " -f2 | echo {}'
 cat ~/dexamethasone/IMPORTANT_FILE/mRNA_seq-file-info.tsv | awk '{print $4"_RAW.tar"}' | xargs -i bash -c 'tar -tf {}'
