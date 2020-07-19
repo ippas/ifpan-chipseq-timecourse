@@ -64,22 +64,35 @@ ls ~/dexamethasone/EXTRACT/*.tsv.gz |
    sort -k2 -n |
    sed '1 i\samplied\ttime\treplicate\tfile ' > ~/dexamethasone/IMPORTANT_FILE/sample.info.tsv
 ```
+
+Przypomocy pliku sample.info.tsv i plików *gene_quantifications_GRCh38.tsv.gz przygotowano plik raw_macierz.tsv dla RNAseq. Wykonano przy użyciu komendy:
+
 ```bash
-awk 'FNR==NR { a[FNR""] = $0; next } { print a[FNR""]"\t" $0 }' <(cat sample.info.tsv | head -2 | tail +2 | cut -f4 | xargs -i bash -c 'zcat ~/dexamethasone/EXTRACT/{}' |  tail +3 | cut -f1,6 ) <(cat sample.info.tsv | cut -f4 | tail +2 | xargs -i bash -c 'zcat ~/dexamethasone/EXTRACT/{} | tail +3 | cut -f7' | awk -v row=$(cat sample.info.tsv | head -2 | tail -1 | cut -f4 | xargs -i bash -c 'zcat ~/dexamethasone/EXTRACT/{}' | wc -l | xargs -i bash -c 'echo $(({}-2))') '{A[(NR-1)%row]=A[(NR-1)%row]$0"\t ";next}END{for(i in A)print A[i]}') | awk -i inplace -v first=$(cat sample.info.tsv | cut -f1 | tail +2 | sed '1 i\Genedit\nLength' | tr "\n" ":" ) 'BEGINFILE{print first}{print}'  | cat | sed 's/:/\t/g'
+awk 'FNR==NR { a[FNR""] = $0; next } { print a[FNR""]"\t" $0 }' 
+   <(cat ~/dexamethasone/IMPORTANT_FILE/sample.info.tsv | 
+      head -2 | 
+      tail +2 | 
+      cut -f4 | 
+      xargs -i bash -c 'zcat ~/dexamethasone/EXTRACT/{}' 
+      |  tail +3 | 
+      cut -f1,6 ) 
+   <(cat ~/dexamethasone/IMPORTANT_FILE/sample.info.tsv | 
+      cut -f4 | 
+      tail +2 | 
+      xargs -i bash -c 'zcat ~/dexamethasone/EXTRACT/{} | 
+      tail +3 | 
+      cut -f7' | 
+      awk -v row=$(cat ~/dexamethasone/IMPORTANT_FILE/sample.info.tsv | 
+         head -2 | 
+         tail -1 | 
+         cut -f4 | 
+         xargs -i bash -c 'zcat ~/dexamethasone/EXTRACT/{}' | 
+            wc -l | 
+            xargs -i bash -c 'echo $(({}-2))') '{A[(NR-1)%row]=A[(NR-1)%row]$0"\t ";next}END{for(i in A)print A[i]}') | 
+   awk -i inplace -v first=$(cat ~/dexamethasone/IMPORTANT_FILE/sample.info.tsv | 
+      cut -f1 | tail +2 | sed '1 i\Genedit\nLength' | tr "\n" ":" ) 'BEGINFILE{print first}{print}' | 
+   sed 's/:/\t/g' > ~/dexamethasone/IMPORTANT_FILE/raw_macierz.tsv
 ```
-
-komendy do macierzy
-awk 'FNR==NR { a[FNR""] = $0; next } { print a[FNR""]"\t" $0 }' <(cat sample.info.tsv | head -2 | tail +2 | cut -f4 | xargs -i bash -c 'zcat ~/dexamethasone/EXTRACT/{}' |  tail +3 | cut -f1,6 ) <(cat sample.info.tsv | cut -f4 | tail +2 | xargs -i bash -c 'zcat ~/dexamethasone/EXTRACT/{} | tail +3 | cut -f7' | awk -v row=$(cat sample.info.tsv | head -2 | tail -1 | cut -f4 | xargs -i bash -c 'zcat ~/dexamethasone/EXTRACT/{}' | wc -l | xargs -i bash -c 'echo $(({}-2))') '{A[(NR-1)%row]=A[(NR-1)%row]$0"\t ";next}END{for(i in A)print A[i]}') | head | cut -f1-20 
-
-cat sample.info.tsv | cut -f1 | tail +2 | tr "\n" "\t" | awk '{print "Geneid\tLength\t"$0}'
-cat sample.info.tsv | cut -f1 | tail +2 | sed '1 i\Genedit\nLength' | tr "\n" "\t" 
-
-cat ~/dexamethasone/IMPORTANT_FILE/mRNA_seq-file-info.tsv | awk '{print $2"\t" $4"_RAW.tar"}' | xargs -i bash -c 'echo {} | cut -d " " -f2 | echo {}'
-cat ~/dexamethasone/IMPORTANT_FILE/mRNA_seq-file-info.tsv | awk '{print $4"_RAW.tar"}' | xargs -i bash -c 'tar -tf {}'
-
-
-
-Na podstawie plików przygotowano plik raw_macierz.txt i sample.info.txt
 Z esembla ściągnięto plik zwierający: 
 -Gene stable ID
 -Gene stable ID version
