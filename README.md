@@ -1,6 +1,7 @@
 # ifpan-chipseq-timecourse
 ###### Mateusz Zięba
 ---
+
 ### RNA-seq
 
 Dane do RNA-seq dla dexamethazonu (12 plików) pobrano z [https://www.ncbi.nlm.nih.gov/gds/?term=tim+reddy+dexamethasone+rna-seq](https://www.ncbi.nlm.nih.gov/gds/?term=tim+reddy+dexamethasone+rna-seq) 
@@ -68,31 +69,33 @@ ls ~/dexamethasone/EXTRACT/*.tsv.gz |
 Przypomocy pliku sample.info.tsv i plików *gene_quantifications_GRCh38.tsv.gz przygotowano plik raw_macierz.tsv dla RNAseq. Wykonano przy użyciu komendy:
 
 ```bash
-awk 'FNR==NR { a[FNR""] = $0; next } { print a[FNR""]"\t" $0 }' 
-   <(cat ~/dexamethasone/IMPORTANT_FILE/sample.info.tsv | 
-      head -2 | 
-      tail +2 | 
-      cut -f4 | 
-      xargs -i bash -c 'zcat ~/dexamethasone/EXTRACT/{}' 
-      |  tail +3 | 
-      cut -f1,6 ) 
-   <(cat ~/dexamethasone/IMPORTANT_FILE/sample.info.tsv | 
-      cut -f4 | 
-      tail +2 | 
-      xargs -i bash -c 'zcat ~/dexamethasone/EXTRACT/{} | 
+awk 'FNR==NR { a[FNR""] = $0; next } { print a[FNR""]"\t" $0 }' <(cat ~/dexamethasone/IMPORTANT_FILE/sample.info.tsv | 
+   head -2 | 
+   tail +2 | 
+   cut -f4 | 
+   xargs -i bash -c 'zcat ~/dexamethasone/EXTRACT/{}' | 
+      tail +3 | 
+      cut -f1,6 )  <(cat ~/ifpan-chipseq-timecourse/DATA/sample.info.tsv | 
+   cut -f4 | 
+   tail +2 | 
+   xargs -i bash -c 'zcat ~/dexamethasone/EXTRACT/{} | 
       tail +3 | 
       cut -f7' | 
-      awk -v row=$(cat ~/dexamethasone/IMPORTANT_FILE/sample.info.tsv | 
-         head -2 | 
-         tail -1 | 
-         cut -f4 | 
-         xargs -i bash -c 'zcat ~/dexamethasone/EXTRACT/{}' | 
-            wc -l | 
-            xargs -i bash -c 'echo $(({}-2))') '{A[(NR-1)%row]=A[(NR-1)%row]$0"\t ";next}END{for(i in A)print A[i]}') | 
-   awk -i inplace -v first=$(cat ~/dexamethasone/IMPORTANT_FILE/sample.info.tsv | 
-      cut -f1 | tail +2 | sed '1 i\Genedit\nLength' | tr "\n" ":" ) 'BEGINFILE{print first}{print}' | 
-   sed 's/:/\t/g' > ~/dexamethasone/IMPORTANT_FILE/raw_macierz.tsv
+   awk -v row=$(cat ~/ifpan-chipseq-timecourse/DATA/sample.info.tsv | 
+      head -2 | 
+      tail -1 | 
+      cut -f4 | 
+      xargs -i bash -c 'zcat ~/dexamethasone/EXTRACT/{}' | 
+         wc -l | xargs -i bash -c 'echo $(({}-2))') '{A[(NR-1)%row]=A[(NR-1)%row]$0"\t ";next}END{for(i in A)print A[i]}') | 
+   awk -i inplace -v first=$(cat ~/ifpan-chipseq-timecourse/DATA/sample.info.tsv | 
+      cut -f1 | 
+      tail +2 | 
+      sed '1 i\Genedit\nLength' | tr "\n" ":" ) 'BEGINFILE{print first}{print}' |  
+   sed 's/:/\t/g' > ~/ifpan-chipseq-timecourse/DATA/raw_macierz.tsv
 ```
+
+
+
 Z esembla ściągnięto plik zwierający: 
 -Gene stable ID
 -Gene stable ID version
