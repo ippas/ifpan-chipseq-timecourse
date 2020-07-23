@@ -1,9 +1,101 @@
 # ifpan-chipseq-timecourse
 ###### Mateusz Zięba
 ---
+
 ### RNA-seq
 
-Dane do RNA-seq dla dexamethazonu (12 plików) pobrano z [https://www.ncbi.nlm.nih.gov/gds/?term=tim+reddy+dexamethasone+rna-seq](https://www.ncbi.nlm.nih.gov/gds/?term=tim+reddy+dexamethasone+rna-seq) na podstawie plików przygotowano plik raw_macierz.txt i sample.info.txt
+Dane do RNA-seq dla dexamethazonu (12 plików) pobrano z [https://www.ncbi.nlm.nih.gov/gds/?term=tim+reddy+dexamethasone+rna-seq](https://www.ncbi.nlm.nih.gov/gds/?term=tim+reddy+dexamethasone+rna-seq) 
+
+Pobrano plik tekstowy powyższej strony i zapisano jako info-RNA-seq.txt
+
+Przy pomocy komendy przygotowano plik (mRNA_seq-file-info.txt) z informacjami potrzebnymi do pobrania plików.
+
+```bash
+cat ~/dexamethasone/IMPORTANT_FILE/info-RNA-seq-to-download.txt | 
+   tail +2 | 
+   sed 'N;N;N;N;N;N;N;s/\n/ /g' | 
+   grep 'mRNA-seq'  | 
+   awk '{print $19"\t"$21*60"\t"$56"suppl/"$59"_RAW.tar\t"$59}' | 
+   sort -n -k2 > ~/dexamethasone/IMPORTANT_FILE/mRNA_seq-file-info.tsv
+```
+
+Przy pomocy polecenia pobrno pliki RNA-seq dla deksametazonu
+
+```bash
+cat ~/dexamethasone/IMPORTANT_FILE/mRNA_seq-file-info.tsv | 
+   cut -f3 | 
+   xargs -i bash -c 'wget {} -P ~/dexamethasone/DOWNLOAD/'
+```
+
+Rozpakowano do folderu EXTRACT, komendą:
+
+```bash
+ls ~/dexamethasone/DOWNLOAD/*tar | 
+   xargs -i bash -c 'tar -C ~/dexamethasone/EXTRACT -xvf {}'
+```
+
+Tworzenie pliku sample.info.txt, który zawiera: "samplied", "time" i "replicate". Wykonano przy użyciu komendy:
+
+```bash
+ls ~/dexamethasone/EXTRACT/*.tsv.gz | 
+   xargs -i bash -c 'zcat {} | 
+   head -1' | grep 'rep' | 
+   cut -d "/" -f31 | 
+   cut -c2- | 
+   sed 's/_/\t/' | 
+   awk '{print "t"$1"_"$2"\t"$1"\t"$2}' | 
+   sed 's/05/0\.5/g2' | 
+   awk '{print $1"\t"$2*60"\t"$3}' | 
+   sort -k2 -n | 
+   sed '1 i\samplied\ttime\treplicate' > ~/dexamethasone/IMPORTANT_FILE/sample.info.txt
+```
+
+```bash
+ls ~/dexamethasone/EXTRACT/*.tsv.gz | 
+   xargs -i bash -c ' zgrep -H "rep" {} | 
+   head -1' | 
+   cut -d "/" -f6,36 | 
+   sed  's/:/\t/; s/\//\t/' | 
+   awk '{print $6"\t"$1}' | 
+   sed 's/_/\t/' | 
+   cut -c2- | 
+   awk '{print "t"$1"_"$2"\t"$1"\t"$2"\t"$3}' | 
+   sed 's/05/0\.5/g2' | 
+   awk '{print $1"\t"$2*60"\t"$3"\t"$4}' | 
+   sort -k2 -n |
+   sed '1 i\samplied\ttime\treplicate\tfile ' > ~/dexamethasone/IMPORTANT_FILE/sample.info.tsv
+```
+
+Przypomocy pliku sample.info.tsv i plików *gene_quantifications_GRCh38.tsv.gz przygotowano plik raw_macierz.tsv dla RNAseq. Wykonano przy użyciu komendy:
+
+```bash
+awk 'FNR==NR { a[FNR""] = $0; next } { print a[FNR""]"\t" $0 }' <(cat ~/dexamethasone/IMPORTANT_FILE/sample.info.tsv | 
+   head -2 | 
+   tail +2 | 
+   cut -f4 | 
+   xargs -i bash -c 'zcat ~/dexamethasone/EXTRACT/{}' | 
+      tail +3 | 
+      cut -f1,6 )  <(cat ~/ifpan-chipseq-timecourse/DATA/sample.info.tsv | 
+   cut -f4 | 
+   tail +2 | 
+   xargs -i bash -c 'zcat ~/dexamethasone/EXTRACT/{} | 
+      tail +3 | 
+      cut -f7' | 
+   awk -v row=$(cat ~/ifpan-chipseq-timecourse/DATA/sample.info.tsv | 
+      head -2 | 
+      tail -1 | 
+      cut -f4 | 
+      xargs -i bash -c 'zcat ~/dexamethasone/EXTRACT/{}' | 
+         wc -l | xargs -i bash -c 'echo $(({}-2))') '{A[(NR-1)%row]=A[(NR-1)%row]$0"\t ";next}END{for(i in A)print A[i]}') | 
+   awk -i inplace -v first=$(cat ~/ifpan-chipseq-timecourse/DATA/sample.info.tsv | 
+      cut -f1 | 
+      tail +2 | 
+      sed '1 i\Genedit\nLength' | tr "\n" ":" ) 'BEGINFILE{print first}{print}' |  
+   sed 's/:/\t/g' > ~/ifpan-chipseq-timecourse/DATA/raw_macierz.tsv
+```
+
+
+
 Z esembla ściągnięto plik zwierający: 
 -Gene stable ID
 -Gene stable ID version
