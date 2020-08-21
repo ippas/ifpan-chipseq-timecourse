@@ -91,7 +91,9 @@ awk 'FNR==NR { a[FNR""] = $0; next } { print a[FNR""]"\t" $0 }' <(cat ~/dexameth
       cut -f1 | 
       tail +2 | 
       sed '1 i\Genedit\nLength' | tr "\n" ":" ) 'BEGINFILE{print first}{print}' |  
-   sed 's/:/\t/g' > ~/ifpan-chipseq-timecourse/DATA/raw_macierz.tsv
+   sed 's/:/\t/g' | 
+   sed s'/ $//' | 
+   sed s'/\t$//' > ~/ifpan-chipseq-timecourse/DATA/raw_macierz.tsv
 ```
 
 
