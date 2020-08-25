@@ -19,7 +19,7 @@ cat ~/dexamethasone/IMPORTANT_FILE/info-RNA-seq-to-download.txt |
    sort -n -k2 > ~/dexamethasone/IMPORTANT_FILE/mRNA_seq-file-info.tsv
 ```
 
-Przy pomocy polecenia pobrno pliki RNA-seq dla deksametazonu
+Przy pomocy polecenia pobrano pliki RNA-seq dla deksametazonu
 
 ```bash
 cat ~/dexamethasone/IMPORTANT_FILE/mRNA_seq-file-info.tsv | 
@@ -139,9 +139,14 @@ Z esembla ściągnąć plik zawierający
 - Transcript.length
 - gene.name
 
-Nazwę pliku zmienić na transcript_length.txt
+Nazwę pliku zmienić na transcript_length.tsv
 Uruchomić fragment skryptu  skript_R_clean.R (od 126-139), skrypt wczytuje plik gene_chromosome_start_end_strand.txt, i tworzy plik signification_gene.txt
 W skrypcie bigwig_genomic_range_extract_normalize_totsv.sh, do GENES_INFO_FILE_NAME przypisać plik signification_gene.txt, wynik działania skryptu zapisać big.table.normalize.tsv. Następnie w skrypcie bucket.sh, do do FILE_INPUT przypisać big.table.normalize.txt, a do FILE_OUTPUT bigtablebucket_normalize.tsv. 
+
+```bash
+~/ifpan-chipseq-timecourse/SKRIPTS/./bigwig_genomic_range_extract_normalize_totsv.sh ~/ifpan-chipseq-timecourse/DATA/significant_genes_ensemblid_genename_chromosome_start_end.tsv > ~/ChIP-seq/DATA/significant_genes_chip-seq_gene_chromosome_start_end_TF_time_file.tsv
+
+```
 
 Skrypty do normalizacji ściągnięto z: 
 [https://github.com/porchard/normalize_bedgraph](https://github.com/porchard/normalize_bedgraph)
