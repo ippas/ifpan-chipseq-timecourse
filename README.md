@@ -144,7 +144,7 @@ Uruchomić fragment skryptu  skript_R_clean.R (od 126-139), skrypt wczytuje plik
 W skrypcie bigwig_genomic_range_extract_normalize_totsv.sh, do GENES_INFO_FILE_NAME przypisać plik signification_gene.txt, wynik działania skryptu zapisać big.table.normalize.tsv. Następnie w skrypcie bucket.sh, do do FILE_INPUT przypisać big.table.normalize.txt, a do FILE_OUTPUT bigtablebucket_normalize.tsv. 
 
 ```bash
-~/ifpan-chipseq-timecourse/SKRIPTS/./bigwig_genomic_range_extract_normalize_totsv.sh ~/ifpan-chipseq-timecourse/DATA/significant_genes_ensemblid_genename_chromosome_start_end.tsv > ~/ChIP-seq/DATA/significant_genes_chip-seq_gene_chromosome_start_end_TF_time_file.tsv
+~/ifpan-chipseq-timecourse/SKRIPTS/./bigwig_genomic_range_extract_normalize_to_tsv.sh ~/ifpan-chipseq-timecourse/DATA/significant_genes_ensemblid_genename_chromosome_start_end.tsv > ~/ChIP-seq/DATA/significant_genes_chip-seq_gene_chromosome_start_end_TF_time_file.tsv
 
 ```
 
