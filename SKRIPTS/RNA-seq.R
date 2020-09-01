@@ -57,7 +57,7 @@ tmp_data_for_heatmap <- data[order(results$pvalue)[1:number_signification_genes]
   t %>%
   apply(1, function(x, threshold){x[x > threshold] <- threshold; x[x < -threshold] <- -threshold; x}, threshold = 2.0) %>%
   t %>%
-  {rownames(.) <- results$genename[order(results$pvalue)[1:number_signification_genes]]; .}  %>%
+  {rownames(.) <- results$gene.name[order(results$pvalue)[1:number_signification_genes]]; .}  %>%
   {colnames(.) <- colnames(data); .}
 
 number_clusters <- 2
@@ -122,10 +122,10 @@ tmp_data_for_heatmap %>%
                        "00" = "0", 
                        "05" = "0.5")))  %>%
   set_colnames(c("gene.name", "time", "value")) %>%
-  group_by(gene.name, time) %>% 
+  left_join(., gene_regulation, by = "gene.name") %>%
+  group_by(gene.name, time, gene.regulation) %>% 
   summarize(mean = mean(value)) %>%
   arrange(time) %>%
-  left_join(., gene_regulation, by = "gene.name") %>%
   ggplot(., 
        aes(x = as.factor(time), y = mean, color = gene.regulation)) +
   geom_line(aes(group = gene.name), alpha = 0.05) +
