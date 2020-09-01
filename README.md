@@ -19,7 +19,7 @@ cat ~/dexamethasone/IMPORTANT_FILE/info-RNA-seq-to-download.txt |
    sort -n -k2 > ~/dexamethasone/IMPORTANT_FILE/mRNA_seq-file-info.tsv
 ```
 
-Przy pomocy polecenia pobrno pliki RNA-seq dla deksametazonu
+Przy pomocy polecenia pobrano pliki RNA-seq dla deksametazonu
 
 ```bash
 cat ~/dexamethasone/IMPORTANT_FILE/mRNA_seq-file-info.tsv | 
@@ -91,7 +91,9 @@ awk 'FNR==NR { a[FNR""] = $0; next } { print a[FNR""]"\t" $0 }' <(cat ~/dexameth
       cut -f1 | 
       tail +2 | 
       sed '1 i\Genedit\nLength' | tr "\n" ":" ) 'BEGINFILE{print first}{print}' |  
-   sed 's/:/\t/g' > ~/ifpan-chipseq-timecourse/DATA/raw_macierz.tsv
+   sed 's/:/\t/g' | 
+   sed s'/ $//' | 
+   sed s'/\t$//' > ~/ifpan-chipseq-timecourse/DATA/raw_macierz.tsv
 ```
 
 
@@ -121,7 +123,13 @@ oraz wykres liniowy pokazujący jak zmienia się zawartość transkryptów dla o
 Dane dla Chip-seq ściągnięto z:
 [https://www.ncbi.nlm.nih.gov/gds/?term=tim+reddy+dexamethasone+chip-seq+nr3c1](https://www.ncbi.nlm.nih.gov/gds/?term=tim+reddy+dexamethasone+chip-seq+nr3c1), dane dla poszczególnych plików znajdują się w pliku: chipseq-file-info.txt (przygotowano go przy pomocy pliku gds.results.txt ściągniętego z powyższej strony i komendy: 
 ```console
-cat gds_result.txt |  sed -e 's/ /\t/g' | grep -P -B 1 -A 6 "ChIP-seq\ton" | grep -oP 'GSE[0-9]*|[0-9\.]*.hours|supplied\).*ChIP-seq' | xargs -n5 -d'\n' | sed 's/(GR)\t//' | awk '{print $2 "\t" $4*60 "\t""ftp://ftp.ncbi.nlm.nih.gov/geo/series/"$6"nnn/"$7"/suppl/"$7"_RAW.tar""\t"$7}' ) > chipseq-file-info.txt
+cat gds_result.txt |  
+   sed -e 's/ /\t/g' | 
+   grep -P -B 1 -A 6 "ChIP-seq\ton" | 
+   grep -oP 'GSE[0-9]*|[0-9\.]*.hours|supplied\).*ChIP-seq' | 
+   xargs -n5 -d'\n' | 
+   sed 's/(GR)\t//' | 
+   awk '{print $2 "\t" $4*60 "\t""ftp://ftp.ncbi.nlm.nih.gov/geo/series/"$6"nnn/"$7"/suppl/"$7"_RAW.tar""\t"$7}' ) > chipseq-file-info.txt
 ```
 i pobrano pliki z pliku.
 
@@ -131,12 +139,19 @@ Z esembla ściągnąć plik zawierający
 - Transcript.length
 - gene.name
 
-Nazwę pliku zmienić na transcript_length.txt
+Nazwę pliku zmienić na transcript_length.tsv
 Uruchomić fragment skryptu  skript_R_clean.R (od 126-139), skrypt wczytuje plik gene_chromosome_start_end_strand.txt, i tworzy plik signification_gene.txt
 W skrypcie bigwig_genomic_range_extract_normalize_totsv.sh, do GENES_INFO_FILE_NAME przypisać plik signification_gene.txt, wynik działania skryptu zapisać big.table.normalize.tsv. Następnie w skrypcie bucket.sh, do do FILE_INPUT przypisać big.table.normalize.txt, a do FILE_OUTPUT bigtablebucket_normalize.tsv. 
+
+```bash
+~/ifpan-chipseq-timecourse/SKRIPTS/./bigwig_genomic_range_extract_normalize_to_tsv.sh ~/ifpan-chipseq-timecourse/DATA/significant_genes_ensemblid_genename_chromosome_start_end.tsv > ~/ChIP-seq/DATA/significant_genes_chip-seq_gene_chromosome_start_end_TF_time_file.tsv
+
+```
+
 Skrypty do normalizacji ściągnięto z: 
 [https://github.com/porchard/normalize_bedgraph](https://github.com/porchard/normalize_bedgraph)
 oraz skrypty: bigWigToBedGraph, bedGraphToBigWig.
+
 Uruchomić skrypt z R (linie 141-173) w którym zostaje obliczone RPKM (średnia ilość transkryptu) dla signification_gene.txt zgodnie ze wzorem znajdującym sie na stronie: [https://www.biostars.org/p/273537/](https://www.biostars.org/p/273537/), oraz wygenerowany zostaje wykres w skali logarytmiczej,  ukazujący średnią długość transkryptów.
 
 ![Heatmap, pokazuje jak zmienia się ilość transkryptu w czasie](PLOTS/logmean_transcriptlength_signification_gene.jpeg)
