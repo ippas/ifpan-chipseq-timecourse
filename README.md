@@ -114,9 +114,9 @@ Z esembla ściągnięto plik zawierający:
 
 Zmieniono nazwę pliku z mart.export.txt na gene_chromosome_start_end_strand.txt
 Uruchomić skrypt z R: skript_R_clean.R (od 1-123 lini) skrypt wczytuje  pliki raw_macierz.txt (zapisuje do raw.data),  sample.info.txt(zapisuje do samples) i ID_ID.version_gene.txt (zapisuje do ID_ID.version_gene). Wykonuje anove na raw.data, i przy FDR_THRESHOLD=0.001, zostaje wybranych 737 genów (dla dwóch nie została przypisana nazwa, została odrzucone i zostało 735).  Skrypt tworzy heatmap dla RNA-seq dla wybranych transkryptów (z dwoma klastrami), 
-![Heatmap pokazująca zmieany transkryptów w czasie](PLOTS/hetmap_signification_gene_plot.jpeg)
+![Heatmap pokazująca zmieany transkryptów w czasie](PLOTS/heatmap_significant_genes.jpeg)
 oraz wykres liniowy pokazujący jak zmienia się zawartość transkryptów dla obu klastrów w czasie.
-![Kiku](PLOTS/change_transcript_cluster_lineplot.jpeg)
+![Kiku](PLOTS/lineplot_up_down_regulation_significant_genes.jpeg)
 
 ### Chip-seq
 
