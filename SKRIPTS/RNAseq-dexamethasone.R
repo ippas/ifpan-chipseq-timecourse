@@ -13,8 +13,7 @@ raw.data <- read.delim("raw_data/raw_tar/extrakt/raw_macierz.txt", header = TRUE
 rownames(raw.data) <- raw.data[, 1]
 samples <- read.delim("raw_data/raw_tar/extrakt/sample.info.txt", header = TRUE, stringsAsFactors = FALSE)
 data <- raw.data[, 3:48] %>% as.matrix()
-ID_ID.version_gene <- read.delim("raw_data/raw_tar/extrakt/ID_ID.version_gene.txt", header = TRUE, stringsAsFactors = FALSE)
-
+ID_ID.version_gene <- read.delim("/home/mateusz/ifpan-chipseq-timecourse/DATA/ID_ID.version_gene.txt", header = TRUE, stringsAsFactors = FALSE)
 pvalue <- anova(aov(data[1,] ~ samples$time))[[1,5]]
 pvalue_matrix <- matrix(pvalue)
  
@@ -50,6 +49,7 @@ tmp_data_for_plot <- data[order(results$pvalue)[1:number_signification_genes],] 
   t %>%
   {rownames(.) <- results$genename[order(results$pvalue)[1:737]]; .}  %>%
   {colnames(.) <- colnames(data); .}
+
 
 number_clusters <- 2
 tmp_cols_branches <- c("darkred", "forestgreen", "yellow")
