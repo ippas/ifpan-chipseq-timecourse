@@ -99,7 +99,7 @@ Z esembla ściągnięto plik zawierający:
 
 Zmieniono nazwę pliku z mart.export.txt na gene_chromosome_start_end_strand.tsv i zapisano w ~/ifpan-chipseq-timecourse/DATA/
 
-Uruchomić skrypt z R: skript_R_clean.R (od 1-123 lini) skrypt wczytuje  pliki raw_macierz.txt (zapisuje do raw.data),  sample.info.tsv i ID_ID.version_gene.tsv. Wykonuje anove na raw.data, i przy FDR_THRESHOLD=0.001, zostaje wybranych 640 genów (dla dwóch nie została przypisana nazwa, została odrzucone i zostało 638).  Skrypt tworzy heatmap dla RNA-seq dla wybranych transkryptów (z dwoma klastrami), 
+Uruchomić skrypt z R: skript_R_clean.R (od 1-141 lini) skrypt wczytuje  pliki raw_macierz.txt (zapisuje do raw.data),  sample.info.tsv i ID_ID.version_gene.tsv. Wykonuje anove na raw.data, i przy FDR_THRESHOLD=0.001, zostaje wybranych 640 genów (dla dwóch nie została przypisana nazwa, została odrzucone i zostało 638).  Skrypt tworzy heatmap dla RNA-seq dla wybranych transkryptów (z dwoma klastrami), 
 
 ![Heatmap pokazująca zmieany transkryptów w czasie](PLOTS/heatmap_significant_genes.jpeg)
 
