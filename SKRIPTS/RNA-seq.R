@@ -15,7 +15,7 @@ FDR_THRESHOLD=0.001
 raw.data <- read.delim("~/ifpan-chipseq-timecourse/DATA/raw_expression_matrix_dexamethasone.tsv",  
                        header = TRUE, 
                        stringsAsFactors = FALSE) %>% 
-  set_rownames(.$Genedit)
+  set_rownames(.$Geneid)
 
 samples <- read.delim("~/ifpan-chipseq-timecourse/DATA/sample.info.tsv", 
                       header = TRUE, 
@@ -24,7 +24,7 @@ samples <- read.delim("~/ifpan-chipseq-timecourse/DATA/sample.info.tsv",
 data <- raw.data[, 3:48] %>% 
   as.matrix()
 
-ID_ID.version_gene <- read.delim("~/ifpan-chipseq-timecourse/DATA/ID_ID.version_gene.txt", 
+ID_ID.version_gene <- read.delim("~/ifpan-chipseq-timecourse/DATA/ID_ID.version_gene.tsv", 
                                  header = TRUE, 
                                  stringsAsFactors = FALSE)
 
@@ -48,9 +48,15 @@ results <- raw.data[, -(3:48)] %>%
   select("Geneid", "ensemblid", "Length", "gene.name", "pvalue")
   
 rm(tmp_pvalue_dataframe)
-#results %>% mutate(fdr = p.adjust(results$pvalue, method = "fdr"))
-#sum(results$fdr < 0.0016, na.rm = T)
-number_signification_genes <- 737
+#results %>% mutate(fdr = p.adjust(results$pvalue, method = "fdr")) %>% filter(fdr < 0.001) %>% nrow()
+number_signification_genes <- results %>% 
+  mutate(fdr = p.adjust(results$pvalue, method = "fdr")) %>% 
+  filter(fdr < 0.001) %>% 
+  nrow()
+
+results %>% 
+  mutate(fdr = p.adjust(results$pvalue, method = "fdr")) %>% 
+  filter(fdr < 0.001) -> results.filtered
 
 tmp_data_for_heatmap <- data[order(results$pvalue)[1:number_signification_genes],] %>%
   apply(1, scale) %>% 
@@ -82,7 +88,7 @@ heatmap.2(tmp_data_for_heatmap,
           Colv = FALSE,
           col=bluered(20),
           dendrogram="row",      
-          Rowv = tmp_dend1,  
+          Rowv = tmp_dend,  
           key.xlab = "Concentration (index)",
           distfun = function(x) as.dist(1-cor(t(x))),
           RowSideColors = tmp_col_labels, 
@@ -131,6 +137,8 @@ tmp_data_for_heatmap %>%
   geom_line(aes(group = gene.name), alpha = 0.05) +
   geom_smooth(aes(group = gene.regulation), se = FALSE, size = 2) +
   theme(legend.position = "bottom")
+
+dev.off()
 
 #Create Barplot for a single gene
 data.frame(exprs = data[which(results$genename == "NYAP1"),], 
@@ -188,12 +196,15 @@ data[order(results$pvalue)[1:number_signification_genes],] %>%
   {.[,1:46] <- ((.[,1:46]/rep(colSums(.[,1:46]), each = nrow(.)))*10^3 * 10^6)/.$median; .} %>% 
   mutate(., mean = rowSums(.[,1:46])/46)  %>% 
   left_join(.,results[, c("ensemblid", "gene.name")], by = "ensemblid" ) %>%
-  column_to_rownames(., var = "ensemblid") %>% 
+  column_to_rownames(., var = "ensemblid") %>%  
+  left_join(., gene_regulation, by = "gene.name") %>% 
   mutate(logmean = log2(mean))  %>% 
   {ggplot(.,aes(x = logmean)) + 
-      geom_histogram()} 
+      geom_histogram() +
+      facet_grid(~gene.regulation)
+    } 
 
-
+#random
 data %>% 
   as.data.frame() %>% 
   mutate(., ensemblid = {row.names(.) %>% 
@@ -205,17 +216,27 @@ data %>%
   na.omit()  %>% 
   {.[,1:46] <- ((.[,1:46]/rep(colSums(.[,1:46]), each = nrow(.)))*10^3 * 10^6)/.$median; .} %>% 
   mutate(., mean = rowSums(.[,1:46])/46) %>% 
-  column_to_rownames(., var = "ensemblid") %>% 
+  #column_to_rownames(., var = "ensemblid") %>% 
   .[{.$mean > 2 & .$mean < 8192},] %>%
-  .[sample(nrow(.), 1000), 47] %>%
-  as.data.frame() %>% 
-  set_colnames("Gene.name") %>% 
-  left_join(., gene_chromosome_start_end_strand, by = "Gene.name") %>% 
+  .[sample(nrow(.), 1000), ] %>% 
+  #as.data.frame() %>% 
+  #set_colnames("Gene.name") %>% 
+  left_join(gene_chromosome_start_end_strand, ., by = c(c("Gene.stable.ID"="ensemblid"),c("Gene.name"="gene.name"))) %>% 
+  na.omit() %>% 
+  mutate(logmean = log2(mean))  %>% 
+  {ggplot(.,aes(x = logmean)) + 
+      geom_histogram()}
+      
+  
+  
+  
+  
+   
+  #to jest dobre
   mutate(pos=Gene.start..bp. * (Strand == 1) + Gene.end..bp. * (Strand == -1)) %>% 
   mutate(start = pos - 10000, end = pos + 10001) %>%  
   select("Gene.stable.ID", "Gene.name", "Chromosome.scaffold.name", "start", "end") %>% 
-  set_colnames(c("ensemblid", "gene.name", "chromosome", "start", "end")) %>% head
-
+  set_colnames(c("ensemblid", "gene.name", "chromosome", "start", "end")) %>% dim()
   
 
 

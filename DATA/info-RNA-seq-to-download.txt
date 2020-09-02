@@ -1,0 +1,464 @@
+
+1. polyA mRNA RNA-seq from A549 (ENCSR924BHF)
+(Submitter supplied) mRNA-seq on A549 cell line treated with 100 nM dexamethasone for 2 hours.  For data usage terms and conditions, please refer to http://www.genome.gov/27528022 and http://www.genome.gov/Pages/Research/ENCODE/ENCODE_Data_Use_Policy_for_External_Users_03-07-14.pdf
+Organism:	Homo sapiens
+Type:		Expression profiling by high throughput sequencing
+Platforms: GPL11154 GPL16791 4 Samples
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE91nnn/GSE91358/
+Series		Accession: GSE91358	ID: 200091358
+
+2. polyA mRNA RNA-seq from A549 (ENCSR656FIH)
+(Submitter supplied) mRNA-seq on A549 cell line treated with 100 nM dexamethasone for 1 hours.  For data usage terms and conditions, please refer to http://www.genome.gov/27528022 and http://www.genome.gov/Pages/Research/ENCODE/ENCODE_Data_Use_Policy_for_External_Users_03-07-14.pdf
+Organism:	Homo sapiens
+Type:		Expression profiling by high throughput sequencing
+Platforms: GPL16791 GPL11154 4 Samples
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE91nnn/GSE91311/
+Series		Accession: GSE91311	ID: 200091311
+
+3. polyA mRNA RNA-seq from A549 (ENCSR632DQP)
+(Submitter supplied) mRNA-seq on A549 cell line treated with 100 nM dexamethasone for 0 hours.  For data usage terms and conditions, please refer to http://www.genome.gov/27528022 and http://www.genome.gov/Pages/Research/ENCODE/ENCODE_Data_Use_Policy_for_External_Users_03-07-14.pdf
+Organism:	Homo sapiens
+Type:		Expression profiling by high throughput sequencing
+Platforms: GPL16791 GPL11154 4 Samples
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE91nnn/GSE91305/
+Series		Accession: GSE91305	ID: 200091305
+
+4. polyA mRNA RNA-seq from A549 (ENCSR624RID)
+(Submitter supplied) mRNA-seq on A549 cell line treated with 100 nM dexamethasone for 3 hours.  For data usage terms and conditions, please refer to http://www.genome.gov/27528022 and http://www.genome.gov/Pages/Research/ENCODE/ENCODE_Data_Use_Policy_for_External_Users_03-07-14.pdf
+Organism:	Homo sapiens
+Type:		Expression profiling by high throughput sequencing
+Platforms: GPL16791 GPL11154 4 Samples
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE91nnn/GSE91303/
+Series		Accession: GSE91303	ID: 200091303
+
+5. polyA mRNA RNA-seq from A549 (ENCSR546PPG)
+(Submitter supplied) mRNA-seq on A549 cell line treated with 100 nM dexamethasone for 8 hours.  For data usage terms and conditions, please refer to http://www.genome.gov/27528022 and http://www.genome.gov/Pages/Research/ENCODE/ENCODE_Data_Use_Policy_for_External_Users_03-07-14.pdf
+Organism:	Homo sapiens
+Type:		Expression profiling by high throughput sequencing
+Platforms: GPL16791 GPL11154 4 Samples
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE91nnn/GSE91284/
+Series		Accession: GSE91284	ID: 200091284
+
+6. polyA mRNA RNA-seq from A549 (ENCSR543QRU)
+(Submitter supplied) mRNA-seq on A549 cell line treated with 100 nM dexamethasone for 5 hours.  For data usage terms and conditions, please refer to http://www.genome.gov/27528022 and http://www.genome.gov/Pages/Research/ENCODE/ENCODE_Data_Use_Policy_for_External_Users_03-07-14.pdf
+Organism:	Homo sapiens
+Type:		Expression profiling by high throughput sequencing
+Platforms: GPL16791 GPL11154 3 Samples
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE91nnn/GSE91281/
+Series		Accession: GSE91281	ID: 200091281
+
+7. polyA mRNA RNA-seq from A549 (ENCSR385TFN)
+(Submitter supplied) mRNA-seq on A549 cell line treated with 100 nM dexamethasone for 7 hours.  For data usage terms and conditions, please refer to http://www.genome.gov/27528022 and http://www.genome.gov/Pages/Research/ENCODE/ENCODE_Data_Use_Policy_for_External_Users_03-07-14.pdf
+Organism:	Homo sapiens
+Type:		Expression profiling by high throughput sequencing
+Platforms: GPL16791 GPL11154 4 Samples
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE91nnn/GSE91255/
+Series		Accession: GSE91255	ID: 200091255
+
+8. polyA mRNA RNA-seq from A549 (ENCSR326PTW)
+(Submitter supplied) mRNA-seq on A549 cell line treated with 100 nM dexamethasone for 4 hours.  For data usage terms and conditions, please refer to http://www.genome.gov/27528022 and http://www.genome.gov/Pages/Research/ENCODE/ENCODE_Data_Use_Policy_for_External_Users_03-07-14.pdf
+Organism:	Homo sapiens
+Type:		Expression profiling by high throughput sequencing
+Platforms: GPL16791 GPL11154 4 Samples
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE91nnn/GSE91243/
+Series		Accession: GSE91243	ID: 200091243
+
+9. polyA mRNA RNA-seq from A549 (ENCSR255VBV)
+(Submitter supplied) mRNA-seq on A549 cell line treated with 100 nM dexamethasone for 6 hours.  For data usage terms and conditions, please refer to http://www.genome.gov/27528022 and http://www.genome.gov/Pages/Research/ENCODE/ENCODE_Data_Use_Policy_for_External_Users_03-07-14.pdf
+Organism:	Homo sapiens
+Type:		Expression profiling by high throughput sequencing
+Platforms: GPL16791 GPL11154 3 Samples
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE91nnn/GSE91229/
+Series		Accession: GSE91229	ID: 200091229
+
+10. polyA mRNA RNA-seq from A549 (ENCSR224PTG)
+(Submitter supplied) mRNA-seq on A549 cell line treated with 100 nM dexamethasone for 10 hours.  For data usage terms and conditions, please refer to http://www.genome.gov/27528022 and http://www.genome.gov/Pages/Research/ENCODE/ENCODE_Data_Use_Policy_for_External_Users_03-07-14.pdf
+Organism:	Homo sapiens
+Type:		Expression profiling by high throughput sequencing
+Platforms: GPL16791 GPL11154 4 Samples
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE91nnn/GSE91222/
+Series		Accession: GSE91222	ID: 200091222
+
+11. polyA mRNA RNA-seq from A549 (ENCSR154TDP)
+(Submitter supplied) mRNA-seq on A549 cell line treated with 100 nM dexamethasone for 12 hours.  For data usage terms and conditions, please refer to http://www.genome.gov/27528022 and http://www.genome.gov/Pages/Research/ENCODE/ENCODE_Data_Use_Policy_for_External_Users_03-07-14.pdf
+Organism:	Homo sapiens
+Type:		Expression profiling by high throughput sequencing
+Platforms: GPL16791 GPL11154 4 Samples
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE91nnn/GSE91212/
+Series		Accession: GSE91212	ID: 200091212
+
+12. polyA mRNA RNA-seq from A549 (ENCSR070IYV)
+(Submitter supplied) mRNA-seq on A549 cell line treated with 100 nM dexamethasone for 0.5 hours.  For data usage terms and conditions, please refer to http://www.genome.gov/27528022 and http://www.genome.gov/Pages/Research/ENCODE/ENCODE_Data_Use_Policy_for_External_Users_03-07-14.pdf
+Organism:	Homo sapiens
+Type:		Expression profiling by high throughput sequencing
+Platforms: GPL16791 GPL11154 4 Samples
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE91nnn/GSE91198/
+Series		Accession: GSE91198	ID: 200091198
+
+13. polyA mRNA RNA-seq from A549 (ENCLB581OJY)
+Organism:	Homo sapiens
+Source name:	Homo sapiens A549 immortalized cell line treated with 100 nM dexamethasone for 2 hours
+Platform: GPL16791 Series: GSE91358 
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2421nnn/GSM2421935/
+SRA Run Selector: https://www.ncbi.nlm.nih.gov/Traces/study/?acc=SRX2410025
+Sample		Accession: GSM2421935	ID: 302421935
+
+14. polyA mRNA RNA-seq from A549 (ENCLB653XDE)
+Organism:	Homo sapiens
+Source name:	Homo sapiens A549 immortalized cell line treated with 100 nM dexamethasone for 2 hours
+Platform: GPL16791 Series: GSE91358 
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2421nnn/GSM2421934/
+SRA Run Selector: https://www.ncbi.nlm.nih.gov/Traces/study/?acc=SRX2410024
+Sample		Accession: GSM2421934	ID: 302421934
+
+15. polyA mRNA RNA-seq from A549 (ENCLB413AHN)
+Organism:	Homo sapiens
+Source name:	Homo sapiens A549 immortalized cell line treated with 100 nM dexamethasone for 2 hours
+Platform: GPL16791 Series: GSE91358 
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2421nnn/GSM2421932/
+SRA Run Selector: https://www.ncbi.nlm.nih.gov/Traces/study/?acc=SRX2410022
+Sample		Accession: GSM2421932	ID: 302421932
+
+16. polyA mRNA RNA-seq from A549 (ENCLB743FFQ)
+Organism:	Homo sapiens
+Source name:	Homo sapiens A549 immortalized cell line treated with 100 nM dexamethasone for 1 hour
+Platform: GPL16791 Series: GSE91311 
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2421nnn/GSM2421786/
+SRA Run Selector: https://www.ncbi.nlm.nih.gov/Traces/study/?acc=SRX2409885
+Sample		Accession: GSM2421786	ID: 302421786
+
+17. polyA mRNA RNA-seq from A549 (ENCLB697WBJ)
+Organism:	Homo sapiens
+Source name:	Homo sapiens A549 immortalized cell line treated with 100 nM dexamethasone for 1 hour
+Platform: GPL16791 Series: GSE91311 
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2421nnn/GSM2421784/
+SRA Run Selector: https://www.ncbi.nlm.nih.gov/Traces/study/?acc=SRX2409883
+Sample		Accession: GSM2421784	ID: 302421784
+
+18. polyA mRNA RNA-seq from A549 (ENCLB820FYG)
+Organism:	Homo sapiens
+Source name:	Homo sapiens A549 immortalized cell line treated with 100 nM dexamethasone for 1 hour
+Platform: GPL16791 Series: GSE91311 
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2421nnn/GSM2421783/
+SRA Run Selector: https://www.ncbi.nlm.nih.gov/Traces/study/?acc=SRX2409882
+Sample		Accession: GSM2421783	ID: 302421783
+
+19. polyA mRNA RNA-seq from A549 (ENCLB510CFF)
+Organism:	Homo sapiens
+Source name:	Homo sapiens A549 immortalized cell line
+Platform: GPL16791 Series: GSE91305 
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2421nnn/GSM2421766/
+SRA Run Selector: https://www.ncbi.nlm.nih.gov/Traces/study/?acc=SRX2409871
+Sample		Accession: GSM2421766	ID: 302421766
+
+20. polyA mRNA RNA-seq from A549 (ENCLB538FEL)
+Organism:	Homo sapiens
+Source name:	Homo sapiens A549 immortalized cell line
+Platform: GPL16791 Series: GSE91305 
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2421nnn/GSM2421765/
+SRA Run Selector: https://www.ncbi.nlm.nih.gov/Traces/study/?acc=SRX2409870
+Sample		Accession: GSM2421765	ID: 302421765
+
+21. polyA mRNA RNA-seq from A549 (ENCLB624CWM)
+Organism:	Homo sapiens
+Source name:	Homo sapiens A549 immortalized cell line
+Platform: GPL16791 Series: GSE91305 
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2421nnn/GSM2421764/
+SRA Run Selector: https://www.ncbi.nlm.nih.gov/Traces/study/?acc=SRX2409869
+Sample		Accession: GSM2421764	ID: 302421764
+
+22. polyA mRNA RNA-seq from A549 (ENCLB628JKK)
+Organism:	Homo sapiens
+Source name:	Homo sapiens A549 immortalized cell line treated with 100 nM dexamethasone for 3 hours
+Platform: GPL16791 Series: GSE91303 
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2421nnn/GSM2421760/
+SRA Run Selector: https://www.ncbi.nlm.nih.gov/Traces/study/?acc=SRX2409862
+Sample		Accession: GSM2421760	ID: 302421760
+
+23. polyA mRNA RNA-seq from A549 (ENCLB524XKX)
+Organism:	Homo sapiens
+Source name:	Homo sapiens A549 immortalized cell line treated with 100 nM dexamethasone for 3 hours
+Platform: GPL16791 Series: GSE91303 
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2421nnn/GSM2421758/
+SRA Run Selector: https://www.ncbi.nlm.nih.gov/Traces/study/?acc=SRX2409860
+Sample		Accession: GSM2421758	ID: 302421758
+
+24. polyA mRNA RNA-seq from A549 (ENCLB641EAI)
+Organism:	Homo sapiens
+Source name:	Homo sapiens A549 immortalized cell line treated with 100 nM dexamethasone for 3 hours
+Platform: GPL16791 Series: GSE91303 
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2421nnn/GSM2421757/
+SRA Run Selector: https://www.ncbi.nlm.nih.gov/Traces/study/?acc=SRX2409859
+Sample		Accession: GSM2421757	ID: 302421757
+
+25. polyA mRNA RNA-seq from A549 (ENCLB322MOU)
+Organism:	Homo sapiens
+Source name:	Homo sapiens A549 immortalized cell line treated with 100 nM dexamethasone for 8 hours
+Platform: GPL16791 Series: GSE91284 
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2421nnn/GSM2421703/
+SRA Run Selector: https://www.ncbi.nlm.nih.gov/Traces/study/?acc=SRX2409805
+Sample		Accession: GSM2421703	ID: 302421703
+
+26. polyA mRNA RNA-seq from A549 (ENCLB324ZRL)
+Organism:	Homo sapiens
+Source name:	Homo sapiens A549 immortalized cell line treated with 100 nM dexamethasone for 8 hours
+Platform: GPL16791 Series: GSE91284 
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2421nnn/GSM2421702/
+SRA Run Selector: https://www.ncbi.nlm.nih.gov/Traces/study/?acc=SRX2409804
+Sample		Accession: GSM2421702	ID: 302421702
+
+27. polyA mRNA RNA-seq from A549 (ENCLB587NWV)
+Organism:	Homo sapiens
+Source name:	Homo sapiens A549 immortalized cell line treated with 100 nM dexamethasone for 8 hours
+Platform: GPL16791 Series: GSE91284 
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2421nnn/GSM2421700/
+SRA Run Selector: https://www.ncbi.nlm.nih.gov/Traces/study/?acc=SRX2409802
+Sample		Accession: GSM2421700	ID: 302421700
+
+28. polyA mRNA RNA-seq from A549 (ENCLB752DGC)
+Organism:	Homo sapiens
+Source name:	Homo sapiens A549 immortalized cell line treated with 100 nM dexamethasone for 5 hours
+Platform: GPL16791 Series: GSE91281 
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2421nnn/GSM2421693/
+SRA Run Selector: https://www.ncbi.nlm.nih.gov/Traces/study/?acc=SRX2409795
+Sample		Accession: GSM2421693	ID: 302421693
+
+29. polyA mRNA RNA-seq from A549 (ENCLB484CRJ)
+Organism:	Homo sapiens
+Source name:	Homo sapiens A549 immortalized cell line treated with 100 nM dexamethasone for 5 hours
+Platform: GPL16791 Series: GSE91281 
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2421nnn/GSM2421691/
+SRA Run Selector: https://www.ncbi.nlm.nih.gov/Traces/study/?acc=SRX2409793
+Sample		Accession: GSM2421691	ID: 302421691
+
+30. polyA mRNA RNA-seq from A549 (ENCLB344WNB)
+Organism:	Homo sapiens
+Source name:	Homo sapiens A549 immortalized cell line treated with 100 nM dexamethasone for 7 hours
+Platform: GPL16791 Series: GSE91255 
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2421nnn/GSM2421616/
+SRA Run Selector: https://www.ncbi.nlm.nih.gov/Traces/study/?acc=SRX2410277
+Sample		Accession: GSM2421616	ID: 302421616
+
+31. polyA mRNA RNA-seq from A549 (ENCLB804PBN)
+Organism:	Homo sapiens
+Source name:	Homo sapiens A549 immortalized cell line treated with 100 nM dexamethasone for 7 hours
+Platform: GPL16791 Series: GSE91255 
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2421nnn/GSM2421615/
+SRA Run Selector: https://www.ncbi.nlm.nih.gov/Traces/study/?acc=SRX2410276
+Sample		Accession: GSM2421615	ID: 302421615
+
+32. polyA mRNA RNA-seq from A549 (ENCLB551GSL)
+Organism:	Homo sapiens
+Source name:	Homo sapiens A549 immortalized cell line treated with 100 nM dexamethasone for 7 hours
+Platform: GPL16791 Series: GSE91255 
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2421nnn/GSM2421614/
+SRA Run Selector: https://www.ncbi.nlm.nih.gov/Traces/study/?acc=SRX2410275
+Sample		Accession: GSM2421614	ID: 302421614
+
+33. polyA mRNA RNA-seq from A549 (ENCLB808GGW)
+Organism:	Homo sapiens
+Source name:	Homo sapiens A549 immortalized cell line treated with 100 nM dexamethasone for 4 hours
+Platform: GPL16791 Series: GSE91243 
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2421nnn/GSM2421579/
+SRA Run Selector: https://www.ncbi.nlm.nih.gov/Traces/study/?acc=SRX2410238
+Sample		Accession: GSM2421579	ID: 302421579
+
+34. polyA mRNA RNA-seq from A549 (ENCLB517NAM)
+Organism:	Homo sapiens
+Source name:	Homo sapiens A549 immortalized cell line treated with 100 nM dexamethasone for 4 hours
+Platform: GPL16791 Series: GSE91243 
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2421nnn/GSM2421578/
+SRA Run Selector: https://www.ncbi.nlm.nih.gov/Traces/study/?acc=SRX2410237
+Sample		Accession: GSM2421578	ID: 302421578
+
+35. polyA mRNA RNA-seq from A549 (ENCLB529EZQ)
+Organism:	Homo sapiens
+Source name:	Homo sapiens A549 immortalized cell line treated with 100 nM dexamethasone for 4 hours
+Platform: GPL16791 Series: GSE91243 
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2421nnn/GSM2421576/
+SRA Run Selector: https://www.ncbi.nlm.nih.gov/Traces/study/?acc=SRX2410235
+Sample		Accession: GSM2421576	ID: 302421576
+
+36. polyA mRNA RNA-seq from A549 (ENCLB623GTF)
+Organism:	Homo sapiens
+Source name:	Homo sapiens A549 immortalized cell line treated with 100 nM dexamethasone for 6 hours
+Platform: GPL16791 Series: GSE91229 
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2421nnn/GSM2421536/
+SRA Run Selector: https://www.ncbi.nlm.nih.gov/Traces/study/?acc=SRX2410195
+Sample		Accession: GSM2421536	ID: 302421536
+
+37. polyA mRNA RNA-seq from A549 (ENCLB546OLH)
+Organism:	Homo sapiens
+Source name:	Homo sapiens A549 immortalized cell line treated with 100 nM dexamethasone for 6 hours
+Platform: GPL16791 Series: GSE91229 
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2421nnn/GSM2421535/
+SRA Run Selector: https://www.ncbi.nlm.nih.gov/Traces/study/?acc=SRX2410194
+Sample		Accession: GSM2421535	ID: 302421535
+
+38. polyA mRNA RNA-seq from A549 (ENCLB565JKN)
+Organism:	Homo sapiens
+Source name:	Homo sapiens A549 immortalized cell line treated with 100 nM dexamethasone for 10 hours
+Platform: GPL16791 Series: GSE91222 
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2421nnn/GSM2421516/
+SRA Run Selector: https://www.ncbi.nlm.nih.gov/Traces/study/?acc=SRX2410167
+Sample		Accession: GSM2421516	ID: 302421516
+
+39. polyA mRNA RNA-seq from A549 (ENCLB451LSM)
+Organism:	Homo sapiens
+Source name:	Homo sapiens A549 immortalized cell line treated with 100 nM dexamethasone for 10 hours
+Platform: GPL16791 Series: GSE91222 
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2421nnn/GSM2421515/
+SRA Run Selector: https://www.ncbi.nlm.nih.gov/Traces/study/?acc=SRX2410166
+Sample		Accession: GSM2421515	ID: 302421515
+
+40. polyA mRNA RNA-seq from A549 (ENCLB101JNT)
+Organism:	Homo sapiens
+Source name:	Homo sapiens A549 immortalized cell line treated with 100 nM dexamethasone for 10 hours
+Platform: GPL16791 Series: GSE91222 
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2421nnn/GSM2421513/
+SRA Run Selector: https://www.ncbi.nlm.nih.gov/Traces/study/?acc=SRX2410164
+Sample		Accession: GSM2421513	ID: 302421513
+
+41. polyA mRNA RNA-seq from A549 (ENCLB071IVZ)
+Organism:	Homo sapiens
+Source name:	Homo sapiens A549 immortalized cell line treated with 100 nM dexamethasone for 12 hours
+Platform: GPL16791 Series: GSE91212 
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2421nnn/GSM2421487/
+SRA Run Selector: https://www.ncbi.nlm.nih.gov/Traces/study/?acc=SRX2410146
+Sample		Accession: GSM2421487	ID: 302421487
+
+42. polyA mRNA RNA-seq from A549 (ENCLB752MHE)
+Organism:	Homo sapiens
+Source name:	Homo sapiens A549 immortalized cell line treated with 100 nM dexamethasone for 12 hours
+Platform: GPL16791 Series: GSE91212 
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2421nnn/GSM2421486/
+SRA Run Selector: https://www.ncbi.nlm.nih.gov/Traces/study/?acc=SRX2410145
+Sample		Accession: GSM2421486	ID: 302421486
+
+43. polyA mRNA RNA-seq from A549 (ENCLB720ABS)
+Organism:	Homo sapiens
+Source name:	Homo sapiens A549 immortalized cell line treated with 100 nM dexamethasone for 12 hours
+Platform: GPL16791 Series: GSE91212 
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2421nnn/GSM2421485/
+SRA Run Selector: https://www.ncbi.nlm.nih.gov/Traces/study/?acc=SRX2410144
+Sample		Accession: GSM2421485	ID: 302421485
+
+44. polyA mRNA RNA-seq from A549 (ENCLB891DFN)
+Organism:	Homo sapiens
+Source name:	Homo sapiens A549 immortalized cell line treated with 100 nM dexamethasone for 30 minutes
+Platform: GPL16791 Series: GSE91198 
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2421nnn/GSM2421444/
+SRA Run Selector: https://www.ncbi.nlm.nih.gov/Traces/study/?acc=SRX2410094
+Sample		Accession: GSM2421444	ID: 302421444
+
+45. polyA mRNA RNA-seq from A549 (ENCLB293NNT)
+Organism:	Homo sapiens
+Source name:	Homo sapiens A549 immortalized cell line treated with 100 nM dexamethasone for 30 minutes
+Platform: GPL16791 Series: GSE91198 
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2421nnn/GSM2421443/
+SRA Run Selector: https://www.ncbi.nlm.nih.gov/Traces/study/?acc=SRX2410093
+Sample		Accession: GSM2421443	ID: 302421443
+
+46. polyA mRNA RNA-seq from A549 (ENCLB969EVJ)
+Organism:	Homo sapiens
+Source name:	Homo sapiens A549 immortalized cell line treated with 100 nM dexamethasone for 30 minutes
+Platform: GPL16791 Series: GSE91198 
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2421nnn/GSM2421441/
+SRA Run Selector: https://www.ncbi.nlm.nih.gov/Traces/study/?acc=SRX2410091
+Sample		Accession: GSM2421441	ID: 302421441
+
+47. polyA mRNA RNA-seq from A549 (ENCLB119DMF)
+Organism:	Homo sapiens
+Source name:	Homo sapiens A549 immortalized cell line treated with 100 nM dexamethasone for 2 hours
+Platform: GPL11154 Series: GSE91358 
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2421nnn/GSM2421933/
+SRA Run Selector: https://www.ncbi.nlm.nih.gov/Traces/study/?acc=SRX2410023
+Sample		Accession: GSM2421933	ID: 302421933
+
+48. polyA mRNA RNA-seq from A549 (ENCLB887RMH)
+Organism:	Homo sapiens
+Source name:	Homo sapiens A549 immortalized cell line treated with 100 nM dexamethasone for 1 hour
+Platform: GPL11154 Series: GSE91311 
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2421nnn/GSM2421785/
+SRA Run Selector: https://www.ncbi.nlm.nih.gov/Traces/study/?acc=SRX2409884
+Sample		Accession: GSM2421785	ID: 302421785
+
+49. polyA mRNA RNA-seq from A549 (ENCLB296PKA)
+Organism:	Homo sapiens
+Source name:	Homo sapiens A549 immortalized cell line
+Platform: GPL11154 Series: GSE91305 
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2421nnn/GSM2421767/
+SRA Run Selector: https://www.ncbi.nlm.nih.gov/Traces/study/?acc=SRX2409872
+Sample		Accession: GSM2421767	ID: 302421767
+
+50. polyA mRNA RNA-seq from A549 (ENCLB096HBG)
+Organism:	Homo sapiens
+Source name:	Homo sapiens A549 immortalized cell line treated with 100 nM dexamethasone for 3 hours
+Platform: GPL11154 Series: GSE91303 
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2421nnn/GSM2421759/
+SRA Run Selector: https://www.ncbi.nlm.nih.gov/Traces/study/?acc=SRX2409861
+Sample		Accession: GSM2421759	ID: 302421759
+
+51. polyA mRNA RNA-seq from A549 (ENCLB348OJL)
+Organism:	Homo sapiens
+Source name:	Homo sapiens A549 immortalized cell line treated with 100 nM dexamethasone for 8 hours
+Platform: GPL11154 Series: GSE91284 
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2421nnn/GSM2421701/
+SRA Run Selector: https://www.ncbi.nlm.nih.gov/Traces/study/?acc=SRX2409803
+Sample		Accession: GSM2421701	ID: 302421701
+
+52. polyA mRNA RNA-seq from A549 (ENCLB983DRL)
+Organism:	Homo sapiens
+Source name:	Homo sapiens A549 immortalized cell line treated with 100 nM dexamethasone for 5 hours
+Platform: GPL11154 Series: GSE91281 
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2421nnn/GSM2421692/
+SRA Run Selector: https://www.ncbi.nlm.nih.gov/Traces/study/?acc=SRX2409794
+Sample		Accession: GSM2421692	ID: 302421692
+
+53. polyA mRNA RNA-seq from A549 (ENCLB575NVN)
+Organism:	Homo sapiens
+Source name:	Homo sapiens A549 immortalized cell line treated with 100 nM dexamethasone for 7 hours
+Platform: GPL11154 Series: GSE91255 
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2421nnn/GSM2421617/
+SRA Run Selector: https://www.ncbi.nlm.nih.gov/Traces/study/?acc=SRX2410278
+Sample		Accession: GSM2421617	ID: 302421617
+
+54. polyA mRNA RNA-seq from A549 (ENCLB617ROP)
+Organism:	Homo sapiens
+Source name:	Homo sapiens A549 immortalized cell line treated with 100 nM dexamethasone for 4 hours
+Platform: GPL11154 Series: GSE91243 
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2421nnn/GSM2421577/
+SRA Run Selector: https://www.ncbi.nlm.nih.gov/Traces/study/?acc=SRX2410236
+Sample		Accession: GSM2421577	ID: 302421577
+
+55. polyA mRNA RNA-seq from A549 (ENCLB923VNU)
+Organism:	Homo sapiens
+Source name:	Homo sapiens A549 immortalized cell line treated with 100 nM dexamethasone for 6 hours
+Platform: GPL11154 Series: GSE91229 
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2421nnn/GSM2421534/
+SRA Run Selector: https://www.ncbi.nlm.nih.gov/Traces/study/?acc=SRX2410193
+Sample		Accession: GSM2421534	ID: 302421534
+
+56. polyA mRNA RNA-seq from A549 (ENCLB809HNX)
+Organism:	Homo sapiens
+Source name:	Homo sapiens A549 immortalized cell line treated with 100 nM dexamethasone for 10 hours
+Platform: GPL11154 Series: GSE91222 
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2421nnn/GSM2421514/
+SRA Run Selector: https://www.ncbi.nlm.nih.gov/Traces/study/?acc=SRX2410165
+Sample		Accession: GSM2421514	ID: 302421514
+
+57. polyA mRNA RNA-seq from A549 (ENCLB858XEX)
+Organism:	Homo sapiens
+Source name:	Homo sapiens A549 immortalized cell line treated with 100 nM dexamethasone for 12 hours
+Platform: GPL11154 Series: GSE91212 
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2421nnn/GSM2421484/
+SRA Run Selector: https://www.ncbi.nlm.nih.gov/Traces/study/?acc=SRX2410143
+Sample		Accession: GSM2421484	ID: 302421484
+
+58. polyA mRNA RNA-seq from A549 (ENCLB730MGF)
+Organism:	Homo sapiens
+Source name:	Homo sapiens A549 immortalized cell line treated with 100 nM dexamethasone for 30 minutes
+Platform: GPL11154 Series: GSE91198 
+FTP download: GEO (BIGWIG, TSV, TXT) ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2421nnn/GSM2421442/
+SRA Run Selector: https://www.ncbi.nlm.nih.gov/Traces/study/?acc=SRX2410092
+Sample		Accession: GSM2421442	ID: 302421442
