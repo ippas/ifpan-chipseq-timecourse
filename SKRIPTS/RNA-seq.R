@@ -163,12 +163,13 @@ gene_chromosome_start_end_strand <- read.delim("~/ifpan-chipseq-timecourse/DATA/
                                                header = TRUE, 
                                                stringsAsFactors = FALSE)
 
-results[order(results$pvalue)[1:number_signification_genes],] %>%
+results[order(results$pvalue)[1:number_signification_genes],] %>% 
   left_join(., gene_chromosome_start_end_strand, by = c("ensemblid" = "Gene.stable.ID")) %>% 
   mutate(pos=Gene.start..bp. * (Strand == 1) + Gene.end..bp. * (Strand == -1)) %>% 
   mutate(start = pos - 10000, end = pos + 10001) %>% 
   select("ensemblid", "gene.name", "Chromosome.scaffold.name", "start", "end") %>%
   set_colnames(c("ensemblid", "gene.name", "chromosome", "start", "end")) %>% 
+  left_join(., gene_regulation, by = "gene.name") %>% 
   na.omit() %>% 
   fwrite("~/ifpan-chipseq-timecourse/DATA/significant_genes_ensemblid_genename_chromosome_start_end.tsv", 
          sep="\t", 
@@ -216,27 +217,92 @@ data %>%
   na.omit()  %>% 
   {.[,1:46] <- ((.[,1:46]/rep(colSums(.[,1:46]), each = nrow(.)))*10^3 * 10^6)/.$median; .} %>% 
   mutate(., mean = rowSums(.[,1:46])/46) %>% 
-  #column_to_rownames(., var = "ensemblid") %>% 
   .[{.$mean > 2 & .$mean < 8192},] %>%
   .[sample(nrow(.), 1000), ] %>% 
-  #as.data.frame() %>% 
-  #set_colnames("Gene.name") %>% 
   left_join(gene_chromosome_start_end_strand, ., by = c(c("Gene.stable.ID"="ensemblid"),c("Gene.name"="gene.name"))) %>% 
   na.omit() %>% 
   mutate(logmean = log2(mean))  %>% 
   {ggplot(.,aes(x = logmean)) + 
       geom_histogram()}
       
-  
-  
-  
-  
-   
-  #to jest dobre
-  mutate(pos=Gene.start..bp. * (Strand == 1) + Gene.end..bp. * (Strand == -1)) %>% 
-  mutate(start = pos - 10000, end = pos + 10001) %>%  
-  select("Gene.stable.ID", "Gene.name", "Chromosome.scaffold.name", "start", "end") %>% 
-  set_colnames(c("ensemblid", "gene.name", "chromosome", "start", "end")) %>% dim()
+
+
+tmp_data_bigtablebucket <- as.data.frame(read.delim("/home/mateusz/ChIP-seq/bigtablebucket_normalize.tsv", header = FALSE, sep = "\t", stringsAsFactors = FALSE)) %>%   
+
+#tmp_data_bigtablebucket %>%
+  set_colnames(c("factor.name", "time", "gene.name", 1:40)) %>%
+  gather(., "bucket", "value", -c("factor.name", "time", "gene.name"))  %>%
+  left_join(., gene_regulation, by = "gene.name") %>% 
+  group_by(bucket, gene.regulation, time, factor.name) %>% 
+  summarize(mean = mean(value)) %>% 
+  ggplot(., aes(x = as.numeric(bucket), y = mean, color = as.factor(gene.regulation))) +
+     geom_line(size = 0.5) + 
+     facet_grid(factor.name ~ as.factor(time), scales = "free_y") +
+     theme(legend.position = "bottom") 
   
 
 
+
+
+as.data.frame(read.delim("/home/mateusz/ChIP-seq/random_gene_normalize_bucket.tsv", header = FALSE, sep = "\t", stringsAsFactors = FALSE)) %>% 
+  head %>% 
+  set_colnames(c("factor.name", "time", "gene.name", 1:40)) %>%
+  gather(., "bucket", "value", -c("factor.name", "time", "gene.name")) %>%
+  group_by(bucket, time, factor.name) %>%
+
+random_gene_normalize_bucket %>%
+  gather(., "bucket", "value", -c("factor_name", "time", "gene_name")) %>%
+  group_by(bucket, time, factor_name) %>%
+  summarize(value = mean(value)) %>%  
+  ggplot(., aes(x = as.nuumeric(bucket)*500, y = value)) + 
+  geom_line(size = 0.5) +
+  facet_grid(factor_name ~ time, scales = "free_y") + 
+  theme(legend.position = "bottom") +
+  ggtitle("random_gene_normalize_bucket")
+
+
+  
+rbind(bigtable_bucket_normalize, random_gene_normalize_bucket) %>% head
+  group_by()
+  
+  
+  group_by(bucket, number_branches, time, factor_name) %>%
+  summarize(value = mean(value)) %>%
+  ggplot(., aes(x = as.numeric(bucket)*500, y = value, color = factor(number_branches))) + 
+  geom_line(size = 0.5) +
+  facet_grid(factor_name ~ time, scales = "free_y") + 
+  theme(legend.position = "bottom") +
+  ggtitle("signification_and_random_gene")
+
+#plot whit normalize in ggplot
+tmp_buckets %>% 
+  group_by(bucket, number_branches, time, factor_name) %>%
+  summarize(value = mean(value)) %>%
+  mutate(control = ifelse(number_branches == 3, 1, 0)) %>% 
+  group_by(time, factor_name)  %>% 
+  mutate(max = mean(value * control)) %>% 
+  as.data.frame() %>%
+  mutate(value = value / max) %>%
+  ggplot(., aes(x = as.numeric(bucket)*500, y = value, color = factor(number_branches))) + 
+  geom_line(size = 0.5) +
+  facet_grid(factor_name ~ time, scales = "free_y") + 
+  theme(legend.position = "bottom") +
+  ggtitle("signification_and_random_gene_afternormalizeggplot")
+
+#plot for change relative
+tmp_buckets %>% 
+  group_by(bucket, number_branches, time, factor_name) %>%
+  summarize(value = mean(value)) %>%
+  mutate(control = ifelse(number_branches == 3, 1, 0)) %>% 
+  group_by(time, factor_name, bucket)  %>% 
+  mutate(max = max(value * control)) %>% 
+  as.data.frame() %>%
+  mutate(value = value / max) %>%
+  ggplot(., aes(x = as.numeric(bucket)*500, y = value, color = factor(number_branches))) + 
+  geom_line(size = 0.5) +
+  facet_grid(factor_name ~ time, scales = "free_y") + 
+  theme(legend.position = "bottom") +
+  ggtitle("signification_and_random_gene_relative_change")
+
+rm(tmp_buckets)
+rm(tmp_esimbl, tmp_namegenes)
