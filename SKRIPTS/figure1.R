@@ -11,21 +11,23 @@ require(rebus)
 require(tibble)
 require(stringr)
 
-raw.data <- read.delim("raw_expression_matrix_dexamethasone.tsv",  
+raw.data <- read.delim("~/ifpan-chipseq-timecourse/DATA/raw_expression_matrix_dexamethasone.tsv",  
                        header = TRUE, 
                        stringsAsFactors = FALSE) %>% 
   set_rownames(.$Geneid)
 
-samples <- read.delim("sample.info.tsv", 
+samples <- read.delim("~/ifpan-chipseq-timecourse/DATA/sample.info.tsv", 
                       header = TRUE, 
                       stringsAsFactors = FALSE)
 
 data <- raw.data[, 3:48] %>% 
   as.matrix()
 
-ID_ID.version_gene <- read.delim("ID_ID.version_gene.tsv", 
+ID_ID.version_gene <- read.delim("~/ifpan-chipseq-timecourse/DATA/ID_ID.version_gene.tsv", 
                                  header = TRUE, 
                                  stringsAsFactors = FALSE)
+
+
 
 tmp_pvalue_dataframe <- data %>% 
   apply(., 1, function(i){anova(aov(i~samples$time))[[1,5]]}) %>% 
@@ -78,11 +80,20 @@ for (i in seq_along(expression.pattern$mids)) {
   print(i)
   start <- expression.pattern$mids[i] - 1
   stop <- expression.pattern$mids[i] + 1 
-  results %>% filter(!(results$Geneid %in% results.filtered$Geneid)) %>% filter((log2(as.numeric(mean.expression)+1) > start) & (log2(as.numeric(mean.expression)+1) <= stop)) %>% sample_n(expression.pattern$counts[i]) -> temp.random
+  results %>% 
+    mutate(fdr = p.adjust(results$pvalue, method = "fdr")) %>%
+    #filter(!(results$Geneid %in% results.filtered$Geneid)) %>% 
+    filter(pvalue > 0.1) %>% 
+    filter((log2(as.numeric(mean.expression)+1) > start) & (log2(as.numeric(mean.expression)+1) <= stop)) %>% 
+    sample_n(expression.pattern$counts[i]) -> temp.random
   print(nrow(temp.random))
   random <- rbind(random, temp.random)
 }
   
+# write.table(random, 
+#             "~/ifpan-chipseq-timecourse/DATA/random_genes_geneid_ensemblid_length_gene.name_pvalue_mean.expression.tsv", 
+#             row.names = FALSE)
+
 hist(log2(as.numeric(random$mean.expression)+1), breaks=10)
 
 # at this point we have : results.filtered - this has our chosen genes and random - with 640 random genes
@@ -185,10 +196,10 @@ to.plot %>%
                                        "00" = "0", 
                                        "05" = "0.5")))  %>%
   set_colnames(c("gene.name", "time", "value")) %>%
-  left_join(., gene_regulation, by = "gene.name") %>%
+  left_join(., gene_regulation, by = "gene.name") %>% 
   group_by(gene.name, time, gene.regulation) %>% 
   summarize(mean = mean(value)) %>%
-  arrange(time) %>%
+  arrange(time) %>% na.omit() %>% 
   ggplot(., 
          aes(x = as.numeric(time), y = mean, color = gene.regulation)) +
   geom_line(data = random.prepared, aes(group = gene.name), alpha = 0.02, color="grey") +
