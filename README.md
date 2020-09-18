@@ -143,6 +143,10 @@ W skrypcie bigwig_genomic_range_extract_normalize_totsv.sh, do GENES_INFO_FILE_N
 
 ```bash
 ~/ifpan-chipseq-timecourse/SKRIPTS/./bigwig_genomic_range_extract_normalize_to_tsv_bucket.sh ~/ifpan-chipseq-timecourse/DATA/significant_genes_ensemblid_genename_chromosome_start_end.tsv > ~/ChIP-seq/DATA/significant_genes_chip-seq_gene_chromosome_start_end_TF_time_file.tsv
+
+~/ifpan-chipseq-timecourse/SCRIPTS/./bigwig_genomic_range_extract_normalize_to_tsv_bucket.sh ~/ifpan-chipseq-timecourse/DATA/significant_and_random_genes_ensemblid_genename_chromosome_start_end.tsv > ~/ChIP-seq/DATA/significant_and_random_genes_chip-seq_gene_chromosome_start_end_TF_time_file.tsv
+
+
 ```
 
 Skrypty do normalizacji ściągnięto z: 
