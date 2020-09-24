@@ -177,6 +177,24 @@ Uruchomić skript_R_clean.R (linie 211-253) skrypt wczytuje random_gene_normaliz
 
 
 ### Peak dla enhancerów
+przygotowanie do peaków
+```bash
+cat ~/ifpan-chipseq-timecourse/DATA/significant_and_random_genes_ensemblid_genename_chromosome_start_end.tsv | tail +2 | awk 'BEGIN {OFS ="\t"}{print "chr"$3,$4,$5, $0}' | grep -v -F 'chrMT'
+cat ~/ifpan-chipseq-timecourse/DATA/chipseq-file-info.tsv | grep 'NR3C1.60.f' | awk '{print $4"_RAW.tar"}' | xargs -i bash -c 'tar -tf {}' | grep 'bed'
+ bedtools intersect -a tmp_significant_random.bed -b $three_file -wb -wa | sort
+ bedtools intersect -a tmp_significant_random.bed -b $three_file -wo | grep '3.chr' 
+
+three_file=$(cat ~/ifpan-chipseq-timecourse/DATA/chipseq-file-info.tsv | grep 'NR3C1.60.f' | awk '{print $4"_RAW.tar"}' | xargs -i bash -c 'tar -tf {}' | grep 'bed' | tr "\n" " ")
+
+
+bedtools intersect -a tmp_significant_random.bed -b $three_file -wo  | tr "\n" ":" | grep -iPo 'chr[0-9\t]*ENSG[0-9]*\t[0-9a-z.]*[0-9\t]*[a-z-]*\t1\tchr[0-9a-z\t_.]*:chr[0-9\t]*ENSG[0-9]*\t[0-9a-z.]*[0-9\t]*[a-z-]*\t2\tchr[0-9a-z\t_.]*:chr[0-9\t]*ENSG[0-9]*\t[0-9a-z.]*[0-9\t]*[a-z-]*\t3\tchr[0-9a-z\t_.]*:' | sed 's/:/\n/g' | sed -r '/^\s*$/d'     
+
+bedtools intersect -a tmp_significant_random.bed -b $three_file -wo | tr "\n" ":" |  grep -ioP 'chr[0-9x-z\t]*ENSG[0-9]*\t[0-9a-z.-]*\t[0-9x][0-9 \t]*\t[a-z0-]*\t1\tchr[0-9a-z_.\t]*:chr[0-9x-z\t]*ENSG[0-9]*\t[0-9a-z.-]*\t[0-9x][0-9 \t]*\t[a-z0-]*\t2\tchr[0-9a-z_.\t]*:chr[0-9x-z\t]*ENSG[0-9]*\t[0-9a-z.-]*\t[0-9x][0-9 \t]*\t[a-z0-]*\t3\tchr[0-9a-z_.\t]*:'  | sed 's/:/\n/g' | sed -r '/^\s*$/d' 
+
+```
+
+
+
 Wycięto peaki dla enhancerów dla genów upregulowanych, dla NR3C1 z pierwszej godziny przy pomocy polecenia:
 ```console
 bedtools intersect -a GSM2421929_ENCFF835HHK_peaks_GRCh38.bed.gz -b up_regulated_gene.BED -wb | cut -f1,2,3,14 | awk '{print $1"\t"$2-1000"\t"$3+1000"\t"$4}'  > upregulatedgne_peaks_NR3C1_time60_file1.tsv
