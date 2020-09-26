@@ -177,7 +177,21 @@ Uruchomić skript_R_clean.R (linie 211-253) skrypt wczytuje random_gene_normaliz
 
 
 ### Peak dla enhancerów
-przygotowanie do peaków
+Stworzono plik ze wpólnymi pekami z trzech próbek dla NR3C1 z time60 przy pomocy skryptu, który tworzy plik tymczasowy ze wspólnymi pekami dl trzech próbek, tworzy tymczasowy plik bed z sinificant i random genes, a na koniec wyciąga peaki dla significant i random genes i zapisuje do pliku: ~/ifpan-chipseq-timecourse/DATA/significant_and_random_genes_ensemblid_genename_chromosome_start-peak_end-peak_regulation.tsv
+
+
+```bash
+~/ifpan-chipseq-timecourse/SCRIPTS/./creation_file_significant_random_gene_peaks.sh 
+```
+Następnie przy pomocy polecenia wyciągnięto amplitudy dla peaków i zapisano do pliku
+
+```bash
+~/ifpan-chipseq-timecourse/SCRIPTS/./bigwig_genomic_amplitude_extract_normalize_to_tsv.sh ~/ifpan-chipseq-timecourse/DATA/significant_random_genes_ensemblid_genename_chromosome_start-peak_end-peak_regulation.tsv > ~/ChIP-seq/DATA/significant_random_genes_chip-seq_normalized_gene_chromosome_start-peak_end-peak_TF_time_file_amplitude.tsv
+```
+
+
+
+
 ```bash
 cat ~/ifpan-chipseq-timecourse/DATA/significant_and_random_genes_ensemblid_genename_chromosome_start_end.tsv | tail +2 | awk 'BEGIN {OFS ="\t"}{print "chr"$3,$4,$5, $0}' | grep -v -F 'chrMT'
 cat ~/ifpan-chipseq-timecourse/DATA/chipseq-file-info.tsv | grep 'NR3C1.60.f' | awk '{print $4"_RAW.tar"}' | xargs -i bash -c 'tar -tf {}' | grep 'bed'
