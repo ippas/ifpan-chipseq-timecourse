@@ -185,6 +185,9 @@ tmp_transcript_length <- as.data.frame(read.delim("~/ifpan-chipseq-timecourse/DA
   summarize(median = median(Transcript.length..including.UTRs.and.CDS.)) %>% 
   set_colnames(c("ensemblid", "median"))
 
+jpeg("~/ifpan-chipseq-timecourse/PLOTS/histogram_significant_gene_logmean_transcriptlength.jpeg", 
+     width = 1400, 
+     height = 802)
 
 data[order(results$pvalue)[1:number_signification_genes],] %>% 
   set_rownames(rownames(data[order(results$pvalue)[1:number_signification_genes],]) %>% 
@@ -202,8 +205,11 @@ data[order(results$pvalue)[1:number_signification_genes],] %>%
   mutate(logmean = log2(mean))  %>% 
   {ggplot(.,aes(x = logmean)) + 
       geom_histogram() +
-      facet_grid(~gene.regulation)
-    } 
+      facet_grid(~gene.regulation) +
+      ggtitle("histogram_significant_gene_logmean_transcriptlength")
+  } 
+
+dev.off()
 
 #random
 data %>% 
@@ -227,82 +233,143 @@ data %>%
       
 
 
-tmp_data_bigtablebucket <- as.data.frame(read.delim("/home/mateusz/ChIP-seq/bigtablebucket_normalize.tsv", header = FALSE, sep = "\t", stringsAsFactors = FALSE)) %>%   
+read.table("~/ifpan-chipseq-timecourse/DATA/random_genes_geneid_ensemblid_length_gene.name_pvalue_mean.expression.tsv", 
+           header = TRUE,
+           row.names = 1,
+           stringsAsFactors = FALSE) %>%
+  select(ensemblid, gene.name) %>%
+  left_join(., gene_chromosome_start_end_strand, by = c("ensemblid" = "Gene.stable.ID")) %>%
+  mutate(pos=Gene.start..bp. * (Strand == 1) + Gene.end..bp. * (Strand == -1)) %>% 
+  mutate(start = pos - 10000, end = pos + 10001) %>%
+  select("ensemblid", "gene.name", "Chromosome.scaffold.name", "start", "end") %>%
+  set_colnames(c("ensemblid", "gene.name", "chromosome", "start", "end")) %>%
+  mutate(gene.regulation = "random") %>% na.omit() %>% 
+  rbind(., {results[order(results$pvalue)[1:number_signification_genes],] %>% 
+               left_join(., gene_chromosome_start_end_strand, by = c("ensemblid" = "Gene.stable.ID")) %>% 
+               mutate(pos=Gene.start..bp. * (Strand == 1) + Gene.end..bp. * (Strand == -1)) %>% 
+               mutate(start = pos - 10000, end = pos + 10001) %>% 
+               select("ensemblid", "gene.name", "Chromosome.scaffold.name", "start", "end") %>%
+               set_colnames(c("ensemblid", "gene.name", "chromosome", "start", "end")) %>% 
+               left_join(., gene_regulation, by = "gene.name") %>% 
+               na.omit()}) %>% 
+  mutate(start = if_else(start < 0, 0, start)) %>% 
+  fwrite("~/ifpan-chipseq-timecourse/DATA/significant_and_random_genes_ensemblid_genename_chromosome_start_end.tsv", 
+         sep="\t", 
+         col.names = TRUE, 
+         row.names = FALSE)
 
-#tmp_data_bigtablebucket %>%
-  set_colnames(c("factor.name", "time", "gene.name", 1:40)) %>%
-  gather(., "bucket", "value", -c("factor.name", "time", "gene.name"))  %>%
-  left_join(., gene_regulation, by = "gene.name") %>% 
-  group_by(bucket, gene.regulation, time, factor.name) %>% 
-  summarize(mean = mean(value)) %>% 
-  ggplot(., aes(x = as.numeric(bucket), y = mean, color = as.factor(gene.regulation))) +
+
+jpeg("~/ifpan-chipseq-timecourse/PLOTS/lineplot_significant_random_genes_normalized_bucket.jpeg", 
+     width = 1400, 
+     height = 802)
+
+read.table("~/ChIP-seq/DATA/tmp_significant_random_genes_chip-seq_normalized_bucket_gene_chromosome_start_end_TF_time_file.tsv", 
+           header = FALSE, 
+           sep = "\t", 
+           stringsAsFactors = FALSE) %>% 
+  set_colnames(c("gene.name", "chromosome", "start.range", "end.range", "gene.regulation", "TF", "time", "file", 1:40)) %>% 
+  gather(., "bucket.range", "value", -c("gene.name", "chromosome", "start.range", "end.range", "gene.regulation", "TF", "time", "file")) %>% 
+  group_by(bucket.range, time, TF, gene.regulation) %>%
+  summarize(mean.value = mean(value)) %>%
+  ggplot(., aes(x = as.numeric(bucket.range)*500, y = mean.value, color = as.factor(gene.regulation))) + 
      geom_line(size = 0.5) + 
-     facet_grid(factor.name ~ as.factor(time), scales = "free_y") +
-     theme(legend.position = "bottom") 
+     facet_grid(TF~time, scales = "free_y") +
+     theme(legend.position = "bottom") +
+     ggtitle("lineplot_significant_random_genes_normalized_bucket")
+
+dev.off()
+
+
+jpeg("~/ifpan-chipseq-timecourse/PLOTS/lineplot_significant_random_genes_normalized_bucket_relative_changes.jpeg", 
+     width = 1400, 
+     height = 802)
+
+read.table("~/ChIP-seq/DATA/tmp_significant_random_genes_chip-seq_normalized_bucket_gene_chromosome_start_end_TF_time_file.tsv",
+           header = FALSE,
+           sep = "\t",
+           stringsAsFactors = FALSE) %>%
+  set_colnames(c("gene.name", "chromosome", "start.range", "end.range", "gene.regulation", "TF", "time", "file", 1:40)) %>%
+  gather(., "bucket.range", "value", -c("gene.name", "chromosome", "start.range", "end.range", "gene.regulation", "TF", "time", "file")) %>%
+  group_by(bucket.range, time, TF, gene.regulation) %>%
+  summarize(mean.value = mean(value)) %>%
+  mutate(number.regulation=c("down-regulated"=1, "random"=3, "up-regulated"=2)) %>%
+  mutate(control = ifelse(number.regulation == 3, 1, 0)) %>%
+  group_by(time, TF, bucket.range)  %>% 
+  mutate(max = max(mean.value * control)) %>% 
+  mutate(relative.value = mean.value / max) %>%
+  ggplot(., aes(x = as.numeric(bucket.range)*500, y = relative.value, color = as.factor(gene.regulation))) + 
+    geom_line(size = 0.5) + 
+    facet_grid(TF~time, scales = "free_y") +
+    theme(axis.text.x = element_text(size=6),
+          legend.position = "bottom") +
+    ggtitle("lineplot_significant_random_genes_normalized_bucket_relative_changes")
+
+dev.off()
+
+tmp_significant_random_genes_peak_normalized_amplitude <- read.table("~/ChIP-seq/DATA/significant_random_genes_chip-seq_normalized_gene_chromosome_start-peak_end-peak_TF_time_file_amplitude.tsv", 
+           header = FALSE, 
+           sep = "\t", 
+           stringsAsFactors = FALSE) %>% 
+  set_colnames(c("gene.name", "chromosome", "start.range", "end.range", "gene.regulation", "TF", "time", "file", "amplitude"))
   
+jpeg("~/ifpan-chipseq-timecourse/PLOTS/boxplot_significant_random_genes_strongest_peak.jpeg", 
+     width = 1400, 
+     height = 802)
 
-
-
-
-as.data.frame(read.delim("/home/mateusz/ChIP-seq/random_gene_normalize_bucket.tsv", header = FALSE, sep = "\t", stringsAsFactors = FALSE)) %>% 
-  head %>% 
-  set_colnames(c("factor.name", "time", "gene.name", 1:40)) %>%
-  gather(., "bucket", "value", -c("factor.name", "time", "gene.name")) %>%
-  group_by(bucket, time, factor.name) %>%
-
-random_gene_normalize_bucket %>%
-  gather(., "bucket", "value", -c("factor_name", "time", "gene_name")) %>%
-  group_by(bucket, time, factor_name) %>%
-  summarize(value = mean(value)) %>%  
-  ggplot(., aes(x = as.nuumeric(bucket)*500, y = value)) + 
-  geom_line(size = 0.5) +
-  facet_grid(factor_name ~ time, scales = "free_y") + 
-  theme(legend.position = "bottom") +
-  ggtitle("random_gene_normalize_bucket")
-
-
+#making boxplot for strongest peak for each gene
+merge(x = tmp_significant_random_genes_peak_normalized_amplitude,
+      y = {tmp_significant_random_genes_peak_normalized_amplitude %>% 
+          group_by(gene.name, start.range, TF, gene.regulation) %>%
+          summarise(tmp_mean_alltime_amplitude = mean (amplitude))}) %>%
+  group_by(gene.name, TF, gene.regulation) %>%
+  filter(tmp_mean_alltime_amplitude == max(tmp_mean_alltime_amplitude)) %>% 
+  group_by(gene.name, start.range, time, TF, gene.regulation) %>% 
+  summarise(mean.max.peak = mean(amplitude)) %>% 
+  ggplot(., aes(x = as.factor(time), y = log(mean.max.peak), color = gene.regulation)) +
+  geom_boxplot(position = position_dodge(), outlier.size = 0) +  
+  facet_wrap(TF ~ ., ncol = 4, scales = "free_y" ) +
+  theme(legend.position = "bottom") 
+  ggtitle("boxplot_significant_random_genes_strongest_peak")
   
-rbind(bigtable_bucket_normalize, random_gene_normalize_bucket) %>% head
-  group_by()
-  
-  
-  group_by(bucket, number_branches, time, factor_name) %>%
-  summarize(value = mean(value)) %>%
-  ggplot(., aes(x = as.numeric(bucket)*500, y = value, color = factor(number_branches))) + 
-  geom_line(size = 0.5) +
-  facet_grid(factor_name ~ time, scales = "free_y") + 
-  theme(legend.position = "bottom") +
-  ggtitle("signification_and_random_gene")
+dev.off()
 
-#plot whit normalize in ggplot
-tmp_buckets %>% 
-  group_by(bucket, number_branches, time, factor_name) %>%
-  summarize(value = mean(value)) %>%
-  mutate(control = ifelse(number_branches == 3, 1, 0)) %>% 
-  group_by(time, factor_name)  %>% 
-  mutate(max = mean(value * control)) %>% 
-  as.data.frame() %>%
-  mutate(value = value / max) %>%
-  ggplot(., aes(x = as.numeric(bucket)*500, y = value, color = factor(number_branches))) + 
-  geom_line(size = 0.5) +
-  facet_grid(factor_name ~ time, scales = "free_y") + 
-  theme(legend.position = "bottom") +
-  ggtitle("signification_and_random_gene_afternormalizeggplot")
+jpeg("~/ifpan-chipseq-timecourse/PLOTS/boxplot_significant_random_genes_mean_peaks.jpeg", 
+       width = 1400, 
+       height = 802)
 
-#plot for change relative
-tmp_buckets %>% 
-  group_by(bucket, number_branches, time, factor_name) %>%
-  summarize(value = mean(value)) %>%
-  mutate(control = ifelse(number_branches == 3, 1, 0)) %>% 
-  group_by(time, factor_name, bucket)  %>% 
-  mutate(max = max(value * control)) %>% 
-  as.data.frame() %>%
-  mutate(value = value / max) %>%
-  ggplot(., aes(x = as.numeric(bucket)*500, y = value, color = factor(number_branches))) + 
-  geom_line(size = 0.5) +
-  facet_grid(factor_name ~ time, scales = "free_y") + 
+#making boxplot for all peaks for each gene
+tmp_significant_random_genes_peak_normalized_amplitude %>%
+  group_by(gene.name, start.range, time, TF, gene.regulation) %>% 
+  summarise(mean.max.peak = mean(amplitude)) %>% 
+  ggplot(., aes(x = as.factor(time), y = log(mean.max.peak), color = gene.regulation)) +
+  #geom_boxplot(aes(group = cut_width(as.factor(time),  width = 0.02)), position=position_dodge(), stat="identity") +
+  geom_boxplot(position = position_dodge(), outlier.size = 0) +  
+  facet_wrap(TF ~ ., ncol = 4, scales = "free_y" ) +
   theme(legend.position = "bottom") +
-  ggtitle("signification_and_random_gene_relative_change")
+  ggtitle("boxplot_significant_random_genes_mean_peaks")
 
-rm(tmp_buckets)
-rm(tmp_esimbl, tmp_namegenes)
+dev.off()
+
+jpeg("~/ifpan-chipseq-timecourse/PLOTS/barplot_significant_random_genes_strongest_peak.jpeg", 
+     width = 1400, 
+     height = 802)
+
+#making barplot for strongest peak for each gene
+merge(x = tmp_significant_random_genes_peak_normalized_amplitude,
+      y = {tmp_significant_random_genes_peak_normalized_amplitude %>% 
+          group_by(gene.name, start.range, TF, gene.regulation) %>%
+          summarise(tmp_mean_alltime_amplitude = mean (amplitude))}) %>%
+  group_by(gene.name, TF, gene.regulation) %>%
+  filter(tmp_mean_alltime_amplitude == max(tmp_mean_alltime_amplitude)) %>% 
+  #group_by(gene.name, start.range, time, TF, gene.regulation) %>%
+  group_by(time, TF, gene.regulation) %>% 
+  summarize(mean = mean(amplitude), sd = sd(amplitude)) %>% #filter(TF=="BCL3", gene.regulation == "random")
+  #summarize(mean = mean(mean_amplitude_gene), sd = sd(mean_amplitude_gene)) %>%
+  ggplot(., aes(x = as.factor(time), y = mean, fill = gene.regulation)) +
+    geom_bar(position=position_dodge(), stat="identity") +
+    geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2, position=position_dodge(.9)) +
+    facet_wrap(TF ~ ., ncol = 4, scales = "free_y") +
+    theme(legend.position = "bottom") +
+    ggtitle("barplot_significant_random_genes_strongest_peak")
+
+dev.off()
