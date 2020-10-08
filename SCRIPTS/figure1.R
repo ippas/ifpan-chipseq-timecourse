@@ -10,6 +10,7 @@ require(matrixStats)
 require(rebus)
 require(tibble)
 require(stringr)
+require("preprocessCore")
 
 raw.data <- read.delim(#"~/ifpan-chipseq-timecourse/DATA/raw_expression_matrix_dexamethasone.tsv", 
                        "DATA/raw_expression_matrix_dexamethasone.tsv",
@@ -22,8 +23,8 @@ samples <- read.delim(#"~/ifpan-chipseq-timecourse/DATA/sample.info.tsv",
                       header = TRUE, 
                       stringsAsFactors = FALSE)
 
-data <- raw.data[, 3:48] %>% 
-  as.matrix()
+data <- raw.data[, 3:48] %>% filter(rowMeans(.) > 1) %>% as.matrix()  
+
 
 ID_ID.version_gene <- read.delim(#"~/ifpan-chipseq-timecourse/DATA/ID_ID.version_gene.tsv",
                                  "DATA/ID_ID.version_gene.tsv", 
@@ -98,6 +99,8 @@ write.table(random,
              "DATA/random_genes_geneid_ensemblid_length_gene.name_pvalue_mean.expression.tsv", 
              row.names = FALSE)
 
+random <- read.table("DATA/random_genes_geneid_ensemblid_length_gene.name_pvalue_mean.expression.tsv", header = TRUE)
+
 hist(log2(as.numeric(random$mean.expression)+1), breaks=10)
 
 # at this point we have : results.filtered - this has our chosen genes and random - with 640 random genes
@@ -105,7 +108,7 @@ hist(log2(as.numeric(random$mean.expression)+1), breaks=10)
 
 to.plot <- data[order(results$pvalue)[1:640],] %>%
   apply(1, scale) %>% 
-  t %>%
+  t %>% 
   apply(1, function(x, threshold){x[x > threshold] <- threshold; x[x < -threshold] <- -threshold; x}, threshold = 2.0) %>%
   t %>%
   {rownames(.) <- results$gene.name[order(results$pvalue)[1:640]]; .}  %>%
@@ -165,7 +168,7 @@ gene_regulation <- to.plot %>%
 data %>% data.frame() %>%
   filter(rownames(data) %in% random$Geneid) %>%
   apply(1, scale) %>% 
-  t %>%
+  t %>% 
   apply(1, function(x, threshold){x[x > threshold] <- threshold; x[x < -threshold] <- -threshold; x}, threshold = 2.0) %>%
   t %>%
   {rownames(.) <- results$gene.name[match(rownames(data)[rownames(data) %in% random$Geneid], results$Geneid)]; .}  %>%
@@ -193,7 +196,7 @@ data %>% data.frame() %>%
 to.plot %>% 
   melt() %>% 
   na.omit() %>% 
-  as.data.frame() %>% #head %>%
+  as.data.frame() %>%
   mutate(Var2 = str_remove_all(Var2, pattern = "_rep" %R% one_or_more(DGT))) %>%
   mutate(Var2 = str_remove(Var2, pattern = START %R% "t")) %>% 
   mutate(Var2 = 60 * as.numeric(recode(Var2, 
@@ -206,9 +209,12 @@ to.plot %>%
   arrange(time) %>% na.omit() %>% 
   ggplot(., 
          aes(x = as.numeric(time), y = mean, color = gene.regulation)) +
-  geom_line(data = random.prepared, aes(group = gene.name), alpha = 0.02, color="grey") +
+  geom_line(data = random.prepared, aes(group = gene.name), alpha = 0.01, color="grey") +
   geom_smooth(data = random.prepared, aes(group = gene.regulation), se = FALSE, size = 1, color="grey") +
-  geom_line(aes(group = gene.name), alpha = 0.02) +
+  geom_line(aes(group = gene.name), alpha = 0.01) +
   geom_smooth(aes(group = gene.regulation), se = FALSE, size = 1) +
   theme(legend.position = "bottom")
 
+
+
+BiocManager::install(version = "3.9")
