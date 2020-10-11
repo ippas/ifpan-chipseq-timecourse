@@ -40,13 +40,13 @@ cat ~/ifpan-chipseq-timecourse/DATA/chipseq-file-info.tsv |
    xargs -i bash -c 'wget {} -P ~/ChIP-seq/DOWNLOAD'
 ```
 
-Z esembla ściągnąć plik zawierający 
+Z esembla ściągnięto plik zawierający 
 - Gene.stable.ID
 - Gene.stable.ID.version
 - Transcript.length
 - gene.name
 
-Nazwę pliku zmienić na transcript_length.tsv
+Nazwę pliku zmieniono na transcript_length.tsv i zapisano w ~/ifpan-chipseq-timecourse/DATA/
 Uruchomić fragment skryptu  skript_R_clean.R (od 126-139), skrypt wczytuje plik gene_chromosome_start_end_strand.txt, i tworzy plik signification_gene.txt
 W skrypcie bigwig_genomic_range_extract_normalize_totsv.sh, do GENES_INFO_FILE_NAME przypisać plik signification_gene.txt, wynik działania skryptu zapisać big.table.normalize.tsv. Następnie w skrypcie bucket.sh, do do FILE_INPUT przypisać big.table.normalize.txt, a do FILE_OUTPUT bigtablebucket_normalize.tsv. 
 
