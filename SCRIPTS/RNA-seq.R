@@ -263,7 +263,7 @@ jpeg("~/ifpan-chipseq-timecourse/PLOTS/lineplot_significant_random_genes_normali
      width = 1400, 
      height = 802)
 
-read.table("~/ChIP-seq/DATA/tmp_significant_random_genes_chip-seq_normalized_bucket_gene_chromosome_start_end_TF_time_file.tsv", 
+read.table("~/ChIP-seq/DATA/significant_random_genes_chip-seq_normalized_bucket_gene_chromosome_start_end_TF_time_file.tsv", 
            header = FALSE, 
            sep = "\t", 
            stringsAsFactors = FALSE) %>% 
@@ -373,3 +373,68 @@ merge(x = tmp_significant_random_genes_peak_normalized_amplitude,
     ggtitle("barplot_significant_random_genes_strongest_peak")
 
 dev.off()
+
+
+#Two way ANOVA for the strogest peaks
+merge(x = tmp_significant_random_genes_peak_normalized_amplitude,
+      y = {tmp_significant_random_genes_peak_normalized_amplitude %>% 
+          group_by(gene.name, start.range, TF, gene.regulation) %>%
+          summarise(tmp_mean_alltime_amplitude = mean (amplitude))}) %>%
+  group_by(gene.name, start.range, time, TF, gene.regulation) %>%
+  mutate(mean_three_sample_peak = mean(amplitude)) %>% 
+  select(gene.name, start.range, time, TF, gene.regulation, mean_three_sample_peak) %>%
+  mutate(log.mean.max.peak = log(mean_three_sample_peak + 1))  -> tmp_maxpeak_data_to_ANOVA
+  
+
+lapply(setNames({tmp_significant_random_genes_peak_normalized_amplitude %>% select(TF) %>% .[order(.$TF),] %>% unique()}, 
+                {tmp_significant_random_genes_peak_normalized_amplitude %>% select(TF) %>% .[order(.$TF),] %>% unique()}),  
+       function(x) {tmp_maxpeak_data_to_ANOVA %>% 
+           filter(TF == x)%>% 
+           aov(log.mean.max.peak~time*gene.regulation, data = .) %>% 
+           summary() %>% 
+           .[[1]] %>% 
+           .[1:3,5]}) %>% 
+  as.data.frame() %>%
+  t() %>%
+  as.data.frame() %>%
+  rownames_to_column() %>%
+  set_colnames(c("TF", "anova.time", "anova.gene.regulation", "anova.interaction")) %>%
+  mutate(fdr.time = p.adjust(.$anova.time, method = "fdr"),
+         fdr.gene.regulation = p.adjust(.$anova.gene.regulation, method = "fdr"),
+         fdr.interaction = p.adjust(.$anova.interaction, method = "fdr")) %>%
+  fwrite("~/ifpan-chipseq-timecourse/DATA/max-peak_TF_ANOVA-time-gene.regulation-interaction_fdr-time-gene.regulation-interaction.tsv", 
+         sep="\t", 
+         col.names = TRUE, 
+         row.names = FALSE)
+
+rm(tmp_maxpeak_data_to_ANOVA)
+
+#Two way ANOVA for all peaks
+tmp_significant_random_genes_peak_normalized_amplitude %>%
+  group_by(gene.name, start.range, time, TF, gene.regulation) %>% 
+  summarise(mean.peak = mean(amplitude)) %>%
+  select(gene.name, start.range, time, TF, gene.regulation, mean.peak) %>%
+  mutate(log.mean.peak = log(mean.peak + 1)) -> tmp_allpeak_data_to_ANOVA
+
+lapply(setNames({tmp_significant_random_genes_peak_normalized_amplitude %>% select(TF) %>% .[order(.$TF),] %>% unique()}, 
+                {tmp_significant_random_genes_peak_normalized_amplitude %>% select(TF) %>% .[order(.$TF),] %>% unique()}),  
+       function(x) {tmp_allpeak_data_to_ANOVA %>% 
+           filter(TF == x)%>% 
+           aov(log.mean.peak~time*gene.regulation, data = .) %>% 
+           summary() %>% 
+           .[[1]] %>% 
+           .[1:3,5]}) %>% 
+  as.data.frame() %>%
+  t() %>%
+  as.data.frame() %>%
+  rownames_to_column() %>%
+  set_colnames(c("TF", "anova.time", "anova.gene.regulation", "anova.interaction")) %>%
+  mutate(fdr.time = p.adjust(.$anova.time, method = "fdr"),
+         fdr.gene.regulation = p.adjust(.$anova.gene.regulation, method = "fdr"),
+         fdr.interaction = p.adjust(.$anova.interaction, method = "fdr")) %>%
+  fwrite("~/ifpan-chipseq-timecourse/DATA/all-peak_TF_ANOVA-time-gene.regulation-interaction_fdr-time-gene.regulation-interaction.tsv", 
+         sep="\t", 
+         col.names = TRUE, 
+         row.names = FALSE)
+
+rm(tmp_allpeak_data_to_ANOVA)
