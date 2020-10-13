@@ -74,7 +74,7 @@ Skrypty do normalizacji ściągnięto z:
 [https://github.com/porchard/normalize_bedgraph](https://github.com/porchard/normalize_bedgraph)
 Skrypty: bigWigToBedGraph, bedGraphToBigWig, bigWigSummary, zciągnięto ze strony: [http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64.v369/](http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64.v369/)
 
-Uruchomienie skryptu RNA-seq.R (od 309-375) wczyta plik /ChIP-seq/DATA/significant_random_genes_chip-seq_normalized_bucket_gene_chromosome_start_end_TF_time_file.tsv i wygeneruje wykresy:
+Uruchomienie skryptu RNA-seq.R (od 262-307) wczyta plik /ChIP-seq/DATA/significant_random_genes_chip-seq_normalized_bucket_gene_chromosome_start_end_TF_time_file.tsv i wygeneruje wykresy:
 
 ![Kiku](PLOTS/lineplot_significant_random_genes_normalized_bucket.jpeg)
 
@@ -82,37 +82,22 @@ Uruchomienie skryptu RNA-seq.R (od 309-375) wczyta plik /ChIP-seq/DATA/significa
 
 
 ### Peak dla enhancerów
-Stworzono plik ze wpólnymi pekami z trzech próbek dla NR3C1 z time60 przy pomocy skryptu, który tworzy plik tymczasowy ze wspólnymi pekami dl trzech próbek, tworzy tymczasowy plik bed z sinificant i random genes, a na koniec wyciąga peaki dla significant i random genes i zapisuje do pliku: ~/ifpan-chipseq-timecourse/DATA/significant_and_random_genes_ensemblid_genename_chromosome_start-peak_end-peak_regulation.tsv
-
+Stworzono plik ze wpólnymi pekami z trzech próbek dla NR3C1 z time60 przy pomocy skryptu creation_file_significant_random_gene_peaks.sh , który tworzy plik tymczasowy ze wspólnymi pekami dl trzech próbek, tworzy tymczasowy plik bed z sinificant i random genes, a na koniec wyciąga peaki dla significant i random genes i zapisuje do pliku: ~/ifpan-chipseq-timecourse/DATA/significant_and_random_genes_ensemblid_genename_chromosome_start-peak_end-peak_regulation.tsv. Pliki niepotrzene usuwa.
 
 ```bash
 ~/ifpan-chipseq-timecourse/SCRIPTS/./creation_file_significant_random_gene_peaks.sh 
 ```
-Następnie przy pomocy polecenia wyciągnięto amplitudy dla peaków i zapisano do pliku
+Następnie przy pomocy polecenia wyciągnięto amplitudy dla peaków i zapisano do pliku:
 
 ```bash
 ~/ifpan-chipseq-timecourse/SCRIPTS/./bigwig_genomic_amplitude_extract_normalize_to_tsv.sh ~/ifpan-chipseq-timecourse/DATA/significant_random_genes_ensemblid_genename_chromosome_start-peak_end-peak_regulation.tsv > ~/ChIP-seq/DATA/significant_random_genes_chip-seq_normalized_gene_chromosome_start-peak_end-peak_TF_time_file_amplitude.tsv
 ```
 
+Przy pomocy RNA-seq.R (od 309-375) i pliku  ~/ChIP-seq/DATA/significant_random_genes_chip-seq_normalized_gene_chromosome_start-peak_end-peak_TF_time_file_amplitude.tsv przygotowano wykresy:
 
-
-
-```bash
-cat ~/ifpan-chipseq-timecourse/DATA/significant_and_random_genes_ensemblid_genename_chromosome_start_end.tsv | tail +2 | awk 'BEGIN {OFS ="\t"}{print "chr"$3,$4,$5, $0}' | grep -v -F 'chrMT'
-cat ~/ifpan-chipseq-timecourse/DATA/chipseq-file-info.tsv | grep 'NR3C1.60.f' | awk '{print $4"_RAW.tar"}' | xargs -i bash -c 'tar -tf {}' | grep 'bed'
- bedtools intersect -a tmp_significant_random.bed -b $three_file -wb -wa | sort
- bedtools intersect -a tmp_significant_random.bed -b $three_file -wo | grep '3.chr' 
-
-three_file=$(cat ~/ifpan-chipseq-timecourse/DATA/chipseq-file-info.tsv | grep 'NR3C1.60.f' | awk '{print $4"_RAW.tar"}' | xargs -i bash -c 'tar -tf {}' | grep 'bed' | tr "\n" " ")
-
-
-bedtools intersect -a tmp_significant_random.bed -b $three_file -wo  | tr "\n" ":" | grep -iPo 'chr[0-9\t]*ENSG[0-9]*\t[0-9a-z.]*[0-9\t]*[a-z-]*\t1\tchr[0-9a-z\t_.]*:chr[0-9\t]*ENSG[0-9]*\t[0-9a-z.]*[0-9\t]*[a-z-]*\t2\tchr[0-9a-z\t_.]*:chr[0-9\t]*ENSG[0-9]*\t[0-9a-z.]*[0-9\t]*[a-z-]*\t3\tchr[0-9a-z\t_.]*:' | sed 's/:/\n/g' | sed -r '/^\s*$/d'     
-
-bedtools intersect -a tmp_significant_random.bed -b $three_file -wo | tr "\n" ":" |  grep -ioP 'chr[0-9x-z\t]*ENSG[0-9]*\t[0-9a-z.-]*\t[0-9x][0-9 \t]*\t[a-z0-]*\t1\tchr[0-9a-z_.\t]*:chr[0-9x-z\t]*ENSG[0-9]*\t[0-9a-z.-]*\t[0-9x][0-9 \t]*\t[a-z0-]*\t2\tchr[0-9a-z_.\t]*:chr[0-9x-z\t]*ENSG[0-9]*\t[0-9a-z.-]*\t[0-9x][0-9 \t]*\t[a-z0-]*\t3\tchr[0-9a-z_.\t]*:'  | sed 's/:/\n/g' | sed -r '/^\s*$/d' 
-
-```
 ![Kiku](PLOTS/boxplot_significant_random_genes_strongest_peak.jpeg)
 
 ![Kiku](PLOTS/boxplot_significant_random_genes_mean_peaks.jpeg)
 
 ![Kiku](PLOTS/barplot_significant_random_genes_strongest_peak.jpeg)
+
