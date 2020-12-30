@@ -101,3 +101,30 @@ Przy pomocy RNA-seq.R (od 309-375) i pliku  ~/ChIP-seq/DATA/significant_random_g
 
 ![Kiku](PLOTS/barplot_significant_random_genes_strongest_peak.jpeg)
 
+
+Przy pomocy komendy ściągnięto plik gtf:
+```bash
+wget  ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_36/gencode.v36.annotation.gtf.gz
+```
+Następnie wybrano geny kodujące białka:
+```bash
+zcat ~/ChIP-seq/DATA/gencode.v36.annotation.gtf | 
+    grep "gene_type \"protein_coding\"" | 
+    awk '{print $10"\t"$16}' | 
+    sort -u | 
+    grep -v "[1-3];" | 
+    sed 's/"//g' | 
+    sed 's/;//g' | 
+    sed 's/\./\t/' | 
+    cut -f1,3 > ~/ifpan-chipseq-timecourse/DATA/Homo_sapiens.GRCh38.95.protein_coding.gtf
+```
+
+#####
+Przy pomocy komendy wyciągnięto amplitudy enhancerów dla wszystkich genów:
+```bash
+ ~/ifpan-chipseq-timecourse/SCRIPTS/./bigwig_genomic_amplitude_extract_normalize_to_tsv.NR3C1-EP300.sh ~/ifpan-chipseq-timecourse/DATA/peaks_all_genes_without_promoters.tsv > ~/ifpan-chipseq-timecourse/DATA/peaks_all_genes_without_promoters_amplitude.tsv
+```
+~/ifpan-chipseq-timecourse/SCRIPTS/./search_peaks_all_genes.sh
+
+
+~/ifpan-chipseq-timecourse/SCRIPTS/./search_peaks_all_genes.sh
