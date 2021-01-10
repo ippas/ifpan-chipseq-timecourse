@@ -128,3 +128,31 @@ Przy pomocy komendy wyciągnięto amplitudy enhancerów dla wszystkich genów:
 
 
 ~/ifpan-chipseq-timecourse/SCRIPTS/./search_peaks_all_genes.sh
+
+
+
+###############################
+Uruchomić skrypt analysis_transcriptome.R, który wykonuje:
+- wczytanie danych z plików: raw_expression_matrix_dexamethasone.tsv, sample.info.tsv, ID_ID.version_gene.tsv, (ściągnięty z gene banku), gene_chromosome_start_end_strand.tsv (ściągnięty z gene banku), transcript.length.tsv (pobrane z gene banku)
+- wykonuje jednoczynnikowę ANOVE, na danych z ekspresji genu
+- wybiera znaczące geny
+- podział na up i down regulowane
+- heatmapę ekspresji
+- wybiera randomowe geny
+- wykres liniowy zmian ekspresji
+- boxplot max change time point
+- histogram RPKM
+- histogram długości transkryptów
+- przygotowanie pliku do wizualizacji przyłączania TF do promotorów
+- przygotowanie pliku do znalezienia enhancerów
+
+![Kiku](PLOTS/heatmap_expression_significant.jpeg)
+
+![Kiku](PLOTS/lineplot_change_expression.jpeg)
+
+![Kiku](PLOTS/LOTS/boxplot_MCTP.jpeg)
+
+![Kiku](PLOTS/PLOTS/histogram_RPKM.jpeg)
+
+![Kiku](PLOTS/histogram_transcript_lenght.jpeg)
+
