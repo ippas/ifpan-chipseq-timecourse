@@ -131,9 +131,10 @@ Przy pomocy komendy wyciągnięto amplitudy enhancerów dla wszystkich genów:
 
 
 
-###############################
-Uruchomić skrypt analysis_transcriptome.R, który wykonuje:
-- wczytanie danych z plików: raw_expression_matrix_dexamethasone.tsv, sample.info.tsv, ID_ID.version_gene.tsv, (ściągnięty z gene banku), gene_chromosome_start_end_strand.tsv (ściągnięty z gene banku), transcript.length.tsv (pobrane z gene banku)
+---
+
+1. Uruchomić skrypt [analysis_transcriptome.R](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/analysis_transcriptome.R), który wykonuje:
+- wczytanie danych z plików: [raw_expression_matrix_dexamethasone.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/raw_expression_matrix_dexamethasone.tsv), [sample.info.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/sample.info.tsv), [ID_ID.version_gene.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/ID_ID.version_gene.tsv), (ściągnięty z gene banku), [gene_chromosome_start_end_strand.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/gene_chromosome_start_end_strand.tsv) (ściągnięty z gene banku), [transcript.length.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/transcript_length.tsv) (pobrane z gene banku)
 - wykonuje jednoczynnikowę ANOVE, na danych z ekspresji genu
 - wybiera znaczące geny
 - podział na up i down regulowane
@@ -150,9 +151,20 @@ Uruchomić skrypt analysis_transcriptome.R, który wykonuje:
 
 ![Kiku](PLOTS/lineplot_change_expression.jpeg)
 
-![Kiku](PLOTS/LOTS/boxplot_MCTP.jpeg)
+![Kiku](PLOTS/boxplot_MCTP.jpeg)
 
-![Kiku](PLOTS/PLOTS/histogram_RPKM.jpeg)
+![Kiku](PLOTS/histogram_RPKM.jpeg)
 
 ![Kiku](PLOTS/histogram_transcript_lenght.jpeg)
 
+
+
+3. Uruchomić skrypt visualization_promoters.R, który wykonuje wykresy:
+
+![Kiku](PLOTS/lineplot_promotores.jpeg)
+
+![Kiku](PLOTS/lineplot_promotores_relative_changes.jpeg)
+
+![Kiku](PLOTS/lineplot_promotores_fourTF.jpeg)
+
+![Kiku](PLOTS/lineplot_promotores_relative_changes_fourTF.jpeg)
