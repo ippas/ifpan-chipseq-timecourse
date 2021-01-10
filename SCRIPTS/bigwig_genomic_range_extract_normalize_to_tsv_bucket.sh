@@ -63,7 +63,7 @@ ACCESS_PATH_2=~/ifpan-chipseq-timecourse/DATA
 ACCESS_PATH_3=~/ifpan-chipseq-timecourse/SCRIPTS
 ACCESS_PATH_4=~/ChIP-seq/DOWNLOAD
 
-cat $ACCESS_PATH_2/chipseq-file-info.tsv | grep -v Control |  while read LINE
+cat $ACCESS_PATH_2/chipseq-file-info.tsv | grep -v Control | grep -P 'NR3C1|EP300|H3K27ac|H3K4me1' |  while read LINE #grep -P 'NR3C1|EP300|H3K27ac|H3K4me1' it' to remove
 do
   TF_NAME=$(echo $LINE | cut -d $' ' -f 1)
   TIME=$(echo $LINE | cut -d $' ' -f 2)
@@ -85,7 +85,6 @@ do
 
     get_coverages_for_file $INPUT_FILE $NORMALIZE_FILE
     rm $ACCESS_PATH_1/tmp.unnormalize.$REPLICATE.bgd $ACCESS_PATH_1/tmp.normalize.$REPLICATE.bdg $ACCESS_PATH_1/tmp.normalize.$REPLICATE.bw
-    exit 0
     done
 done
 
