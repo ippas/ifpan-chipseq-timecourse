@@ -101,3 +101,58 @@ Przy pomocy RNA-seq.R (od 309-375) i pliku  ~/ChIP-seq/DATA/significant_random_g
 
 ![Kiku](PLOTS/barplot_significant_random_genes_strongest_peak.jpeg)
 
+
+Przy pomocy komendy ściągnięto plik gtf:
+```bash
+wget  ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_36/gencode.v36.annotation.gtf.gz
+```
+Następnie wybrano geny kodujące białka:
+```bash
+zcat ~/ChIP-seq/DATA/gencode.v36.annotation.gtf | 
+    grep "gene_type \"protein_coding\"" | 
+    awk '{print $10"\t"$16}' | 
+    sort -u | 
+    grep -v "[1-3];" | 
+    sed 's/"//g' | 
+    sed 's/;//g' | 
+    sed 's/\./\t/' | 
+    cut -f1,3 > ~/ifpan-chipseq-timecourse/DATA/Homo_sapiens.GRCh38.95.protein_coding.gtf
+```
+
+#####
+Przy pomocy komendy wyciągnięto amplitudy enhancerów dla wszystkich genów:
+```bash
+ ~/ifpan-chipseq-timecourse/SCRIPTS/./bigwig_genomic_amplitude_extract_normalize_to_tsv.NR3C1-EP300.sh ~/ifpan-chipseq-timecourse/DATA/peaks_all_genes_without_promoters.tsv > ~/ifpan-chipseq-timecourse/DATA/peaks_all_genes_without_promoters_amplitude.tsv
+```
+~/ifpan-chipseq-timecourse/SCRIPTS/./search_peaks_all_genes.sh
+
+
+~/ifpan-chipseq-timecourse/SCRIPTS/./search_peaks_all_genes.sh
+
+
+
+###############################
+Uruchomić skrypt analysis_transcriptome.R, który wykonuje:
+- wczytanie danych z plików: raw_expression_matrix_dexamethasone.tsv, sample.info.tsv, ID_ID.version_gene.tsv, (ściągnięty z gene banku), gene_chromosome_start_end_strand.tsv (ściągnięty z gene banku), transcript.length.tsv (pobrane z gene banku)
+- wykonuje jednoczynnikowę ANOVE, na danych z ekspresji genu
+- wybiera znaczące geny
+- podział na up i down regulowane
+- heatmapę ekspresji
+- wybiera randomowe geny
+- wykres liniowy zmian ekspresji
+- boxplot max change time point
+- histogram RPKM
+- histogram długości transkryptów
+- przygotowanie pliku do wizualizacji przyłączania TF do promotorów
+- przygotowanie pliku do znalezienia enhancerów
+
+![Kiku](PLOTS/heatmap_expression_significant.jpeg)
+
+![Kiku](PLOTS/lineplot_change_expression.jpeg)
+
+![Kiku](PLOTS/LOTS/boxplot_MCTP.jpeg)
+
+![Kiku](PLOTS/PLOTS/histogram_RPKM.jpeg)
+
+![Kiku](PLOTS/histogram_transcript_lenght.jpeg)
+
