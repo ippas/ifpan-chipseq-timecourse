@@ -150,9 +150,9 @@ Uruchomić skrypt analysis_transcriptome.R, który wykonuje:
 
 ![Kiku](PLOTS/lineplot_change_expression.jpeg)
 
-![Kiku](PLOTS/LOTS/boxplot_MCTP.jpeg)
+![Kiku](PLOTS/boxplot_MCTP.jpeg)
 
-![Kiku](PLOTS/PLOTS/histogram_RPKM.jpeg)
+![Kiku](PLOTS/histogram_RPKM.jpeg)
 
 ![Kiku](PLOTS/histogram_transcript_lenght.jpeg)
 
