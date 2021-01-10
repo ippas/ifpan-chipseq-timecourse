@@ -131,9 +131,10 @@ Przy pomocy komendy wyciągnięto amplitudy enhancerów dla wszystkich genów:
 
 
 
-###############################
-Uruchomić skrypt analysis_transcriptome.R, który wykonuje:
-- wczytanie danych z plików: raw_expression_matrix_dexamethasone.tsv, sample.info.tsv, ID_ID.version_gene.tsv, (ściągnięty z gene banku), gene_chromosome_start_end_strand.tsv (ściągnięty z gene banku), transcript.length.tsv (pobrane z gene banku)
+---
+
+1. Uruchomić skrypt analysis_transcriptome.R, który wykonuje:
+- wczytanie danych z plików: [raw_expression_matrix_dexamethasone.tsv(https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/raw_expression_matrix_dexamethasone.tsv)], sample.info.tsv, ID_ID.version_gene.tsv, (ściągnięty z gene banku), gene_chromosome_start_end_strand.tsv (ściągnięty z gene banku), transcript.length.tsv (pobrane z gene banku)
 - wykonuje jednoczynnikowę ANOVE, na danych z ekspresji genu
 - wybiera znaczące geny
 - podział na up i down regulowane
