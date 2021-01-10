@@ -157,3 +157,14 @@ Przy pomocy komendy wyciągnięto amplitudy enhancerów dla wszystkich genów:
 
 ![Kiku](PLOTS/histogram_transcript_lenght.jpeg)
 
+
+
+3. Uruchomić skrypt visualization_promoters.R, który wykonuje wykresy:
+
+![Kiku](PLOTS/lineplot_promotores.jpeg)
+
+![Kiku](PLOTS/lineplot_promotores_relative_changes.jpeg)
+
+![Kiku](PLOTS/lineplot_promotores_fourTF.jpeg)
+
+![Kiku](PLOTS/lineplot_promotores_relative_changes_fourTF.jpeg)
