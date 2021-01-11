@@ -6,7 +6,46 @@
 
 RNA-seq data from the ENCODE project were downloaded with [this link](https://www.ncbi.nlm.nih.gov/gds/?term=tim+reddy+dexamethasone+rna-seq) saved as `info-RNA-seq-to-download.txt` in `DATA`. See [this file](DATA/downloads.MD) for details on how the data was downloaded.
 
+1. Uruchomić skrypt [analysis_transcriptome.R](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/analysis_transcriptome.R), który wykonuje:
+- wczytanie danych z plików: [raw_expression_matrix_dexamethasone.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/raw_expression_matrix_dexamethasone.tsv), [sample.info.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/sample.info.tsv), [ID_ID.version_gene.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/ID_ID.version_gene.tsv), (ściągnięty z gene banku), [gene_chromosome_start_end_strand.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/gene_chromosome_start_end_strand.tsv) (ściągnięty z gene banku), [transcript.length.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/transcript_length.tsv) (pobrane z gene banku)
+- wykonuje jednoczynnikowę ANOVE, na danych z ekspresji genu
+- wybiera znaczące geny
+- podział na up i down regulowane
+- heatmapę ekspresji
+- wybiera randomowe geny
+- wykres liniowy zmian ekspresji
+- boxplot max change time point
+- histogram RPKM
+- histogram długości transkryptów
+- przygotowanie pliku do wizualizacji przyłączania TF do promotorów
+- przygotowanie pliku do znalezienia enhancerów
 
+![Kiku](PLOTS/heatmap_expression_significant.jpeg)
+
+![Kiku](PLOTS/lineplot_change_expression.jpeg)
+
+![Kiku](PLOTS/boxplot_MCTP.jpeg)
+
+![Kiku](PLOTS/histogram_RPKM.jpeg)
+
+![Kiku](PLOTS/histogram_transcript_lenght.jpeg)
+
+2. Uruchomić skrypt extract_data_chipseq1.sh
+
+3. Uruchomić skrypt visualization_promoters.R, który wykonuje wykresy:
+
+![Kiku](PLOTS/lineplot_promotores.jpeg)
+
+![Kiku](PLOTS/lineplot_promotores_relative_changes.jpeg)
+
+![Kiku](PLOTS/lineplot_promotores_fourTF.jpeg)
+
+![Kiku](PLOTS/lineplot_promotores_relative_changes_fourTF.jpeg)
+
+
+
+
+-----------------------------------------------Starsza wersja--------------------------------------------------------
 
 Uruchomić skrypt z R: RNA-seq.R (od 1-141 lini) skrypt wczytuje  pliki raw_expression_matrix_dexamethasone.tsv,  sample.info.tsv i ID_ID.version_gene.tsv. Wykonuje jednoczynnikową ANOVE dla każdego transkryptu, i przy FDR_THRESHOLD=0.001, zostaje wybranych 640 genów (dla dwóch nie została przypisana nazwa, została odrzucone i zostało 638).  Skrypt tworzy heatmap dla RNA-seq dla wybranych transkryptów (z dwoma klastrami), 
 
@@ -131,28 +170,6 @@ Przy pomocy komendy wyciągnięto amplitudy enhancerów dla wszystkich genów:
 
 
 
-###############################
-Uruchomić skrypt analysis_transcriptome.R, który wykonuje:
-- wczytanie danych z plików: raw_expression_matrix_dexamethasone.tsv, sample.info.tsv, ID_ID.version_gene.tsv, (ściągnięty z gene banku), gene_chromosome_start_end_strand.tsv (ściągnięty z gene banku), transcript.length.tsv (pobrane z gene banku)
-- wykonuje jednoczynnikowę ANOVE, na danych z ekspresji genu
-- wybiera znaczące geny
-- podział na up i down regulowane
-- heatmapę ekspresji
-- wybiera randomowe geny
-- wykres liniowy zmian ekspresji
-- boxplot max change time point
-- histogram RPKM
-- histogram długości transkryptów
-- przygotowanie pliku do wizualizacji przyłączania TF do promotorów
-- przygotowanie pliku do znalezienia enhancerów
+---
 
-![Kiku](PLOTS/heatmap_expression_significant.jpeg)
-
-![Kiku](PLOTS/lineplot_change_expression.jpeg)
-
-![Kiku](PLOTS/LOTS/boxplot_MCTP.jpeg)
-
-![Kiku](PLOTS/PLOTS/histogram_RPKM.jpeg)
-
-![Kiku](PLOTS/histogram_transcript_lenght.jpeg)
 
