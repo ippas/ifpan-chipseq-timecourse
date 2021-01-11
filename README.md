@@ -8,6 +8,7 @@ RNA-seq data from the ENCODE project were downloaded with [this link](https://ww
 
 1. Uruchomić skrypt [analysis_transcriptome.R](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/analysis_transcriptome.R), który wykonuje:
 - wczytanie danych z plików: [raw_expression_matrix_dexamethasone.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/raw_expression_matrix_dexamethasone.tsv), [sample.info.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/sample.info.tsv), [ID_ID.version_gene.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/ID_ID.version_gene.tsv), (ściągnięty z gene banku), [gene_chromosome_start_end_strand.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/gene_chromosome_start_end_strand.tsv) (ściągnięty z gene banku), [transcript.length.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/transcript_length.tsv) (pobrane z gene banku)
+- na danych z ekspresji genów wykonuje normalize quantiles
 - wykonuje jednoczynnikowę ANOVE, na danych z ekspresji genu
 - wybiera 745 znaczących genów, przy FDR=0.0000001
 - podział na up i down regulowane, przy czym genów down jest 375, up 370
@@ -31,7 +32,7 @@ RNA-seq data from the ENCODE project were downloaded with [this link](https://ww
 
 ![Kiku](PLOTS/histogram_transcript_lenght.jpeg)
 
-2. Uruchomić skrypt [extract_data_chipseq1.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/extract_data_chipseq1.sh) komęndą:
+2. Uruchomić skrypt [extract_data_chipseq1.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/extract_data_chipseq1.sh) komendą:
  
  ```bash
  ~/ifpan-chipseq-timecourse/SCRIPTS/extract_data_chipseq1.sh
