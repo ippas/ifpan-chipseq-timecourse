@@ -11,7 +11,7 @@ ACCESS_PATH_4=~/ifpan-chipseq-timecourse/SCRIPTS
 ############################
 echo "extract range promotores"
 
-$ACCESS_PATH_4/./bigwig_genomic_bucket500_extract_normalize_to_tsv.sh $ACCESS_PATH_3/promotores_peaks_info.tsv > $ACCESS_PATH_3/promotores_peaks_value.tsv
+$ACCESS_PATH_4/./bigwig_genomic_bucket500_extract_normalize_to_tsv.sh $ACCESS_PATH_3/promotores_peaks_info.tsv > $ACCESS_PATH_2/promotores_peaks_value.tsv
 
 
 ##########################################################
@@ -55,7 +55,7 @@ rm $FILE_3
 
 echo "extract amplitudes for enhancers"
 
-$ACCESS_PATH_4/./bigwig_genomic_amplitude_extract_normalize_to_tsv.sh $ACCESS_PATH_3/$FILE4 > $ACCESS_PATH_3/enhancer_amplitude_value.tsv
+$ACCESS_PATH_4/./bigwig_genomic_amplitude_extract_normalize_to_tsv.sh $ACCESS_PATH_3/$FILE4 > $ACCESS_PATH_2/enhancer_amplitude_value.tsv
 
 
 ###########################
@@ -64,7 +64,7 @@ $ACCESS_PATH_4/./bigwig_genomic_amplitude_extract_normalize_to_tsv.sh $ACCESS_PA
 
 echo "extract range enhancers"
 
-$ACCESS_PATH_4/./bigwig_genomic_range_extract_normalize_to_tsv.sh $ACCESS_PATH_3/$FILE4 > $ACCESS_PATH_3/enhancer_peaks_value.tsv
+$ACCESS_PATH_4/./bigwig_genomic_range_extract_normalize_to_tsv.sh $ACCESS_PATH_3/$FILE4 > $ACCESS_PATH_2/enhancer_peaks_value.tsv
 
 
 
