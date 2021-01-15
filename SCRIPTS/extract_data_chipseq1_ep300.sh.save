@@ -9,14 +9,16 @@ ACCESS_PATH_4=~/ifpan-chipseq-timecourse/SCRIPTS
 ############################
 # extract range promotores #
 ############################
-echo "extract range promotores"
+#echo "extract range promotores"
 
-$ACCESS_PATH_4/./bigwig_genomic_bucket500_extract_normalize_to_tsv.sh $ACCESS_PATH_3/promotores_peaks_info.tsv > $ACCESS_PATH_2/promotores_peaks_value.tsv
+#$ACCESS_PATH_4/./bigwig_genomic_bucket500_extract_normalize_to_tsv.sh $ACCESS_PATH_3/promotores_peaks_info.tsv > $ACCESS_PATH_2/promotores_peaks_value.tsv
 
-exit 0
+
 ##########################################################
 # prepare file BED with the same peaks from three sample #
 ##########################################################
+enhancer_delta_ep300info.tsv
+enhancer_top_ep300info.tsv
 
 #GSM2421929_ENCFF835HHK_peaks_GRCh38.bed.gz
 #GSM2421930_ENCFF044MLR_peaks_GRCh38.bed.gz
@@ -26,7 +28,7 @@ exit 0
 FILE_1=$ACCESS_PATH_3/peaks_part_of_common_three_file_NR3C1_time60.bed
 FILE_2=$ACCESS_PATH_3/tmp_significant_random.bed
 FILE_3=$ACCESS_PATH_2/tmp_file1_file2.bed
-FILE_4=$ACCESS_PATH_3/enhancer_peaks_info.tsv
+FILE_4=$ACCESS_PATH_3/tmp_enhancer_peaks_info.tsv
 
 
 bedtools intersect -a $ACCESS_PATH_1/GSM2421929_ENCFF835HHK_peaks_GRCh38.bed.gz -b $ACCESS_PATH_1/GSM2421930_ENCFF044MLR_peaks_GRCh38.bed.gz  > $FILE_3
@@ -42,7 +44,7 @@ cat $ACCESS_PATH_3/enhancer_info.tsv |
 bedtools intersect -a $FILE_2 -b $FILE_1 -wo |
    cut -f4-12 |
    awk 'OFS="\t" {print $1, $2, $3,$8, $9, $6}' |
-   sed '1 i\ensemblid\tgene.name\tchromosome\tstart_peak\tend_peak\tgene.regulation' > $FILE_4
+   sed '1 i\ensemblid\tgene.name\tchromosome\tstart_peak\tend_peak\tgene.regulation' > $ACCESS_PATH_3/$FILE_4
 
 rm $FILE_1
 rm $FILE_2
@@ -55,7 +57,7 @@ rm $FILE_3
 
 echo "extract amplitudes for enhancers"
 
-$ACCESS_PATH_4/./bigwig_genomic_amplitude_extract_normalize_to_tsv.sh $FILE_4 > $ACCESS_PATH_2/enhancer_amplitude_value.tsv
+$ACCESS_PATH_4/./bigwig_genomic_amplitude_extract_normalize_to_tsv.sh $ACCESS_PATH_3/$FILE4 > $ACCESS_PATH_2/enhancer_amplitude_value.tsv
 
 
 ###########################
@@ -64,7 +66,7 @@ $ACCESS_PATH_4/./bigwig_genomic_amplitude_extract_normalize_to_tsv.sh $FILE_4 > 
 
 echo "extract range enhancers"
 
-$ACCESS_PATH_4/./bigwig_genomic_range_extract_normalize_to_tsv.sh $FILE_4 > $ACCESS_PATH_2/enhancer_peaks_value.tsv
+$ACCESS_PATH_4/./bigwig_genomic_range_extract_normalize_to_tsv.sh $ACCESS_PATH_3/$FILE4 > $ACCESS_PATH_2/enhancer_peaks_value.tsv
 
 
 
