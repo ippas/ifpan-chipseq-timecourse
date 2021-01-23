@@ -62,6 +62,8 @@ RNA-seq data from the ENCODE project were downloaded with [this link](https://ww
 
 ![Kiku](PLOTS/boxplot_amplitude_top_ep300.jpeg)
 
+![Kiku](PLOTS/boxplot_MWT_top_ep300.jpeg)
+
 #### Delta EP300
 
 ![Kiku](PLOTS/heatmap_expression_delta_ep300.jpeg)
@@ -71,6 +73,23 @@ RNA-seq data from the ENCODE project were downloaded with [this link](https://ww
 ![Kiku](PLOTS/boxplot_MCTP_delta_ep300.jpeg)
 
 ![Kiku](PLOTS/boxplot_amplitude_delta_ep300.jpeg)
+
+![Kiku](PLOTS/boxplot_MWT_delta_ep300.jpeg)
+
+
+Uruchomić skrypt [analysis_enhancer_range_ep300.R](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/analysis_enhancer_range_ep300.R), który wykonuje:
+
+Wykresy enhancerów dla genów top ep300
+
+![Kiku](PLOTS/lineplot_enhancer_range_top_ep300.jpeg)
+
+![Kiku](PLOTS/heatmap_enhancer_top_ep300.jpeg)
+
+Wykresy enhancerów dla genów delta ep300
+
+![Kiku](PLOTS/lineplot_enhancer_range_delta_ep300.jpeg)
+
+![Kiku](PLOTS/heatmap_enhancer_delta_ep300.jpeg)
 
 
 
