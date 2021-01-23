@@ -87,7 +87,7 @@ Wykresy enhancerów dla genów top ep300
 
 Wykresy enhancerów dla genów delta ep300
 
-![Kiku](PLOTS/lineplot_enhancer_range_top_ep300.jpeg)
+![Kiku](PLOTS/lineplot_enhancer_range_delta_ep300.jpeg)
 
 ![Kiku](PLOTS/heatmap_enhancer_delta_ep300.jpeg)
 
