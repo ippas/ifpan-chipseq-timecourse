@@ -68,7 +68,7 @@ RNA-seq data from the ENCODE project were downloaded with [this link](https://ww
  
 
 3. Uruchomić skrypt [visualization_promoters.R](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/visualization_promoters.R), który wykonuje wykresy:
-- wykorzystuje plik ~/ChIP-seq/DATA/promotores_peaks_value.tsv, który jest wynikiem skryptu [extract_data_chipseq1.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/extract_data_chipseq1.sh)
+- wczytuje plik ~/ChIP-seq/DATA/promotores_peaks_value.tsv, który jest wynikiem skryptu [extract_data_chipseq1.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/extract_data_chipseq1.sh)
 - wykres liniowy predstawiający średnią z grupy przyłączenia się TF do promotorów w pozycjach =/- 10000 od TSS
 - wykres liniowy predstawiający średnią z grupy przyłączenia się TF do promotorów w pozycjach =/- 10000 od TSS, w odniesieniu do genów z grupy random
 - wykres liniowy predstawiający średnią z grupy przyłączenia się TF (wybrane cztery TF: EP300, H3K27ac, H3K4me1, NR3C1) do promotorów w pozycjach =/- 10000 od TSS,
@@ -82,6 +82,22 @@ RNA-seq data from the ENCODE project were downloaded with [this link](https://ww
 
 ![Kiku](PLOTS/lineplot_promotores_relative_changes_fourTF.jpeg)
 
+4. Uruchomić skrypt [visualization_amplitudes.R](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/visualization_amplitudes.R), który:
+- wczytuje plik ~/ChIP-seq/DATA/enhancer_amplitude_value.tsv, będący wynikiem skryptu [extract_data_chipseq1.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/extract_data_chipseq1.sh)
+- wykres zmian amplitud przyłączania TF w czasie dla najsilniejszych peaków w genie
+- wykres zmian amplitud przyłączania TF (wybrane cztery TF: EP300, H3K27ac, H3K4me1, NR3C1) w czasie dla najsilniejszych peaków w genie
+- wykres przedstawiający Mean Weighted Time (MWT) dla TF i gene regulation
+- wykres przedstawiający Mean Weighted Time (MWT) dla EP300, H3K27ac, H3K4me1, NR3C1 i genów up-regulated
+
+![Kiku](PLOTS/boxplot_enhancer_amplitude.jpeg)
+|:--:| 
+| *Changes in amplitude over time in the strongest gene peaks* |
+
+![Kiku](PLOTS/boxplot_enhancer_amplitude_fourTF.jpeg)
+
+![Kiku](PLOTS/boxplot_enhancer_MWT.jpeg)
+
+![Kiku](PLOTS/boxplot_enhancer_MWT_fourTF.jpeg)
 
 ### Analiza EP300 
 #### Top EP300
