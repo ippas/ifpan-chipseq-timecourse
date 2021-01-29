@@ -2,32 +2,39 @@
 # making plot with peaks promoters for all TF #
 ###############################################
 jpeg("~/ifpan-chipseq-timecourse/PLOTS/lineplot_promotores.jpeg", 
+#jpeg("~/dexamethasone/lineplot_promotores.jpeg", 
      width = 1400, 
      height = 802)
 
-read.table("~/ChIP-seq/DATA/significant_random_genes_chip-seq_normalized_bucket_gene_chromosome_start_end_TF_time_file.tsv", 
+read.table("~/ChIP-seq/DATA/promotores_peaks_value.tsv", 
            header = FALSE, 
            sep = "\t", 
            stringsAsFactors = FALSE) %>% 
   set_colnames(c("gene.name", "chromosome", "start.range", "end.range", "gene.regulation", "TF", "time", "file", 1:40)) %>% 
   gather(., "bucket.range", "value", -c("gene.name", "chromosome", "start.range", "end.range", "gene.regulation", "TF", "time", "file")) %>% 
-  #replace gene.regulation from 4 cluster to 2 - this is to remove in the future
-  mutate(gene.regulation = {.$gene.regulation %>%
-      str_split(., "-", n = 2, simplify = TRUE) %>%
-      .[,1]}) %>% 
   group_by(bucket.range, time, TF, gene.regulation) %>%
   summarize(mean.value = mean(value)) %>% 
   {ggplot(., aes(x = as.numeric(bucket.range)*500, y = mean.value, color = as.factor(gene.regulation))) + 
       geom_line(size = 0.5) + 
       facet_grid(TF~time, scales = "free_y") +
-      theme(axis.text.x = element_text(angle=45, hjust = 1),
+      labs(fill = "Gene regulation") + 
+      theme(axis.text.x = element_text(angle=45, hjust = 1, size = 14),
+            axis.text.y = element_text(size = 10),
+            axis.title.x = element_text(size = 18),
+            axis.title.y = element_text(size = 18),
+            strip.text.x = element_text(size = 16),
+            strip.text.y = element_text(size = 10),
+            legend.title = element_text(size = 18),
+            legend.text = element_text(size = 16),
             legend.position = "bottom") +
-      scale_color_manual(values = c("up" = "firebrick", 
+      #labs(fill = "Gene regulation") + 
+      scale_color_manual(values = c("up-regulated" = "firebrick", 
                                     "random" = "gray", 
-                                    "down" = "dodgerblue")) +
+                                    "down-regulated" = "dodgerblue")) +
       scale_x_continuous(limits=c(0, 20001), 
                          breaks = c(1, 10001, 20001), 
                          labels= c("-10000", "0", "10000")) +
+      
       ggtitle("Peaks for promoters")}
 
 dev.off()
@@ -39,16 +46,12 @@ jpeg("~/ifpan-chipseq-timecourse/PLOTS/lineplot_promotores_relative_changes.jpeg
      width = 1400, 
      height = 802)
 
-read.table("~/ChIP-seq/DATA/significant_random_genes_chip-seq_normalized_bucket_gene_chromosome_start_end_TF_time_file.tsv",
+read.table("~/ChIP-seq/DATA/promotores_peaks_value.tsv",
            header = FALSE,
            sep = "\t",
            stringsAsFactors = FALSE) %>%
   set_colnames(c("gene.name", "chromosome", "start.range", "end.range", "gene.regulation", "TF", "time", "file", 1:40)) %>%
   gather(., "bucket.range", "value", -c("gene.name", "chromosome", "start.range", "end.range", "gene.regulation", "TF", "time", "file")) %>%
-  #replace gene.regulation from 4 cluster to 2 - this is to remove in the future
-  mutate(gene.regulation = {.$gene.regulation %>%
-      str_split(., "-", n = 2, simplify = TRUE) %>%
-      .[,1]}) %>%
   group_by(bucket.range, time, TF, gene.regulation) %>%
   summarize(mean.value = mean(value)) %>%
   mutate(number.regulation=c("down"=1, "random"=3, "up"=2)) %>%
@@ -60,13 +63,13 @@ read.table("~/ChIP-seq/DATA/significant_random_genes_chip-seq_normalized_bucket_
       facet_grid(TF~time, scales = "free_y") +
       theme(axis.text.x = element_text(angle=45, hjust = 1),
             legend.position = "bottom") +
-      scale_color_manual(values = c("up" = "firebrick",
+      scale_color_manual(values = c("up-regulated" = "firebrick",
                                     "random" = "gray",
-                                    "down" = "dodgerblue")) +
+                                    "down-regulated" = "dodgerblue")) +
       scale_x_continuous(limits=c(0, 20001), 
                          breaks = c(1, 10001, 20001), 
                          labels= c("-10000", "0", "10000")) +
-      ggtitle("Relative peak changes gor promoters")}
+      ggtitle("Relative peak changes for promoters")}
 
 dev.off()
 
@@ -90,31 +93,36 @@ jpeg("~/ifpan-chipseq-timecourse/PLOTS/lineplot_promotores_fourTF.jpeg",
      width = 1400, 
      height = 802)
 
-read.table("~/ChIP-seq/DATA/significant_random_genes_chip-seq_normalized_bucket_gene_chromosome_start_end_TF_time_file.tsv", 
+read.table("~/ChIP-seq/DATA/promotores_peaks_value.tsv", 
                                  header = FALSE, 
                                  sep = "\t", 
                                  stringsAsFactors = FALSE) %>% 
   set_colnames(c("gene.name", "chromosome", "start.range", "end.range", "gene.regulation", "TF", "time", "file", 1:40)) %>% 
   gather(., "bucket.range", "value", -c("gene.name", "chromosome", "start.range", "end.range", "gene.regulation", "TF", "time", "file")) %>% 
-  #replace gene.regulation from 4 cluster to 2 - this is to remove in the future
-  mutate(gene.regulation = {.$gene.regulation %>%
-      str_split(., "-", n = 2, simplify = TRUE) %>%
-      .[,1]}) %>% 
   filter(TF %in% filtered_TF) %>% 
   group_by(bucket.range, time, TF, gene.regulation) %>%
   summarize(mean.value = mean(value)) %>% 
   {ggplot(., aes(x = as.numeric(bucket.range)*500, y = mean.value, color = as.factor(gene.regulation))) + 
       geom_line(size = 0.5) + 
       facet_grid(TF~time, scales = "free_y") +
-      theme(legend.position = "bottom") +
-      scale_color_manual(values = c("up" = "firebrick", 
+      theme(axis.text.x = element_text(angle=45, hjust = 1, size = 14),
+            axis.text.y = element_text(size = 14),
+            axis.title.x = element_text(size = 18),
+            axis.title.y = element_text(size = 18),
+            strip.text.x = element_text(size = 16),
+            strip.text.y = element_text(size = 16),
+            legend.title = element_text(size = 18),
+            legend.text = element_text(size = 16),
+            legend.position = "bottom") +
+      scale_color_manual(values = c("up-regulated" = "firebrick", 
                                     "random" = "gray", 
-                                    "down" = "dodgerblue")) +
+                                    "down-regulated" = "dodgerblue")) +
       scale_x_continuous(limits=c(0, 20001), 
                          breaks = c(1, 10001, 20001), 
                          labels= c("-10000", "1", "10000")) +
       ggtitle("Peaks for promoters")}
 
+dev.off()
 
 ###################################################################
 # making plot with peaks promoters for four TF - relative changes #
@@ -123,16 +131,12 @@ jpeg("~/ifpan-chipseq-timecourse/PLOTS/lineplot_promotores_relative_changes_four
      width = 1400, 
      height = 802)
 
-read.table("~/ChIP-seq/DATA/significant_random_genes_chip-seq_normalized_bucket_gene_chromosome_start_end_TF_time_file.tsv",
+read.table("~/ChIP-seq/DATA/promotores_peaks_value.tsv",
                                  header = FALSE,
                                  sep = "\t",
                                  stringsAsFactors = FALSE) %>%
   set_colnames(c("gene.name", "chromosome", "start.range", "end.range", "gene.regulation", "TF", "time", "file", 1:40)) %>%
   gather(., "bucket.range", "value", -c("gene.name", "chromosome", "start.range", "end.range", "gene.regulation", "TF", "time", "file")) %>%
-  #replace gene.regulation from 4 cluster to 2 - this is to remove in the future
-  mutate(gene.regulation = {.$gene.regulation %>%
-      str_split(., "-", n = 2, simplify = TRUE) %>%
-      .[,1]}) %>%
   filter(TF %in% filtered_TF) %>% 
   group_by(bucket.range, time, TF, gene.regulation) %>%
   summarize(mean.value = mean(value)) %>%
@@ -143,12 +147,21 @@ read.table("~/ChIP-seq/DATA/significant_random_genes_chip-seq_normalized_bucket_
   {ggplot(., aes(x = as.numeric(bucket.range)*500, y = relative.value, color = as.factor(gene.regulation))) + 
       geom_line(size = 0.5) + 
       facet_grid(TF~time, scales = "free_y") +
-      theme(axis.text.x = element_text(size=6),
+      theme(axis.text.x = element_text(angle=45, hjust = 1, size = 14),
+            axis.text.y = element_text(size = 14),
+            axis.title.x = element_text(size = 18),
+            axis.title.y = element_text(size = 18),
+            strip.text.x = element_text(size = 16),
+            strip.text.y = element_text(size = 16),
+            legend.title = element_text(size = 18),
+            legend.text = element_text(size = 16),
             legend.position = "bottom") +
-      scale_color_manual(values = c("up" = "firebrick",
+      scale_color_manual(values = c("up-regulated" = "firebrick",
                                     "random" = "gray",
-                                    "down" = "dodgerblue")) +
+                                    "down-regulated" = "dodgerblue")) +
       scale_x_continuous(limits=c(0, 20001), 
                          breaks = c(1, 10001, 20001), 
                          labels= c("-10000", "1", "10000")) +
       ggtitle("Relative peak changes for promoters")}
+
+dev.off()
