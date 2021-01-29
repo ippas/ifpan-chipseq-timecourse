@@ -61,7 +61,14 @@ read.table("~/ChIP-seq/DATA/promotores_peaks_value.tsv",
   {ggplot(., aes(x = as.numeric(bucket.range)*500, y = relative.value, color = as.factor(gene.regulation))) + 
       geom_line(size = 0.5) + 
       facet_grid(TF~time, scales = "free_y") +
-      theme(axis.text.x = element_text(angle=45, hjust = 1),
+      theme(axis.text.x = element_text(angle=45, hjust = 1, size = 14),
+            axis.text.y = element_text(size = 10),
+            axis.title.x = element_text(size = 18),
+            axis.title.y = element_text(size = 18),
+            strip.text.x = element_text(size = 16),
+            strip.text.y = element_text(size = 10),
+            legend.title = element_text(size = 18),
+            legend.text = element_text(size = 16),
             legend.position = "bottom") +
       scale_color_manual(values = c("up-regulated" = "firebrick",
                                     "random" = "gray",
