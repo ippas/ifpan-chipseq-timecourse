@@ -33,12 +33,12 @@ Do wyciągania danych dla Chip-seq z plików bigWig przygotowano skrypty:
 
 RNA-seq data from the ENCODE project were downloaded with [this link](https://www.ncbi.nlm.nih.gov/gds/?term=tim+reddy+dexamethasone+rna-seq) saved as `info-RNA-seq-to-download.txt` in `DATA`. See [this file](DATA/downloads.MD) for details on how the data was downloaded.
 
-1. Uruchomić skrypt [analysis_transcriptome.R](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/analysis_transcriptome.R), który wykonuje:
-- wczytanie danych z plików: [raw_expression_matrix_dexamethasone.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/raw_expression_matrix_dexamethasone.tsv), [sample.info.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/sample.info.tsv), [ID_ID.version_gene.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/ID_ID.version_gene.tsv), (ściągnięty z gene banku), [gene_chromosome_start_end_strand.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/gene_chromosome_start_end_strand.tsv) (ściągnięty z gene banku), [transcript.length.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/transcript_length.tsv) (pobrane z gene banku)
-- na danych z ekspresji genów wykonuje normalize quantiles
-- wykonuje jednoczynnikowę ANOVE, na danych z ekspresji genu
-- wybiera 745 znaczących genów, przy FDR=0.0000001
-- podział na up i down regulowane, przy czym genów down jest 375, up 370
+[analysis_transcriptome.R](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/analysis_transcriptome.R) contains RNAseq analysis code that performs as follows:
+1. Downloaded data are loaded (including data downloaded from genebank)
+2. Raw read counts are normalised (normalize quantiles)
+3. Differentially Expressed Genes (DEGs) are selected based on one-way ANOVA (n = 745 genes with FDR < 0.0000001 treshold)
+4. DEGs were divided into two clusters - upregulated (n = 370) and downregulated (n = 375)
+
 - heatmapę ekspresji
 - wybiera 745 randomowych genów
 - wykres liniowy zmian ekspresji, przy którym od każdej wartości ekspresji dla genu odjęto wartość w czasie zero
