@@ -33,12 +33,12 @@ Do wyciągania danych dla Chip-seq z plików bigWig przygotowano skrypty:
 
 RNA-seq data from the ENCODE project were downloaded with [this link](https://www.ncbi.nlm.nih.gov/gds/?term=tim+reddy+dexamethasone+rna-seq) saved as `info-RNA-seq-to-download.txt` in `DATA`. See [this file](DATA/downloads.MD) for details on how the data was downloaded.
 
-1. Uruchomić skrypt [analysis_transcriptome.R](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/analysis_transcriptome.R), który wykonuje:
-- wczytanie danych z plików: [raw_expression_matrix_dexamethasone.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/raw_expression_matrix_dexamethasone.tsv), [sample.info.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/sample.info.tsv), [ID_ID.version_gene.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/ID_ID.version_gene.tsv), (ściągnięty z gene banku), [gene_chromosome_start_end_strand.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/gene_chromosome_start_end_strand.tsv) (ściągnięty z gene banku), [transcript.length.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/transcript_length.tsv) (pobrane z gene banku)
-- na danych z ekspresji genów wykonuje normalize quantiles
-- wykonuje jednoczynnikowę ANOVE, na danych z ekspresji genu
-- wybiera 745 znaczących genów, przy FDR=0.0000001
-- podział na up i down regulowane, przy czym genów down jest 375, up 370
+[analysis_transcriptome.R](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/analysis_transcriptome.R) contains RNAseq analysis code that performs as follows:
+1. Downloaded data are loaded (including data downloaded from genebank)
+2. Raw read counts are normalised (normalize quantiles)
+3. Differentially Expressed Genes (DEGs) are selected based on one-way ANOVA (n = 745 genes with FDR < 0.0000001 treshold)
+4. DEGs were divided into two clusters - upregulated (n = 370) and downregulated (n = 375)
+
 - heatmapę ekspresji
 - wybiera 745 randomowych genów
 - wykres liniowy zmian ekspresji, przy którym od każdej wartości ekspresji dla genu odjęto wartość w czasie zero
@@ -64,8 +64,12 @@ RNA-seq data from the ENCODE project were downloaded with [this link](https://ww
  ```bash
  ~/ifpan-chipseq-timecourse/SCRIPTS/extract_data_chipseq1.sh
  ```
- 
- 
+> Skrypt wykonuje:
+ - przy pomocy [promotores_peaks_info.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/promotores_peaks_info.tsv) i [bigwig_genomic_bucket500_extract_normalize_to_tsv.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/bigwig_genomic_bucket500_extract_normalize_to_tsv.sh) wyciąga informacje dotyczące przyłączania się TF do DNA w zakresie +/-10000 od TSS i zapisuje do ~/ChIP-seq/DATApromotores_peaks_value.tsv
+ - z trzech próbek tworzy część wspólną peaków w genomie dla NR3C1 dla time = 60
+ - przy pomocy wyznaczonej części wspólnej peaków, wyciąga enhancery znajdujące się w zakresach znajdujących się w [enhancer_info.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/enhancer_info.tsv) (+/-100000 od TSS)
+ - dla wybranych enhancerów korzystając z [bigwig_genomic_amplitude_extract_normalize_to_tsv.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/bigwig_genomic_amplitude_extract_normalize_to_tsv.sh) wyciąga maksymalną wartość przyłączania się TF do peaku i zapisuje dane do: ~/ChIP-seq/DATA/enhancer_amplitude_value.tsv 
+ - dla wybranych enhancerów korzystając z [bigwig_genomic_range_extract_normalize_to_tsv.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/bigwig_genomic_range_extract_normalize_to_tsv.sh) wyciąga wartości przyłączeń się TF na całym zakresie peaku i zapisuje dane do: ~/ChIP-seq/DATA/enhancer_peaks_value.tsv
 
 3. Uruchomić skrypt [visualization_promoters.R](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/visualization_promoters.R), który wykonuje wykresy:
 - wczytuje plik ~/ChIP-seq/DATA/promotores_peaks_value.tsv, który jest wynikiem skryptu [extract_data_chipseq1.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/extract_data_chipseq1.sh)
