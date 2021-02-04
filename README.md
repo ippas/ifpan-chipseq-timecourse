@@ -49,9 +49,9 @@ RNA-seq data from the ENCODE project were downloaded with [this link](https://ww
 - przygotowanie pliku [enhancer_info.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/enhancer_info.tsv) do znalezienia enhancerów
 - oba powyższe pliki zawierają informacje: ensemblid, gene.name, chromosome, start (zakresu), end (zakresu), gene.regulation
 
-![Kiku](PLOTS/heatmap_expression_significant.jpeg)
+![Kiku](PLOTS/heatmap_expression_significant.svg)
 
-![Kiku](PLOTS/lineplot_change_expression.jpeg)
+![Kiku](PLOTS/lineplot_change_expression.svg)
 
 ![Kiku](PLOTS/boxplot_MCTP.jpeg)
 
