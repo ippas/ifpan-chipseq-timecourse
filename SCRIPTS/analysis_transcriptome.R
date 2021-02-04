@@ -13,6 +13,9 @@ FDR_THRESHOLD=0.001
 install.packages("BiocManager")
 require(BiocManager)
 BiocManager::install("preprocessCore")
+install.packages('svglite')
+require(svglite)
+
 
 
 raw.data <- read.delim("~/ifpan-chipseq-timecourse/DATA/raw_expression_matrix_dexamethasone.tsv",  
@@ -50,12 +53,12 @@ raw.data[, 3:48] %>%
 #quantile normalization
 raw.data[, 3:48] %>% 
   as.matrix() %>% 
-  normalize.quantiles() %>% 
+  normalize.quantiles() %>%
   set_rownames(., rownames(data)) %>% 
   set_colnames(colnames(data)) -> data
 
 
-ID_ID.version_gene <- read.delim("~/ifpan-chipseq-timecourse/DATA/ID_ID.version_gene.tsv", 
+genes.names <- read.delim("~/ifpan-chipseq-timecourse/DATA/ID_ID.version_gene.tsv", 
                                  header = TRUE, 
                                  stringsAsFactors = FALSE)
 
@@ -71,7 +74,7 @@ results <- raw.data[, -(3:48)] %>%
   mutate(Gene.stable.ID = .$Geneid %>% 
            str_split(., fixed("."), n = 2, simplify = TRUE) %>% 
            .[, 1]) %>%
-  left_join(., ID_ID.version_gene, by = "Gene.stable.ID") %>%
+  left_join(., genes.names, by = "Gene.stable.ID") %>%
   rename(ensemblid = Gene.stable.ID,
          gene.name = Gene.name) %>%
   select(-Gene.stable.ID.version) %>%
@@ -117,9 +120,12 @@ tmp_dend <- as.dist(1-cor(t(to.plot), method = "spearman")) %>%
   color_branches(., k = number_clusters, col=c("dodgerblue", "firebrick"))
 
 #Create heatmap changes in expression significant genes
-jpeg("~/ifpan-chipseq-timecourse/PLOTS/heatmap_expression_significant.jpeg", 
-     width = 1400, 
-     height = 802)
+# jpeg("~/ifpan-chipseq-timecourse/PLOTS/heatmap_expression_significant.jpeg", 
+#      width = 1400, 
+#      height = 802)
+svglite(file = "~/dexamethasone/heatmap_expression_significant.svg", 
+        width = 10,
+        height = 8)
 
 heatmap.2(to.plot,
           trace="none",
@@ -151,7 +157,7 @@ gene_regulation <- to.plot %>%
   mutate(gene.regulation = recode(number_regulation,
                                   `1` = "up-regulated",
                                   `2` = "down-regulated")) %>%
-  select(gene.name, gene.regulation) 
+  select(gene.name, gene.regulation)
 
 ##########################################################
 
@@ -193,6 +199,8 @@ for (i in seq_along(expression.pattern$mids)) {
 
 
 hist(log2(as.numeric(random$mean.expression)+1), breaks=10)
+
+dev.off()
 
 data %>% data.frame() %>%
   filter(rownames(data) %in% random$Geneid) %>%
@@ -250,7 +258,7 @@ to.plot %>%
   arrange(gene.name, time) %>% 
   group_by(gene.name, gene.regulation) %>%
   mutate(mean = mean - mean[1]) %>% 
-  ungroup %>%
+  ungroup %>% 
   {ggplot(., 
           aes(x = as.numeric(time), y = mean, color = as.factor(gene.regulation))) +
       geom_line(aes(group = gene.name), alpha = 0.01) +
@@ -269,8 +277,62 @@ dev.off()
 rm(to.plot,
    tmp_dend)
 
-###############################################################################
+#########################
+# Max change time point #
+#########################
+column_differences <- function(z){
+  m <- c(z[1], z[2])
+  for(i in c(4:14)){
+    y <- abs(as.numeric(z[i]) - as.numeric(z[i-1]))
+    m <-c(m, y)
+  }
+  return(m)
+}
 
+
+data[order(results$pvalue)[1:number_signification_genes],] %>%
+  as.matrix() %>% 
+  #normalize.quantiles() %>% 
+  set_rownames(., rownames(raw.data[match(results.filtered$Geneid, rownames(raw.data)),3:48])) %>% 
+  set_colnames(colnames(raw.data[match(results.filtered$Geneid, rownames(raw.data)),3:48])) %>% 
+  {rownames(.) <- results$gene.name[order(results$pvalue)[1:number_signification_genes]]; .}  %>%
+  as.data.frame() %>% 
+  rownames_to_column(., var = "gene.name") %>% 
+  gather(., key = "samplied", value = "value_expression", -gene.name) %>%
+  left_join(., {samples %>% select(samplied, time)}) %>% 
+  select(-samplied) %>% 
+  group_by(gene.name, time) %>%
+  summarise(mean_value_expression = as.numeric(mean(value_expression))) %>% 
+  left_join(., gene_regulation, by = "gene.name") %>% 
+  spread(., key = "time", value = "mean_value_expression") %>% 
+  as.data.frame() %>% 
+  apply(., 1, column_differences) %>% 
+  t %>% 
+  set_colnames(c("gene.name", "gene.regulation", "15","45", "90", "150", "210", "270", "330", "390", "450", "540", "660")) %>% 
+  as.data.frame() %>%
+  gather(., key = "time", value = "value", -c(gene.name, gene.regulation)) %>%
+  mutate(value = as.numeric(value)) %>% 
+  spread(., key = "time", value = "value") %>% 
+  mutate(sum_row = apply(., 1, function(x){sum(as.numeric(x[3:13]))})) %>% 
+  gather(., key = "time", value = "value", -c(gene.name, gene.regulation, sum_row)) %>% 
+  mutate(time = as.numeric(time)) %>% 
+  mutate(time_value = time *  value) %>%
+  group_by(gene.name, gene.regulation, sum_row) %>%
+  summarise(sum_time_value = sum(time_value)) %>%
+  mutate(max_change_time_point = sum_time_value/sum_row) -> max.change.time.point.significant
+
+jpeg("~/ifpan-chipseq-timecourse/PLOTS/boxplot_MCTP.jpeg", 
+     width = 1400, 
+     height = 802)
+
+max.change.time.point.significant %>%
+{ggplot(., aes(x = gene.regulation, y = max_change_time_point)) +
+    geom_boxplot() +
+    labs(x = "Gene regulation",
+         y = "Time [min]") +
+    ggtitle("Max change time point")}
+
+dev.off()
 
 
 ###########################################
@@ -340,8 +402,6 @@ data[order(results$pvalue)[1:number_signification_genes],] %>%
             by = "gene.name") %>%  
   mutate(log.median = log(median)) %>% 
   {ggplot(.,aes(x = median)) + 
-      #geom_density(aes(color = gene.regulation)) +
-      #geom_histogram(aes(y=..ndensity..))
       geom_histogram(aes(y=..density.., fill = gene.regulation), position="identity", alpha=0.4, bins = 30) +
       scale_color_manual(values = c("up-regulated" = "firebrick",
                                     "random" = "gray20",
@@ -350,7 +410,7 @@ data[order(results$pvalue)[1:number_signification_genes],] %>%
                                    "random" = "gray",
                                    "down-regulated" = "dodgerblue")) +
       
-      ggtitle(" transcript length histogram")
+      ggtitle("Transcript length")
   } 
 
 dev.off()
