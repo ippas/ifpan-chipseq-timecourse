@@ -33,21 +33,15 @@ Do wyciągania danych dla Chip-seq z plików bigWig przygotowano skrypty:
 
 RNA-seq data from the ENCODE project were downloaded with [this link](https://www.ncbi.nlm.nih.gov/gds/?term=tim+reddy+dexamethasone+rna-seq) saved as `info-RNA-seq-to-download.txt` in `DATA`. See [this file](DATA/downloads.MD) for details on how the data was downloaded.
 
-[analysis_transcriptome.R](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/analysis_transcriptome.R) contains RNAseq analysis code that performs as follows:
+[analysis_transcriptome.R](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/analysis_transcriptome.R) contains RNAseq analysis code:
+
 1. Downloaded data are loaded (including data downloaded from genebank)
 2. Raw read counts are normalised (normalize quantiles)
 3. Differentially Expressed Genes (DEGs) are selected based on one-way ANOVA (n = 745 genes with FDR < 0.0000001 treshold)
-4. DEGs were divided into two clusters - upregulated (n = 370) and downregulated (n = 375)
-
-- heatmapę ekspresji
-- wybiera 745 randomowych genów
-- wykres liniowy zmian ekspresji, przy którym od każdej wartości ekspresji dla genu odjęto wartość w czasie zero
-- boxplot max change time point
-- histogram RPKM, dla którego wartości zostały policzone według [wzoru](https://www.biostars.org/p/273537/)
-- histogram długości transkryptów, korzystając z pliku pobranego z gene banku [transcript.length.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/transcript_length.tsv), przy czym wybierano medianę z traknskryptów dla danego genu
-- przygotowanie pliku [promotores_peaks_info.tsv]()https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/promotores_peaks_info.tsv do wizualizacji przyłączania TF do promotorów 
-- przygotowanie pliku [enhancer_info.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/enhancer_info.tsv) do znalezienia enhancerów
-- oba powyższe pliki zawierają informacje: ensemblid, gene.name, chromosome, start (zakresu), end (zakresu), gene.regulation
+4. DEGs are divided into two clusters - upregulated (n = 370) and downregulated (n = 375)
+5. A list of random genes with similar expression levels is chosen (n = 745)
+6. Following graphs are prepared: line graph, heatmap, boxplot of weighted timepoint of max change, RPKM histogram (calculated according to [this info](https://www.biostars.org/p/273537/), transcript length histogram (accordint to: [transcript.length.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/transcript_length.tsv)
+7. Additional tables for further analyses are prepared: [promotores_peaks_info.tsv]()https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/promotores_peaks_info.tsv and [enhancer_info.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/enhancer_info.tsv) do znalezienia enhancerów - these ables contain information about gene identifiers, location and cluster.
 
 ![Kiku](PLOTS/heatmap_expression_significant.svg)
 
