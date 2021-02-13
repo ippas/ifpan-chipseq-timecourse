@@ -49,9 +49,9 @@ RNA-seq data from the ENCODE project were downloaded with [this link](https://ww
 
 ![Kiku](PLOTS/boxplot_MCTP.jpeg)
 
-![Kiku](PLOTS/histogram_RPKM.jpeg)
+![Kiku](PLOTS/histogram_RPKM.svg)
 
-![Kiku](PLOTS/histogram_transcript_lenght.jpeg)
+![Kiku](PLOTS/histogram_transcript_lenght.svg)
 
 2. Uruchomić skrypt [extract_data_chipseq1.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/extract_data_chipseq1.sh) komendą:
  
@@ -72,13 +72,13 @@ RNA-seq data from the ENCODE project were downloaded with [this link](https://ww
 - wykres liniowy predstawiający średnią z grupy przyłączenia się TF (wybrane cztery TF: EP300, H3K27ac, H3K4me1, NR3C1) do promotorów w pozycjach =/- 10000 od TSS,
 - wykres liniowy predstawiający średnią z grupy przyłączenia się TF (wybrane cztery TF: EP300, H3K27ac, H3K4me1, NR3C1) do promotorów w pozycjach =/- 10000 od TSS, w odniesieniu do genów z grupy random
 
-![Kiku](PLOTS/lineplot_promotores.jpeg)
+![Kiku](PLOTS/lineplot_promotores.svg)
 
-![Kiku](PLOTS/lineplot_promotores_relative_changes.jpeg)
+![Kiku](PLOTS/lineplot_promotores_relative_changes.svg)
 
-![Kiku](PLOTS/lineplot_promotores_fourTF.jpeg)
+![Kiku](PLOTS/lineplot_promotores_fourTF.svg)
 
-![Kiku](PLOTS/lineplot_promotores_relative_changes_fourTF.jpeg)
+![Kiku](PLOTS/lineplot_promotores_relative_changes_fourTF.svg)
 
 4. Uruchomić skrypt [visualization_amplitudes.R](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/visualization_amplitudes.R), który:
 - wczytuje plik ~/ChIP-seq/DATA/enhancer_amplitude_value.tsv, będący wynikiem skryptu [extract_data_chipseq1.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/extract_data_chipseq1.sh)
