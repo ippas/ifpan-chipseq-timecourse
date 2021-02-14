@@ -50,7 +50,7 @@ raw.data[, 3:48] %>%
 #quantile normalization
 raw.data[, 3:48] %>% 
   as.matrix() %>% 
-  normalize.quantiles() %>% 
+  normalize.quantiles() %>%
   set_rownames(., rownames(data)) %>% 
   set_colnames(colnames(data)) -> data
 
@@ -86,6 +86,7 @@ number_signification_genes <- results %>%
   filter(fdr < 0.0000001) %>% 
   nrow()
 
+#test before corelation data to heat map
 results %>% 
   mutate(fdr = p.adjust(results$pvalue, method = "fdr")) %>% 
   filter(fdr < 0.0000001) -> results.filtered
@@ -214,7 +215,7 @@ jpeg("~/ifpan-chipseq-timecourse/PLOTS/lineplot_up_down_regulation_significant_g
 to.plot %>%  
   melt() %>% 
   na.omit() %>% 
-  as.data.frame() %>%
+  as.data.frame() %>% 
   mutate(Var2 = str_remove_all(Var2, pattern = "_rep" %R% one_or_more(DGT))) %>%
   mutate(Var2 = str_remove(Var2, pattern = START %R% "t")) %>% 
   mutate(Var2 = 60 * as.numeric(recode(Var2, 
@@ -314,16 +315,15 @@ data[order(results$pvalue)[1:number_signification_genes],] %>%
             by = "gene.name") %>%  
   mutate(log.median = log(median)) %>% 
   {ggplot(.,aes(x = median)) + 
-      geom_density(aes(y=(..density..)/sum(..density..), color = gene.regulation)) +
-      # geom_histogram(aes(y=..ndensity..))
-      # geom_histogram(aes(y=(..density..)/sum(..density..),fill = gene.regulation), position="identity", alpha=0.4, bins = 30) +
+      #geom_density(aes(color = gene.regulation)) +
+      #geom_histogram(aes(y=..ndensity..))
+      geom_histogram(aes(y=..density.., fill = gene.regulation), position="identity", alpha=0.4, bins = 30) +
       scale_color_manual(values = c("up-regulated" = "firebrick",
                                     "random" = "gray20",
                                     "down-regulated" = "dodgerblue")) +
       scale_fill_manual(values = c("up-regulated" = "firebrick",
                                     "random" = "gray",
                                     "down-regulated" = "dodgerblue")) +
-      #stat_ecdf(geom="point") +
       ggtitle(" transcript length histogram")
   } 
 
@@ -335,7 +335,7 @@ data[order(results$pvalue)[1:number_signification_genes],] %>%
 #            stringsAsFactors = FALSE) %>%  
 
 #prepare and save to file information to extract range for promoters up, down and random regulated genes
-random %>%
+random %>% 
   select(ensemblid, gene.name) %>%
   left_join(., gene_chromosome_start_end_strand, by = c("ensemblid" = "Gene.stable.ID")) %>%
   mutate(pos=Gene.start..bp. * (Strand == 1) + Gene.end..bp. * (Strand == -1)) %>% 
@@ -350,7 +350,7 @@ random %>%
                select("ensemblid", "gene.name", "Chromosome.scaffold.name", "start", "end") %>%
                set_colnames(c("ensemblid", "gene.name", "chromosome", "start", "end")) %>% 
                left_join(., gene_regulation, by = "gene.name") %>% 
-               na.omit()}) %>%
+               na.omit()}) %>% 
   mutate(start = if_else(start < 0, 0, start)) %>% 
   fwrite("~/ifpan-chipseq-timecourse/DATA/significant_and_random_genes_ensemblid_genename_chromosome_start_end.tsv", 
          sep="\t", 
@@ -378,7 +378,8 @@ read.table("~/ChIP-seq/DATA/significant_random_genes_chip-seq_normalized_bucket_
   {ggplot(., aes(x = as.numeric(bucket.range)*500, y = mean.value, color = as.factor(gene.regulation))) + 
       geom_line(size = 0.5) + 
       facet_grid(TF~time, scales = "free_y") +
-      theme(legend.position = "bottom") +
+      theme(axis.text.x = element_text(angle=45, hjust = 1),
+            legend.position = "bottom") +
       scale_color_manual(values = c("up" = "firebrick", 
                                     "random" = "gray", 
                                     "down" = "dodgerblue")) +
@@ -448,9 +449,14 @@ jpeg("~/ifpan-chipseq-timecourse/PLOTS/boxplot_significant_random_genes_stronges
 merge(x = tmp_significant_random_genes_peak_normalized_amplitude,
       y = {tmp_significant_random_genes_peak_normalized_amplitude %>% 
           group_by(gene.name, start.range, TF, gene.regulation) %>%
-          summarise(tmp_mean_alltime_amplitude = mean (amplitude))}) %>%
-  group_by(gene.name, TF, gene.regulation) %>%
-  filter(tmp_mean_alltime_amplitude == max(tmp_mean_alltime_amplitude)) %>% 
+          summarise(tmp_mean_alltime_amplitude = mean (amplitude))}) %>% filter(TF == "NR3C1") %>% 
+  group_by(gene.name, TF, gene.regulation) %>%  #select(tmp_mean_alltime_amplitude)
+  #summarise(max = max(tmp_mean_alltime_amplitude)) %>% 
+  #select(tmp_mean_alltime_amplitude) %>% unique
+  #summarise(max(tmp_mean_alltime_amplitude)) %>% head
+  filter(tmp_mean_alltime_amplitude == max(tmp_mean_alltime_amplitude)) 
+  ungroup %>%
+  select(c(gene.name, start.range)) %>% unique
   group_by(gene.name, start.range, time, TF, gene.regulation) %>% 
   summarise(mean.max.peak = mean(amplitude)) %>% 
   {ggplot(., aes(x = as.factor(time), y = log(mean.max.peak), color = gene.regulation)) +
@@ -468,86 +474,6 @@ merge(x = tmp_significant_random_genes_peak_normalized_amplitude,
 dev.off()
 
 
-jpeg("~/ifpan-chipseq-timecourse/PLOTS/boxplot_significant_random_genes_mean_peaks.jpeg", 
-       width = 1400, 
-       height = 802)
-
-#making boxplot for all peaks for each gene
-# tmp_significant_random_genes_peak_normalized_amplitude %>%
-#   group_by(gene.name, start.range, time, TF, gene.regulation) %>% 
-#   summarise(mean.max.peak = mean(amplitude)) %>% 
-#   ggplot(., aes(x = as.factor(time), y = log(mean.max.peak), color = gene.regulation)) +
-#   #geom_boxplot(aes(group = cut_width(as.factor(time),  width = 0.02)), position=position_dodge(), stat="identity") +
-#   geom_boxplot(position = position_dodge(), outlier.size = 0) +  
-#   facet_wrap(TF ~ ., ncol = 4, scales = "free_y" ) +
-#   theme(legend.position = "bottom") +
-#   ggtitle("boxplot_significant_random_genes_mean_peaks")
-
-dev.off()
-
-#Two way ANOVA for the strogest peaks
-merge(x = tmp_significant_random_genes_peak_normalized_amplitude,
-      y = {tmp_significant_random_genes_peak_normalized_amplitude %>% 
-          group_by(gene.name, start.range, TF, gene.regulation) %>%
-          summarise(tmp_mean_alltime_amplitude = mean (amplitude))}) %>%
-  group_by(gene.name, start.range, time, TF, gene.regulation) %>%
-  mutate(mean_three_sample_peak = mean(amplitude)) %>% 
-  select(gene.name, start.range, time, TF, gene.regulation, mean_three_sample_peak) %>%
-  mutate(log.mean.max.peak = log(mean_three_sample_peak + 1))  -> tmp_maxpeak_data_to_ANOVA
-  
-
-lapply(setNames({tmp_significant_random_genes_peak_normalized_amplitude %>% select(TF) %>% .[order(.$TF),] %>% unique()}, 
-                {tmp_significant_random_genes_peak_normalized_amplitude %>% select(TF) %>% .[order(.$TF),] %>% unique()}),  
-       function(x) {tmp_maxpeak_data_to_ANOVA %>% 
-           filter(TF == x)%>% 
-           aov(log.mean.max.peak~time*gene.regulation, data = .) %>% 
-           summary() %>% 
-           .[[1]] %>% 
-           .[1:3,5]}) %>% 
-  as.data.frame() %>%
-  t() %>%
-  as.data.frame() %>%
-  rownames_to_column() %>%
-  set_colnames(c("TF", "anova.time", "anova.gene.regulation", "anova.interaction")) %>%
-  mutate(fdr.time = p.adjust(.$anova.time, method = "fdr"),
-         fdr.gene.regulation = p.adjust(.$anova.gene.regulation, method = "fdr"),
-         fdr.interaction = p.adjust(.$anova.interaction, method = "fdr")) %>%
-  fwrite("~/ifpan-chipseq-timecourse/DATA/max-peak_TF_ANOVA-time-gene.regulation-interaction_fdr-time-gene.regulation-interaction.tsv", 
-         sep="\t", 
-         col.names = TRUE, 
-         row.names = FALSE)
-
-rm(tmp_maxpeak_data_to_ANOVA)
-
-#Two way ANOVA for all peaks
-tmp_significant_random_genes_peak_normalized_amplitude %>%
-  group_by(gene.name, start.range, time, TF, gene.regulation) %>% 
-  summarise(mean.peak = mean(amplitude)) %>%
-  select(gene.name, start.range, time, TF, gene.regulation, mean.peak) %>%
-  mutate(log.mean.peak = log(mean.peak + 1)) -> tmp_allpeak_data_to_ANOVA
-
-lapply(setNames({tmp_significant_random_genes_peak_normalized_amplitude %>% select(TF) %>% .[order(.$TF),] %>% unique()}, 
-                {tmp_significant_random_genes_peak_normalized_amplitude %>% select(TF) %>% .[order(.$TF),] %>% unique()}),  
-       function(x) {tmp_allpeak_data_to_ANOVA %>% 
-           filter(TF == x)%>% 
-           aov(log.mean.peak~time*gene.regulation, data = .) %>% 
-           summary() %>% 
-           .[[1]] %>% 
-           .[1:3,5]}) %>% 
-  as.data.frame() %>%
-  t() %>%
-  as.data.frame() %>%
-  rownames_to_column() %>%
-  set_colnames(c("TF", "anova.time", "anova.gene.regulation", "anova.interaction")) %>%
-  mutate(fdr.time = p.adjust(.$anova.time, method = "fdr"),
-         fdr.gene.regulation = p.adjust(.$anova.gene.regulation, method = "fdr"),
-         fdr.interaction = p.adjust(.$anova.interaction, method = "fdr")) %>%
-  fwrite("~/ifpan-chipseq-timecourse/DATA/all-peak_TF_ANOVA-time-gene.regulation-interaction_fdr-time-gene.regulation-interaction.tsv", 
-         sep="\t", 
-         col.names = TRUE, 
-         row.names = FALSE)
-
-rm(tmp_allpeak_data_to_ANOVA)
 
 #calculation mean weighted time
 ##strogest peak
@@ -577,7 +503,7 @@ merge(x = tmp_significant_random_genes_peak_normalized_amplitude,
           group_by(gene.name, start.range, TF, gene.regulation) %>%
           summarise(tmp_mean_alltime_amplitude = mean (amplitude))}) %>% 
   group_by(gene.name, TF, gene.regulation) %>% 
-  filter(tmp_mean_alltime_amplitude == max(tmp_mean_alltime_amplitude)) %>% filter(TF == "NR3C1") %>% dim
+  filter(tmp_mean_alltime_amplitude == max(tmp_mean_alltime_amplitude)) %>% 
   group_by(gene.name, start.range, time, TF, gene.regulation) %>%
   summarise(mean.max.peak = mean(amplitude))  %>%
   spread(., key = "time", value = "mean.max.peak") %>%
@@ -596,20 +522,6 @@ merge(x = tmp_significant_random_genes_peak_normalized_amplitude,
   }
 
 
-#checking if normalization is performed on RNA-seq
-to.plot %>%
-  as.data.frame() %>%
-  mutate(gene.name = rownames(.)) %>%
-  gather(., "time.sample", "value.RNAseq", -c(gene.name)) %>% 
-  mutate(number.sample = .$time.sample %>%
-           str_split(., "_", n =2, simplify = TRUE) %>%
-           .[,2]) %>%
-  mutate(time = .$time.sample %>%
-           str_split(., "_", n =2, simplify = TRUE) %>%
-           .[,1]) %>%
-  {ggplot(., aes(x=number.sample, y=value.RNAseq)) +
-      geom_boxplot() + 
-      facet_wrap(time ~., ncol = 4)}
 
 
 

@@ -1,10 +1,13 @@
 ###############################################
 # making plot with peaks promoters for all TF #
 ###############################################
-jpeg("~/ifpan-chipseq-timecourse/PLOTS/lineplot_promotores.jpeg", 
-#jpeg("~/dexamethasone/lineplot_promotores.jpeg", 
-     width = 1400, 
-     height = 802)
+# jpeg("~/ifpan-chipseq-timecourse/PLOTS/lineplot_promotores.jpeg", 
+# #jpeg("~/dexamethasone/lineplot_promotores.jpeg", 
+#      width = 1400, 
+#      height = 802)
+svglite(file = "~/ifpan-chipseq-timecourse/PLOTS/lineplot_promotores.svg", 
+        width = 10,
+        height = 8)
 
 read.table("~/ChIP-seq/DATA/promotores_peaks_value.tsv", 
            header = FALSE, 
@@ -42,9 +45,12 @@ dev.off()
 ##################################################################
 # making plot with peaks promoters for all TF - relative changes #
 ##################################################################
-jpeg("~/ifpan-chipseq-timecourse/PLOTS/lineplot_promotores_relative_changes.jpeg", 
-     width = 1400, 
-     height = 802)
+# jpeg("~/ifpan-chipseq-timecourse/PLOTS/lineplot_promotores_relative_changes.jpeg", 
+#      width = 1400, 
+#      height = 802)
+svglite(file = "~/ifpan-chipseq-timecourse/PLOTS/lineplot_promotores_relative_changes.svg", 
+        width = 10,
+        height = 8)
 
 read.table("~/ChIP-seq/DATA/promotores_peaks_value.tsv",
            header = FALSE,
@@ -80,9 +86,9 @@ read.table("~/ChIP-seq/DATA/promotores_peaks_value.tsv",
 
 dev.off()
 
-#################
-# Choosefour TF #
-#################
+##################
+# Choose four TF #
+##################
 filtered_TF <- tmp_significant_random_genes_peak_normalized_amplitude %>% 
   select(TF) %>% 
   unique() %>% 
@@ -96,9 +102,12 @@ filtered_TF <- tmp_significant_random_genes_peak_normalized_amplitude %>%
 ################################################
 # making plot with peaks promoters for four TF #
 ################################################
-jpeg("~/ifpan-chipseq-timecourse/PLOTS/lineplot_promotores_fourTF.jpeg", 
-     width = 1400, 
-     height = 802)
+# jpeg("~/ifpan-chipseq-timecourse/PLOTS/lineplot_promotores_fourTF.jpeg", 
+#      width = 1400, 
+#      height = 802)
+svglite(file = "~/ifpan-chipseq-timecourse/PLOTS/lineplot_promotores_fourTF.svg", 
+        width = 10,
+        height = 8)
 
 read.table("~/ChIP-seq/DATA/promotores_peaks_value.tsv", 
                                  header = FALSE, 
@@ -134,9 +143,12 @@ dev.off()
 ###################################################################
 # making plot with peaks promoters for four TF - relative changes #
 ###################################################################
-jpeg("~/ifpan-chipseq-timecourse/PLOTS/lineplot_promotores_relative_changes_fourTF.jpeg", 
-     width = 1400, 
-     height = 802)
+# jpeg("~/ifpan-chipseq-timecourse/PLOTS/lineplot_promotores_relative_changes_fourTF.jpeg", 
+#      width = 1400, 
+#      height = 802)
+svglite(file = "~/ifpan-chipseq-timecourse/PLOTS/lineplot_promotores_relative_changes_fourTF.svg", 
+        width = 10,
+        height = 8)
 
 read.table("~/ChIP-seq/DATA/promotores_peaks_value.tsv",
                                  header = FALSE,

@@ -101,7 +101,7 @@ results %>%
 
 to.plot <- data[order(results$pvalue)[1:number_signification_genes],] %>%
   as.matrix() %>% 
-  normalize.quantiles() %>% 
+  #normalize.quantiles() %>% 
   set_rownames(., rownames(raw.data[match(results.filtered$Geneid, rownames(raw.data)),3:48])) %>% 
   set_colnames(colnames(raw.data[match(results.filtered$Geneid, rownames(raw.data)),3:48])) %>%
   
@@ -117,13 +117,13 @@ number_clusters <- 2
 tmp_dend <- as.dist(1-cor(t(to.plot), method = "spearman")) %>% 
   hclust %>% 
   as.dendrogram %>% 
-  color_branches(., k = number_clusters, col=c("dodgerblue", "firebrick"))
+  color_branches(., k = number_clusters, col=c("firebrick", "dodgerblue"))
 
 #Create heatmap changes in expression significant genes
 # jpeg("~/ifpan-chipseq-timecourse/PLOTS/heatmap_expression_significant.jpeg", 
 #      width = 1400, 
 #      height = 802)
-svglite(file = "~/dexamethasone/heatmap_expression_significant.svg", 
+svglite(file = "~/ifpan-chipseq-timecourse/PLOTS/heatmap_expression_significant.svg", 
         width = 10,
         height = 8)
 
@@ -197,6 +197,20 @@ for (i in seq_along(expression.pattern$mids)) {
   rm(temp.random)
 }
 
+#################################################################
+###########################################
+# reconstruction random genes # to remove #
+###########################################
+read.delim("~/ifpan-chipseq-timecourse/DATA/enhancer_info.tsv", 
+           header = TRUE, 
+           stringsAsFactors = FALSE) %>% 
+  filter(gene.regulation == "random") %>%
+  select(gene.name) %>%
+  left_join(., results, by = "gene.name") %>%
+  select(-mean.expression) -> random
+#################################################################
+
+
 
 hist(log2(as.numeric(random$mean.expression)+1), breaks=10)
 
@@ -232,9 +246,12 @@ random.prepared %>% melt() %>%
 # Create line plot relative changes in expression significant and random genes#
 ###############################################################################
 
-jpeg("~/ifpan-chipseq-timecourse/PLOTS/lineplot_change_expression.jpeg", 
-     width = 1400, 
-     height = 802)
+# jpeg("~/ifpan-chipseq-timecourse/PLOTS/lineplot_change_expression.jpeg", 
+#      width = 1400, 
+#      height = 802)
+svglite(file = "~/ifpan-chipseq-timecourse/PLOTS/lineplot_change_expression.svg", 
+        width = 10,
+        height = 8)
 
 to.plot %>%  
   melt() %>% 
@@ -263,6 +280,13 @@ to.plot %>%
           aes(x = as.numeric(time), y = mean, color = as.factor(gene.regulation))) +
       geom_line(aes(group = gene.name), alpha = 0.01) +
       geom_smooth(aes(group = gene.regulation), se = FALSE, size = 1) +
+      theme(axis.text.x = element_text(size = 14),
+            axis.text.y = element_text(size = 10),
+            axis.title.x = element_text(size = 18),
+            axis.title.y = element_text(size = 18),
+            legend.title = element_text(size = 18),
+            legend.text = element_text(size = 16),
+            legend.position = "bottom") +
       scale_color_manual(values = c("random" = "gray",
                                     "up-regulated" = "firebrick", 
                                     "down-regulated" = "dodgerblue")) +
@@ -292,7 +316,6 @@ column_differences <- function(z){
 
 data[order(results$pvalue)[1:number_signification_genes],] %>%
   as.matrix() %>% 
-  #normalize.quantiles() %>% 
   set_rownames(., rownames(raw.data[match(results.filtered$Geneid, rownames(raw.data)),3:48])) %>% 
   set_colnames(colnames(raw.data[match(results.filtered$Geneid, rownames(raw.data)),3:48])) %>% 
   {rownames(.) <- results$gene.name[order(results$pvalue)[1:number_signification_genes]]; .}  %>%
@@ -321,18 +344,21 @@ data[order(results$pvalue)[1:number_signification_genes],] %>%
   summarise(sum_time_value = sum(time_value)) %>%
   mutate(max_change_time_point = sum_time_value/sum_row) -> max.change.time.point.significant
 
-jpeg("~/ifpan-chipseq-timecourse/PLOTS/boxplot_MCTP.jpeg", 
-     width = 1400, 
-     height = 802)
-
-max.change.time.point.significant %>%
-{ggplot(., aes(x = gene.regulation, y = max_change_time_point)) +
-    geom_boxplot() +
-    labs(x = "Gene regulation",
-         y = "Time [min]") +
-    ggtitle("Max change time point")}
-
-dev.off()
+# jpeg("~/ifpan-chipseq-timecourse/PLOTS/boxplot_MCTP.jpeg", 
+#      width = 1400, 
+#      height = 802)
+# svglite(file = "~/ifpan-chipseq-timecourse/PLOTS/boxplot_MCTP.jpeg", 
+#         width = 10,
+#         height = 8)
+# 
+# max.change.time.point.significant %>%
+# {ggplot(., aes(x = gene.regulation, y = max_change_time_point)) +
+#     geom_boxplot() +
+#     labs(x = "Gene regulation",
+#          y = "Time [min]") +
+#     ggtitle("Max change time point")}
+# 
+# dev.off()
 
 
 ###########################################
@@ -352,9 +378,9 @@ tmp_transcript_length <- as.data.frame(read.delim("~/ifpan-chipseq-timecourse/DA
   set_colnames(c("ensemblid", "median"))
 
 
-jpeg("~/ifpan-chipseq-timecourse/PLOTS/histogram_RPKM.jpeg", 
-     width = 1400, 
-     height = 802)
+svglite(file = "~/ifpan-chipseq-timecourse/PLOTS/histogram_RPKM.svg", 
+        width = 10,
+        height = 8)
 
 # Historgram RPKM (some number ensemblid do not have match)
 data[order(results$pvalue)[1:number_signification_genes],] %>% 
@@ -373,6 +399,12 @@ data[order(results$pvalue)[1:number_signification_genes],] %>%
   {ggplot(.,aes(x = log2mean)) + 
       geom_density(aes(y=..density.., color = gene.regulation)) +
       geom_histogram(aes(y=..density.., fill = gene.regulation), position="identity", alpha=0.4, bins = 30) +
+      theme(axis.text.x = element_text(size = 14),
+            axis.text.y = element_text(size = 10),
+            axis.title.x = element_text(size = 18),
+            axis.title.y = element_text(size = 18),
+            legend.title = element_text(size = 18),
+            legend.text = element_text(size = 16)) +
       scale_color_manual(values = c("up-regulated" = "firebrick",
                                     "random" = "gray20",
                                     "down-regulated" = "dodgerblue")) +
@@ -385,13 +417,13 @@ data[order(results$pvalue)[1:number_signification_genes],] %>%
 dev.off()
 
 
-jpeg("~/ifpan-chipseq-timecourse/PLOTS/histogram_transcript_lenght.jpeg", 
-     width = 1400, 
-     height = 802)
+svglite(file = "~/ifpan-chipseq-timecourse/PLOTS/histogram_transcript_lenght.svg", 
+        width = 10,
+        height = 8)
 
 #historgram for FPKM
 data[order(results$pvalue)[1:number_signification_genes],] %>% 
-  rbind(., data[random$Geneid,]) %>%
+  rbind(., data[random$Geneid,]) %>% 
   as.data.frame() %>%
   mutate(ensemblid = {rownames(.) %>% str_split(., fixed("."), n=2, simplify = TRUE) %>% .[,1]}) %>%
   left_join(., tmp_transcript_length, by = "ensemblid") %>% 
@@ -400,9 +432,16 @@ data[order(results$pvalue)[1:number_signification_genes],] %>%
   select(ensemblid, median, gene.name) %>% 
   left_join(., rbind(gene_regulation, random  %>% select(gene.name) %>% mutate(gene.regulation = "random")), 
             by = "gene.name") %>%  
-  mutate(log.median = log(median)) %>% 
+  mutate(log.median = log(median)) %>%
+  filter(median < 90000) %>%
   {ggplot(.,aes(x = median)) + 
-      geom_histogram(aes(y=..density.., fill = gene.regulation), position="identity", alpha=0.4, bins = 30) +
+      geom_histogram(aes(y=..density.., fill = gene.regulation), position="identity", alpha=0.4) +
+      theme(axis.text.x = element_text(size = 14),
+            axis.text.y = element_text(size = 10),
+            axis.title.x = element_text(size = 18),
+            axis.title.y = element_text(size = 18),
+            legend.title = element_text(size = 18),
+            legend.text = element_text(size = 16)) +
       scale_color_manual(values = c("up-regulated" = "firebrick",
                                     "random" = "gray20",
                                     "down-regulated" = "dodgerblue")) +
@@ -420,7 +459,7 @@ dev.off()
 # save to file information to extract range for promoters #
 ###########################################################
 
-random %>% 
+random %>%
   select(ensemblid, gene.name) %>%
   left_join(., gene_chromosome_start_end_strand, by = c("ensemblid" = "Gene.stable.ID")) %>%
   mutate(pos=Gene.start..bp. * (Strand == 1) + Gene.end..bp. * (Strand == -1)) %>% 
