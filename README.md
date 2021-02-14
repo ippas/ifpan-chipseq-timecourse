@@ -87,15 +87,24 @@ RNA-seq data from the ENCODE project were downloaded with [this link](https://ww
 - wykres przedstawiający Mean Weighted Time (MWT) dla TF i gene regulation
 - wykres przedstawiający Mean Weighted Time (MWT) dla EP300, H3K27ac, H3K4me1, NR3C1 i genów up-regulated
 
-![Kiku](PLOTS/boxplot_enhancer_amplitude.jpeg)
+![Kiku](PLOTS/boxplot_enhancer_amplitude.svg)
 |:--:| 
 | *Changes in amplitude over time in the strongest gene peaks* |
 
-![Kiku](PLOTS/boxplot_enhancer_amplitude_fourTF.jpeg)
+![Kiku](PLOTS/boxplot_enhancer_amplitude_fourTF.svg)
 
-![Kiku](PLOTS/boxplot_enhancer_MWT.jpeg)
+![Kiku](PLOTS/boxplot_enhancer_MWT.svg)
 
-![Kiku](PLOTS/boxplot_enhancer_MWT_fourTF.jpeg)
+![Kiku](PLOTS/histogram_distance_enhancer_TSS.svg)
+
+![Kiku](PLOTS/boxplot_MWT_MCTP.svg)
+
+![Kiku](PLOTS/boxlineplot_expression_NR3C1_EP300.svg)
+
+
+
+
+
 
 ### Analiza EP300 
 #### Top EP300
