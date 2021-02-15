@@ -72,9 +72,6 @@ RNA-seq data from the ENCODE project were downloaded with [this link](https://ww
 - wykres liniowy predstawiający średnią z grupy przyłączenia się TF (wybrane cztery TF: EP300, H3K27ac, H3K4me1, NR3C1) do promotorów w pozycjach =/- 10000 od TSS,
 - wykres liniowy predstawiający średnią z grupy przyłączenia się TF (wybrane cztery TF: EP300, H3K27ac, H3K4me1, NR3C1) do promotorów w pozycjach =/- 10000 od TSS, w odniesieniu do genów z grupy random
 
-![Kiku](PLOTS/lineplot_promotores.svg)
-
-![Kiku](PLOTS/lineplot_promotores_relative_changes.svg)
 
 ![Kiku](PLOTS/lineplot_promotores_fourTF.svg)
 
@@ -87,13 +84,8 @@ RNA-seq data from the ENCODE project were downloaded with [this link](https://ww
 - wykres przedstawiający Mean Weighted Time (MWT) dla TF i gene regulation
 - wykres przedstawiający Mean Weighted Time (MWT) dla EP300, H3K27ac, H3K4me1, NR3C1 i genów up-regulated
 
-![Kiku](PLOTS/boxplot_enhancer_amplitude.svg)
-|:--:| 
-| *Changes in amplitude over time in the strongest gene peaks* |
 
 ![Kiku](PLOTS/boxplot_enhancer_amplitude_fourTF.svg)
-
-![Kiku](PLOTS/boxplot_enhancer_MWT.svg)
 
 ![Kiku](PLOTS/histogram_distance_enhancer_TSS.svg)
 
