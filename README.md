@@ -99,29 +99,17 @@ RNA-seq data from the ENCODE project were downloaded with [this link](https://ww
 
 
 ### Analiza EP300 
-#### Top EP300
 
-![Kiku](PLOTS/heatmap_expression_top_ep300.jpeg)
-
-![Kiku](PLOTS/lineplot_change_expression_top_ep300.jpeg)
-
-![Kiku](PLOTS/boxplot_MCTP_top_ep300.jpeg)
-
-![Kiku](PLOTS/boxplot_amplitude_top_ep300.jpeg)
-
-![Kiku](PLOTS/boxplot_MWT_top_ep300.jpeg)
 
 #### Delta EP300
 
-![Kiku](PLOTS/heatmap_expression_delta_ep300.jpeg)
+![Kiku](PLOTS/heatmap_expression_delta_ep300.svg)
 
-![Kiku](PLOTS/lineplot_change_expression_delta_ep300.jpeg)
+![Kiku](PLOTS/lineplot_change_expression_delta_ep300.svg)
 
-![Kiku](PLOTS/boxplot_MCTP_delta_ep300.jpeg)
+![Kiku](PLOTS/boxplot_amplitude_delta_ep300.svg)
 
-![Kiku](PLOTS/boxplot_amplitude_delta_ep300.jpeg)
-
-![Kiku](PLOTS/boxplot_MWT_delta_ep300.jpeg)
+![Kiku](PLOTS/boxplot_MCTP_MWT_delta_ep300.svg)
 
 Uruchomić skrypt [extract_data_chipseq2_ep300.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/extract_data_chipseq2_ep300.sh), który wykonuje:
 - przy pomocy [bigwig_genomic_range_extract_normalize_to_tsv_bucket10.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/bigwig_genomic_range_extract_normalize_to_tsv_bucket10.sh) i pliku [enhancer_bigrange_top_ep300_info.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/enhancer_bigrange_top_ep300_info.tsv) wyciąga dane z przyłączania TF w enhancerach, a wynik zapisuje do pliku ~/ChIP-seq/DATA/enhancer_bigrange_top_ep300.tsv
