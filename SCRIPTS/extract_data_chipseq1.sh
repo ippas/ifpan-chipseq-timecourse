@@ -11,7 +11,7 @@ ACCESS_PATH_4=~/ifpan-chipseq-timecourse/SCRIPTS
 ############################
 echo "extract range promotores"
 
-#$ACCESS_PATH_4/./bigwig_genomic_bucket500_extract_normalize_to_tsv.sh $ACCESS_PATH_3/promotores_peaks_info.tsv > $ACCESS_PATH_2/promotores_peaks_value.tsv
+$ACCESS_PATH_4/./bigwig_genomic_bucket500_extract_normalize_to_tsv.sh $ACCESS_PATH_3/promotores_peaks_info.tsv > $ACCESS_PATH_2/promotores_peaks_value.tsv
 
 
 ##########################################################

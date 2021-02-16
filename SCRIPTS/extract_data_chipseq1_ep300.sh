@@ -60,9 +60,9 @@ ACCESS_PATH_4=~/ifpan-chipseq-timecourse/SCRIPTS
 # extract range enhancers #
 ###########################
 
-echo "extract range enhancers"
+#echo "extract range enhancers"
 
-$ACCESS_PATH_4/./bigwig_genomic_range_extract_normalize_to_tsv.sh $ACCESS_PATH_3/enhancer_top_ep300_info.tsv > $ACCESS_PATH_2/enhancer_peaks_top_ep300.tsv
+#$ACCESS_PATH_4/./bigwig_genomic_range_extract_normalize_to_tsv.sh $ACCESS_PATH_3/enhancer_top_ep300_info.tsv > $ACCESS_PATH_2/enhancer_peaks_top_ep300.tsv
 
 #########################################################################################################################################
 

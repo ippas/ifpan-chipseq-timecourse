@@ -55,7 +55,7 @@ ACCESS_PATH_1=~/ChIP-seq/EXTRACT
 ACCESS_PATH_2=~/ifpan-chipseq-timecourse/DATA
 ACCESS_PATH_3=~/ifpan-chipseq-timecourse/SCRIPTS
 ACCESS_PATH_4=~/ChIP-seq/DOWNLOAD
-MARKER="peak"
+MARKER="peak_all"
 
 cat $ACCESS_PATH_2/chipseq-file-info.tsv | grep -v Control | grep -P 'NR3C1|EP300' |  while read LINE
 #cat $ACCESS_PATH_2/chipseq-file-info.tsv | grep -v Control |  while read LINE

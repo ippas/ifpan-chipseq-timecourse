@@ -31,4 +31,3 @@ bedtools intersect -a $FILE_2 -b $FILE_1 -wo |
 rm $FILE_1
 rm $FILE_2
 rm $FILE_3
-

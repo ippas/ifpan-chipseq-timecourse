@@ -38,10 +38,6 @@ function get_coverage {
        tr "\n" "\t" |
        awk '{ for(i=1; i<NF; ++i) printf $i/500 FS; print $NF/501}' | 
        sed 's/ /\t/g'
-       #awk '{ for(i=1; i<NF; ++i) printf $i/500"\t"FS; print """\t"$NF/501}' |
-       #sed 's/\t \t/\t/g' |
-       #sed 's/\t /\t/g'
-       #awk -v OFS="\t" '{for (i = $2; i < $3; i++) print $1"\t"i"\t"(i+1)"\t"$4"\t"}' | cut -f4 | awk -v RS= -v OFS='\t' '{$1 = $1} 1'
 }
 
 function get_coverages_for_file {

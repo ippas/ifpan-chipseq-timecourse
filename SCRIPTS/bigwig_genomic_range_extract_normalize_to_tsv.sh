@@ -27,21 +27,7 @@ function get_coverage {
     END=$3
     NORMALIZE_FILE=$4
     $ACCESS_PATH_3/./bigWigToBedGraph -chrom=$CHROMOSOME -start=$START -end=$END $NORMALIZE_FILE stdout |
-       awk -v OFS="\t" '{for (i = $2; i < $3; i++) print $1"\t"i"\t"(i+1)"\t"$4"\t"}' | cut -f4 | awk -v RS= -v OFS='\t' '{$1 = $1} 1' #|
-       #bucket
-       #sed 's/\t/\n/500;P;D' |
-       #tr '\n' ':' |
-       #sed 's/:/\t/40' |
-       #sed 's/:/\n/g' |
-       #awk '{for(i=1;i<=500;i++){NUM=NUM?NUM+$i:$i};$(501+1)=NUM;NUM=""} 1' |
-       #awk '{print $NF}' |
-       #tr "\n" "\t" |
-       #awk '{ for(i=1; i<NF; ++i) printf $i/500 FS; print $NF/501}' | 
-       #sed 's/ /\t/g'
-       #awk '{ for(i=1; i<NF; ++i) printf $i/500"\t"FS; print """\t"$NF/501}' |
-       #sed 's/\t \t/\t/g' |
-       #sed 's/\t /\t/g'
-       #awk -v OFS="\t" '{for (i = $2; i < $3; i++) print $1"\t"i"\t"(i+1)"\t"$4"\t"}' | cut -f4 | awk -v RS= -v OFS='\t' '{$1 = $1} 1'
+       awk -v OFS="\t" '{for (i = $2; i < $3; i++) print $1"\t"i"\t"(i+1)"\t"$4"\t"}' | cut -f4 | awk -v RS= -v OFS='\t' '{$1 = $1} 1'
 }
 
 function get_coverages_for_file {
@@ -64,7 +50,7 @@ ACCESS_PATH_2=~/ifpan-chipseq-timecourse/DATA
 ACCESS_PATH_3=~/ifpan-chipseq-timecourse/SCRIPTS
 ACCESS_PATH_4=~/ChIP-seq/DOWNLOAD
 
-cat $ACCESS_PATH_2/chipseq-file-info.tsv | grep -v Control | grep -P 'NR3C1|EP300|H3K27ac|H3K4me1' |  while read LINE #grep -P 'NR3C1|EP300|H3K27ac|H3K4me1' it' to remove
+cat $ACCESS_PATH_2/chipseq-file-info.tsv | grep -v Control | grep -P 'NR3C1' |  while read LINE
 do
   TF_NAME=$(echo $LINE | cut -d $' ' -f 1)
   TIME=$(echo $LINE | cut -d $' ' -f 2)
