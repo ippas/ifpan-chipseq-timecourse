@@ -102,6 +102,10 @@ cat ~/ifpan-chipseq-timecourse/DATA/chipseq-file-info.tsv |
 
 
 #### Delta EP300
+Uruchomić skrypt [delta_ep300.R](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/delta_ep300.R), którego kod wykonuje:
+- wczytuje 
+- dokonuje wyboru peaków do analizy poprzez obliczenie różnicy pomiędzy minimalną wartością przyłączania się EP300 do DNA, a maksymalną wartością, przypisuje enhancery do najbliższego genu, a gdy dwa peaki zostaną przypisane do tego samego genu to wybiera ten którego start znajduje się bliżej TSS i wybiera top 100 peaków/genów, jednak w dalszej analizie jeden gen zostje usunięty z powodu, że 
+- wykonuje heatmape ekspressji genów
 
 ![Kiku](PLOTS/heatmap_expression_delta_ep300.svg)
 
