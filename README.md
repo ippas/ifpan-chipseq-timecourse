@@ -100,7 +100,7 @@ Uruchomić [visualization_enhancer_range.R](https://github.com/ippas/ifpan-chips
 
 ![Kiku](PLOTS/lineplot_enhancer_relative_changes_fourTF.svg)
 
-![Kiku](PLOTS/heatmap_enhancer.svg)
+![Kiku](PLOTS/heatmap_enhancer.png)
 
 
 
