@@ -102,7 +102,7 @@ Uruchomić [extract_data_chipseq2.sh](https://github.com/ippas/ifpan-chipseq-tim
  ```
  
  
- Skrypt korzysta z [[1]](#1)
+ Skrypt [[korzysta z]](#1)
 
 Uruchomić [visualization_enhancer_range.R](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/visualization_enhancer_range.R)
 
