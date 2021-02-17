@@ -39,6 +39,7 @@ tmp.enhancer.bigrange.top.ep300 %>%
       scale_x_continuous(limits=c(800, 1200),breaks = c(800, 1001, 120), labels = c("-2000","0", "2000")) +
       ggtitle("Peaks for enhancer top ep300 without promoters")}
 
+dev.off()
 
 ##################################
 # heatmap for enhancer top ep300 #
@@ -99,7 +100,7 @@ tmp.enhancer.bigrange.delta.ep300 <- read.table("~/ChIP-seq/DATA/enhancer_bigran
 ###################################
 # lineplot for enhancer top ep300 #
 ###################################
-jpeg("~/ifpan-chipseq-timecourse/PLOTS/lineplot_enhancer_range_top_ep300.jpeg", 
+jpeg("~/ifpan-chipseq-timecourse/PLOTS/lineplot_enhancer_range_delta_ep300.jpeg", 
      width = 1400, 
      height = 802)
 
@@ -120,6 +121,7 @@ tmp.enhancer.bigrange.delta.ep300 %>%
       scale_x_continuous(limits=c(800, 1200),breaks = c(800, 1001, 120), labels = c("-2000","0", "2000")) +
       ggtitle("Peaks for enhancer delta ep300 without promoters")}
 
+dev.off()
 
 ##################################
 # heatmap for enhancer top ep300 #

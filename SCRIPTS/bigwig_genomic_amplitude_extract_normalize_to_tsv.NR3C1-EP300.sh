@@ -21,13 +21,6 @@
 #  8. file - name file from which the readings chip-seq were extract
 #  9. amplitude - the highest value beetwen start and end
 
-
-#nano coverage.txt
-#NUMBER_OF_FILES=$(ls costam | wc -l)
-#NUMBER_OF_GENES=$(cat important_gene.txt | tail -n +2 | wc -l )
-#nazwa pliku do którego zapisać wynik dla signification_gene: big.table.normalize.txt
-#nazwa pliku do którego zapisać wynik dla randome_gene: random_gene_normalize.txt
-
 function get_coverage {
     CHROMOSOME=$1
     START=$2

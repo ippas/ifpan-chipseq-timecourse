@@ -115,11 +115,14 @@ for(list.vector in list(c("up-regulated", "firebrick", "Enhancers up-regulated",
       ggtitle(list.vector[3])
   }})
 }
+# 
+# jpeg("~/ifpan-chipseq-timecourse/PLOTS/heatmap_enhancer_top_ep300.jpeg", 
+#      width = 1400, 
+#      height = 802)
 
-
-svglite(file = "~/ifpan-chipseq-timecourse/PLOTS/heatmap_enhancer.svg", 
-        width = 10,
-        height = 8)
+png("~/ifpan-chipseq-timecourse/PLOTS/heatmap_enhancer.png", 
+    width = 1400, 
+    height = 802)
 
 grid.arrange(up_regulated_plot, down_regulated_plot, random_plot, ncol=2)
 
@@ -137,7 +140,8 @@ gtf2 <- read.table('~/ifpan-chipseq-timecourse/DATA/Homo_sapiens.GRCh38.95.prote
 
 
 results %>%
-  left_join(., gene_chromosome_start_end_strand, by = c("ensemblid" = "Gene.stable.ID")) %>% 
+  left_join(., {gene_chromosome_start_end_strand %>% filter(Gene.stable.ID  %in% {results %>% .[,2]})}, 
+            by = c("ensemblid" = "Gene.stable.ID")) %>% 
   mutate(pos=Gene.start..bp. * (Strand == 1) + Gene.end..bp. * (Strand == -1)) %>% 
   mutate(start = pos - 100000, end = pos + 100001) %>% 
   select("ensemblid", "gene.name", "Chromosome.scaffold.name", "start", "end") %>% 
@@ -148,7 +152,7 @@ results %>%
   set_colnames(c("ensemblid", "gene.name", "chromosome", "start", "end")) %>% 
   mutate(gene.regulation = "NA") %>%
   mutate(start = ifelse(start < 0, 0, start)) %>% 
-  fwrite('~/ifpan-chipseq-timecourse/DATA/range.all.genes.bed',
+  fwrite('~/ifpan-chipseq-timecourse/DATA/range_all_genes.bed',
          sep="\t",
          col.names = TRUE,
          row.names = FALSE)

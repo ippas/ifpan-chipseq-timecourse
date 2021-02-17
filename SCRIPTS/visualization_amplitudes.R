@@ -1,4 +1,3 @@
-
 ##################################################
 # function that selects the maximum peak per gen #
 ##################################################
@@ -28,7 +27,7 @@ remove_peak_promoter <- function(data_frame){
     select(c(gene.name, chromosome, start.range, end.range, gene.regulation, TF, time, file, amplitude))
 }
 
-# zminić, nazwę tak aby móc korzystać z genów etc
+
 enhancer_amplitude <- read.table("~/ChIP-seq/DATA/enhancer_amplitude_value.tsv", 
                                  header = FALSE, 
                                  sep = "\t", 
@@ -40,37 +39,6 @@ enhancer_amplitude <- read.table("~/ChIP-seq/DATA/enhancer_amplitude_value.tsv",
 
 tmp_enhancer_amplitude <- enhancer_amplitude %>% mutate(gene.name = "NA") %>% unique 
 
-# ############################################################
-# # making boxplot amplitude changes for the strongest peaks #
-# ############################################################
-# svglite(file = "~/ifpan-chipseq-timecourse/PLOTS/boxplot_enhancer_amplitude.svg", 
-#         width = 10,
-#         height = 8)
-# 
-# #making boxplot for strongest peak for each gene
-# tmp_enhancer_amplitude %>%
-#   group_by(gene.name, start.range, time, TF, gene.regulation) %>% 
-#   summarise(mean.max.peak = mean(amplitude)) %>% ungroup() %>%  
-#   {ggplot(., aes(x = as.factor(time), y = log(mean.max.peak), color = gene.regulation)) +
-#       geom_boxplot(position = position_dodge(), outlier.size = 0) +  
-#       facet_wrap(TF ~ ., ncol = 4, scales = "free_y" ) +
-#       theme(legend.position = "bottom") +
-#       theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 16),
-#            axis.text.y = element_text(size = 16),
-#            axis.title.x = element_text(size = 22),
-#            axis.title.y = element_text(size = 22),
-#            strip.text.x = element_text(size = 16),
-#            legend.title = element_text(size = 20),
-#            legend.text = element_text(size = 18),
-#            legend.position = "bottom") +
-#       scale_color_manual(values = c("up-regulated" = "firebrick",
-#                                     "random" = "gray",
-#                                     "down-regulated" = "dodgerblue")) +
-#       labs(x = "Time [min]",
-#            y = "Logarithmic mean for the amplitude") +
-#       ggtitle("Strongest peak for gene")}
-# 
-# dev.off()
 
 
 #########################################################################
@@ -106,39 +74,6 @@ tmp_enhancer_amplitude %>%
 
 dev.off()
 
-# #############################################################
-# # making boxplot for mean weighted time for strongest peaks #
-# #############################################################
-# svglite(file = "~/ifpan-chipseq-timecourse/PLOTS/boxplot_enhancer_MWT.svg", 
-#         width = 10,
-#         height = 8)
-# 
-# tmp_enhancer_amplitude %>%
-#   group_by(gene.name, start.range, time, TF, gene.regulation) %>% 
-#   summarise(mean.max.peak = mean(amplitude)) %>% 
-#   spread(., key = "time", value = "mean.max.peak") %>%
-#   as.data.frame() %>% 
-#   mutate(., mean.weighted.time = rowSums(t(t(.[5:16])*{.[5:16] %>% colnames() %>% as.numeric()/60}))/rowSums(.[,5:16])) %>% #calculate with time = 0
-#   select(gene.name, start.range, TF, gene.regulation, mean.weighted.time) %>% 
-#   {ggplot(., aes(x = gene.regulation, y = mean.weighted.time, color = gene.regulation)) +
-#       geom_boxplot() +
-#       theme(axis.title.x = element_blank()) +
-#       facet_wrap(.~TF, scales = "free_x", ncol =8) +
-#       theme(axis.text.x = element_blank(),
-#             axis.text.y = element_text(size = 16),
-#             axis.title.x = element_text(size = 22),
-#             axis.title.y = element_text(size = 22),
-#             strip.text.x = element_text(size = 16),
-#             legend.title = element_text(size = 20),
-#             legend.text = element_text(size = 18)) +
-#       scale_color_manual(values = c("up-regulated" = "firebrick",
-#                                     "random" = "gray",
-#                                     "down-regulated" = "dodgerblue")) +
-#       labs(y = "Mean weighted time",
-#            x = "Gene regulation") +
-#       ggtitle("Mean weighted time for strongest peak")}
-# 
-# dev.off()
 
 #######################################################
 # Mean weighted time for four TF, for strongest peaks #
@@ -412,50 +347,6 @@ results.list <- lapply(readLines('/home/mateusz/ChIP-seq/DATA/enhancer_peaks_val
 lapply(results.list, lengths) -> results.lenghts
 
 number.column <- results.list %>% lapply(lengths) %>% unlist() %>% max() # result = number.column - so length of table: (number.column x 2) + 1 = number.column x 2 + 1 so the middle value is number.column - this is where we put max
-
-# adjust_numeric_columns <- function(x) {
-#   
-#   new.line <- integer(number.column * 2) # make a vector of zeros
-#   x %>% unlist() -> single.row # unlist the line
-#   single.row[c(9:length(single.row))] -> peak #get just the numeric valuse
-#   peak %>% as.numeric() %>% which.max() -> amp.index #find where the max value of the peak is
-#   new.line[c((number.column - amp.index + 1): (number.column + (length(peak) - amp.index)))] <- peak #put the peak into the new.line with the max set to index 1144
-#   full.line <- c(single.row[c(1:8)], new.line)
-#   return(full.line)
-# }
-# 
-# results.list %>% lapply(adjust_numeric_columns) %>% data.frame(row.names = NULL) -> adjusted.peaks.table
-# 
-# names(adjusted.peaks.table) <- NULL
-# 
-# adjusted.peaks.table %>% t() %>% data.frame() -> adjusted.peaks.table
-# 
-# adjusted.peaks.table %>%
-#   set_colnames(c("gene.name", "chromosome", "start.range", "end.range", "gene.regulation", "TF", "time", "file", "position.amplitude", 1:(number.column*2-1))) %>%  
-#   gather(., "range", "value", -c("gene.name", "chromosome", "start.range", "end.range", "gene.regulation", "TF", "time", "file")) -> gather.adjusted.peaks.table 
-# 
-# 
-# #line plot for enhancer peak without promoters
-# gather.adjusted.peaks.table %>% 
-#   mutate(range = as.numeric(range), value = as.numeric(value)) %>%
-#   group_by(gene.name, gene.regulation, TF, time, range) %>%
-#   summarise(value = mean(value)) %>%
-#   ungroup %>%
-#   group_by(gene.name, gene.regulation, TF, time, range) %>%
-#   summarize(value = mean(value)) %>%
-#   group_by(gene.regulation, TF, time, range) %>%
-#   summarize(value = mean(value)) -> tmp.to.plot
-# tmp.to.plot %>% 
-#   ungroup() %>%
-#   mutate(time = as.numeric(as.character(time))) %>% 
-#   {ggplot(., aes(x = range, y = value, color = gene.regulation)) +
-#       geom_line() +
-#       # scale_color_manual(values = c("up" = "firebrick",
-#       #                               "random" = "gray",
-#       #                               "down" = "dodgerblue")) +
-#       facet_grid(TF~time)}
-# 
-# rm(gather.adjusted.peaks.table, gather.adjusted.peaks.table)
 
 
 ########################################################################

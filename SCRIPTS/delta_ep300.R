@@ -1,3 +1,25 @@
+####################################poprawić kod, usunąć promotory po wczytaniu pliku
+#  choose peaks without promoters  #
+####################################
+peaks.enhancer.all.genes <- read.table('~/ifpan-chipseq-timecourse/DATA/peaks_all_genes.tsv', 
+                                       header = TRUE, 
+                                       sep = '\t')
+
+peaks.enhancer.all.genes %>% 
+  left_join(., gene_chromosome_start_end_strand, by = c("gene.name" = "Gene.name")) %>% 
+  select(-c(Chromosome.scaffold.name, Gene.stable.ID)) %>% 
+  mutate(pos.TSS=Gene.start..bp. * (Strand == 1) + Gene.end..bp. * (Strand == -1)) %>% 
+  mutate(start.range.promoter = pos.TSS - 2000, end.range.promoter = pos.TSS + 2001) %>% 
+  filter(end_peak < start.range.promoter | start_peak > end.range.promoter) %>% 
+  .[, 1:5] %>%
+  mutate(gene.regulation = "NA") %>%
+  fwrite("~/ifpan-chipseq-timecourse/DATA/peaks_all_genes_without_promoters.tsv",
+         sep="\t", 
+         col.names = TRUE, 
+         row.names = FALSE)
+
+
+
 peaks_all_genes_without_promoters_amplitude <- read.table("~/ChIP-seq/DATA/peaks_all_genes_without_promoters_amplitude.tsv", #zmiana pliku do wczytywania danych
                                                           header = FALSE, 
                                                           sep = "\t", 
@@ -22,7 +44,7 @@ peaks_all_genes_without_promoters_amplitude %>%
   select(-gene.name) %>% 
   .[order(.$differ_min_max, decreasing = TRUE),] %>% #sort by differ_min_max
   unique() %>% 
-  head(150) %>% # choose top 150 peaks
+  #head(150) %>% # choose top 150 peaks
   left_join(., {peaks_all_genes_without_promoters_amplitude %>% 
       select(-c(file)) %>% 
       group_by(gene.name, start.range, end.range, TF, time, gene.regulation) %>% 
@@ -53,25 +75,41 @@ peaks_all_genes_without_promoters_amplitude %>%
 ###########################
 # prepare data to heatmap #
 ###########################
-data[order(results$pvalue),] %>%
-  as.matrix() %>% 
-  set_rownames(., rownames(raw.data[match(results$Geneid, rownames(raw.data)),3:48])) %>% 
-  set_colnames(colnames(raw.data[match(results$Geneid, rownames(raw.data)),3:48])) %>%
-  apply(1, scale) %>% 
+data %>%
+  as.data.frame() %>%
+  rownames_to_column(., var = "Geneid") %>%
+  left_join(., results[,c(1,4)], by = "Geneid") %>%
+  filter(gene.name %in% {delta_ep300 %>% select(gene.name) %>% unique %>% .[, 1]}) %>%
+  column_to_rownames(., var = "gene.name") %>%
+  select(-Geneid) %>%
+  #filter(gene.name == "ALDH1A1")
+  as.matrix() %>%
+  apply(1, scale) %>%
   t %>%
   apply(1, function(x, threshold){x[x > threshold] <- threshold; x[x < -threshold] <- -threshold; x}, threshold = 2.0) %>%
   t %>%
-  {rownames(.) <- results$gene.name[order(results$pvalue)]; .}  %>% 
   {colnames(.) <- colnames(data); .} %>%
-  as.data.frame() %>% 
-  rownames_to_column() %>%
-  filter(rowname %in% {delta_ep300 %>%
-      select(gene.name) %>%
-      unique() %>% .[, 1]}) %>%
-  column_to_rownames(., var = "rowname") %>%
-  as.matrix() %>% 
-  na.omit -> to.heatmap
-
+  as.data.frame() %>% na.omit() %>%
+  as.matrix() -> to.heatmap
+  
+# data[order(results$pvalue),] %>%
+#   as.matrix() %>% 
+#   #set_rownames(., rownames(raw.data[match(results$Geneid, rownames(raw.data)),3:48])) %>% head
+#   #set_colnames(colnames(raw.data[match(results$Geneid, rownames(raw.data)),3:48])) %>%
+#   apply(1, scale) %>% 
+#   t %>%
+#   apply(1, function(x, threshold){x[x > threshold] <- threshold; x[x < -threshold] <- -threshold; x}, threshold = 2.0) %>%
+#   t %>%
+#   {rownames(.) <- results$Geneid[order(results$pvalue)]; .}  %>%
+#   {colnames(.) <- colnames(data); .} %>%
+#   as.data.frame() %>% 
+#   rownames_to_column() %>%
+#   filter(rowname %in% {delta_ep300 %>%
+#       select(gene.name) %>% unique %>%
+#       .[, 1]}) %>%
+#   column_to_rownames(., var = "rowname") %>%
+#   as.matrix() %>%
+#   na.omit -> to.heatmap
 
 number_clusters <- 2
 

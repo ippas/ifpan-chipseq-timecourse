@@ -8,7 +8,7 @@ ACCESS_PATH_2=~/ChIP-seq/DATA
 ACCESS_PATH_3=~/ifpan-chipseq-timecourse/DATA
 
 FILE_1=$ACCESS_PATH_3/peaks_part_of_common_three_file_NR3C1_time60.bed
-FILE_2=$ACCESS_PATH_3/tmp.range.all.genes.bed
+FILE_2=$ACCESS_PATH_3/tmp_range_all_genes.bed
 FILE_3=$ACCESS_PATH_2/tmp_file1_file2.bed
 #FILE_4=$ACCESS_PATH_3/significant_random_genes_ensemblid_genename_chromosome_start-peak_end-peak_regulation.tsv
 
@@ -28,6 +28,11 @@ bedtools intersect -a $FILE_2 -b $FILE_1 -wo |
    awk 'OFS="\t" {print $1, $2, $3,$8, $9, $6}' |
    sed '1 i\ensemblid\tgene.name\tchromosome\tstart_peak\tend_peak\tgene.regulation' > $ACCESS_PATH_3/peaks_all_genes.tsv
 
+
+ ~/ifpan-chipseq-timecourse/SCRIPTS/./bigwig_genomic_amplitude_extract_normalize_to_tsv.NR3C1-EP300.sh ~/ifpan-chipseq-timecourse/DATA/peaks_all_genes_without_promoters.tsv > ~/ifpan-chipseq-timecourse/DATA/peaks_all_genes_without_promoters_amplitude.tsv
+
+
+
 rm $FILE_1
-rm $FILE_2
+#rm $FILE_2
 rm $FILE_3
