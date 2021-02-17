@@ -40,37 +40,37 @@ enhancer_amplitude <- read.table("~/ChIP-seq/DATA/enhancer_amplitude_value.tsv",
 
 tmp_enhancer_amplitude <- enhancer_amplitude %>% mutate(gene.name = "NA") %>% unique 
 
-############################################################
-# making boxplot amplitude changes for the strongest peaks #
-############################################################
-svglite(file = "~/ifpan-chipseq-timecourse/PLOTS/boxplot_enhancer_amplitude.svg", 
-        width = 10,
-        height = 8)
-
-#making boxplot for strongest peak for each gene
-tmp_enhancer_amplitude %>%
-  group_by(gene.name, start.range, time, TF, gene.regulation) %>% 
-  summarise(mean.max.peak = mean(amplitude)) %>% ungroup() %>%  
-  {ggplot(., aes(x = as.factor(time), y = log(mean.max.peak), color = gene.regulation)) +
-      geom_boxplot(position = position_dodge(), outlier.size = 0) +  
-      facet_wrap(TF ~ ., ncol = 4, scales = "free_y" ) +
-      theme(legend.position = "bottom") +
-      theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 16),
-           axis.text.y = element_text(size = 16),
-           axis.title.x = element_text(size = 22),
-           axis.title.y = element_text(size = 22),
-           strip.text.x = element_text(size = 16),
-           legend.title = element_text(size = 20),
-           legend.text = element_text(size = 18),
-           legend.position = "bottom") +
-      scale_color_manual(values = c("up-regulated" = "firebrick",
-                                    "random" = "gray",
-                                    "down-regulated" = "dodgerblue")) +
-      labs(x = "Time [min]",
-           y = "Logarithmic mean for the amplitude") +
-      ggtitle("Strongest peak for gene")}
-
-dev.off()
+# ############################################################
+# # making boxplot amplitude changes for the strongest peaks #
+# ############################################################
+# svglite(file = "~/ifpan-chipseq-timecourse/PLOTS/boxplot_enhancer_amplitude.svg", 
+#         width = 10,
+#         height = 8)
+# 
+# #making boxplot for strongest peak for each gene
+# tmp_enhancer_amplitude %>%
+#   group_by(gene.name, start.range, time, TF, gene.regulation) %>% 
+#   summarise(mean.max.peak = mean(amplitude)) %>% ungroup() %>%  
+#   {ggplot(., aes(x = as.factor(time), y = log(mean.max.peak), color = gene.regulation)) +
+#       geom_boxplot(position = position_dodge(), outlier.size = 0) +  
+#       facet_wrap(TF ~ ., ncol = 4, scales = "free_y" ) +
+#       theme(legend.position = "bottom") +
+#       theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 16),
+#            axis.text.y = element_text(size = 16),
+#            axis.title.x = element_text(size = 22),
+#            axis.title.y = element_text(size = 22),
+#            strip.text.x = element_text(size = 16),
+#            legend.title = element_text(size = 20),
+#            legend.text = element_text(size = 18),
+#            legend.position = "bottom") +
+#       scale_color_manual(values = c("up-regulated" = "firebrick",
+#                                     "random" = "gray",
+#                                     "down-regulated" = "dodgerblue")) +
+#       labs(x = "Time [min]",
+#            y = "Logarithmic mean for the amplitude") +
+#       ggtitle("Strongest peak for gene")}
+# 
+# dev.off()
 
 
 #########################################################################
@@ -106,39 +106,39 @@ tmp_enhancer_amplitude %>%
 
 dev.off()
 
-#############################################################
-# making boxplot for mean weighted time for strongest peaks #
-#############################################################
-svglite(file = "~/ifpan-chipseq-timecourse/PLOTS/boxplot_enhancer_MWT.svg", 
-        width = 10,
-        height = 8)
-
-tmp_enhancer_amplitude %>%
-  group_by(gene.name, start.range, time, TF, gene.regulation) %>% 
-  summarise(mean.max.peak = mean(amplitude)) %>% 
-  spread(., key = "time", value = "mean.max.peak") %>%
-  as.data.frame() %>% 
-  mutate(., mean.weighted.time = rowSums(t(t(.[5:16])*{.[5:16] %>% colnames() %>% as.numeric()/60}))/rowSums(.[,5:16])) %>% #calculate with time = 0
-  select(gene.name, start.range, TF, gene.regulation, mean.weighted.time) %>% 
-  {ggplot(., aes(x = gene.regulation, y = mean.weighted.time, color = gene.regulation)) +
-      geom_boxplot() +
-      theme(axis.title.x = element_blank()) +
-      facet_wrap(.~TF, scales = "free_x", ncol =8) +
-      theme(axis.text.x = element_blank(),
-            axis.text.y = element_text(size = 16),
-            axis.title.x = element_text(size = 22),
-            axis.title.y = element_text(size = 22),
-            strip.text.x = element_text(size = 16),
-            legend.title = element_text(size = 20),
-            legend.text = element_text(size = 18)) +
-      scale_color_manual(values = c("up-regulated" = "firebrick",
-                                    "random" = "gray",
-                                    "down-regulated" = "dodgerblue")) +
-      labs(y = "Mean weighted time",
-           x = "Gene regulation") +
-      ggtitle("Mean weighted time for strongest peak")}
-
-dev.off()
+# #############################################################
+# # making boxplot for mean weighted time for strongest peaks #
+# #############################################################
+# svglite(file = "~/ifpan-chipseq-timecourse/PLOTS/boxplot_enhancer_MWT.svg", 
+#         width = 10,
+#         height = 8)
+# 
+# tmp_enhancer_amplitude %>%
+#   group_by(gene.name, start.range, time, TF, gene.regulation) %>% 
+#   summarise(mean.max.peak = mean(amplitude)) %>% 
+#   spread(., key = "time", value = "mean.max.peak") %>%
+#   as.data.frame() %>% 
+#   mutate(., mean.weighted.time = rowSums(t(t(.[5:16])*{.[5:16] %>% colnames() %>% as.numeric()/60}))/rowSums(.[,5:16])) %>% #calculate with time = 0
+#   select(gene.name, start.range, TF, gene.regulation, mean.weighted.time) %>% 
+#   {ggplot(., aes(x = gene.regulation, y = mean.weighted.time, color = gene.regulation)) +
+#       geom_boxplot() +
+#       theme(axis.title.x = element_blank()) +
+#       facet_wrap(.~TF, scales = "free_x", ncol =8) +
+#       theme(axis.text.x = element_blank(),
+#             axis.text.y = element_text(size = 16),
+#             axis.title.x = element_text(size = 22),
+#             axis.title.y = element_text(size = 22),
+#             strip.text.x = element_text(size = 16),
+#             legend.title = element_text(size = 20),
+#             legend.text = element_text(size = 18)) +
+#       scale_color_manual(values = c("up-regulated" = "firebrick",
+#                                     "random" = "gray",
+#                                     "down-regulated" = "dodgerblue")) +
+#       labs(y = "Mean weighted time",
+#            x = "Gene regulation") +
+#       ggtitle("Mean weighted time for strongest peak")}
+# 
+# dev.off()
 
 #######################################################
 # Mean weighted time for four TF, for strongest peaks #
@@ -342,7 +342,7 @@ read.table("~/ChIP-seq/DATA/enhancer_peaks_value.tsv",
            col.names = c("gene.name", "chromosome", "start.range", "end.range", "gene.regulation", "TF", "time", "file", seq_len((number.column-8)*2)),
            stringsAsFactors = FALSE,
            fill=TRUE) %>% 
-  remove_peak_promoter() %>%
+  #remove_peak_promoter() %>%
   mutate(id = paste(gene.name, start.range, end.range, sep = '.')) %>%
   filter(id %in% {enhancer_amplitude  %>% mutate(id = paste(gene.name, start.range, end.range, sep = '.')) %>% .[,10]}) %>%
   select(-id) %>%
@@ -482,7 +482,7 @@ read.table("~/ChIP-seq/DATA/enhancer_peaks_value.tsv",
   mutate(position.amplitude = start.range + index.max.value) %>% 
   mutate(start = position.amplitude - 10000, end = position.amplitude + 10001, ensemblid = "NA") %>%
   select(ensemblid, gene.name, chromosome, start, end, gene.regulation) %>% 
-  mutate(chromosome = str_replace(.$chromosome, "chr", "")) %>% 
+  mutate(chromosome = str_replace(.$chromosome, "chr", "")) %>%
   fwrite("~/ifpan-chipseq-timecourse/DATA/enhancer_bigrange_info.tsv", 
          sep="\t", 
          col.names = TRUE, 
