@@ -94,6 +94,14 @@ cat ~/ifpan-chipseq-timecourse/DATA/chipseq-file-info.tsv |
 ![Kiku](PLOTS/boxlineplot_expression_NR3C1_EP300.svg)
 
 
+Uruchomić [visualization_enhancer_range.R](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/visualization_enhancer_range.R)
+
+![Kiku](PLOTS/lineplot_enhancer_fourTF.svg)
+
+![Kiku](PLOTS/lineplot_enhancer_relative_changes_fourTF.svg)
+
+![Kiku](PLOTS/heatmap_enhancer.svg)
+
 
 
 
