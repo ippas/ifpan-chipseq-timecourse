@@ -2,7 +2,7 @@
 ###### Mateusz Zieba
 ---
 
-   
+  
 
 ### RNA-seq
 
@@ -94,6 +94,16 @@ cat ~/ifpan-chipseq-timecourse/DATA/chipseq-file-info.tsv |
 ![Kiku](PLOTS/boxlineplot_expression_NR3C1_EP300.svg)
 
 
+ 
+Uruchomić [extract_data_chipseq2.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/extract_data_chipseq2.sh) komendą:
+
+```bash
+ ~/ifpan-chipseq-timecourse/SCRIPTS/extract_data_chipseq1.sh
+ ```
+ 
+ 
+ Skrypt korzysta z [[1]](#1)
+
 Uruchomić [visualization_enhancer_range.R](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/visualization_enhancer_range.R)
 
 ![Kiku](PLOTS/lineplot_enhancer_fourTF.svg)
@@ -147,7 +157,7 @@ Uruchomić skrypt [analysis_enhancer_range_ep300.R](https://github.com/ippas/ifp
 
 
 Do wyciągania danych dla Chip-seq z plików bigWig przygotowano skrypty:
-- [bigwig_genomic_bucket500_extract_normalize_to_tsv.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/bigwig_genomic_bucket500_extract_normalize_to_tsv.sh)
+- <a id="1">[1]</a>[bigwig_genomic_bucket500_extract_normalize_to_tsv.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/bigwig_genomic_bucket500_extract_normalize_to_tsv.sh)
     - wyciąga dane z plików bigwig o zakresie 20001, wynik zbiera po 500 pozycji i liczy średnią w celu zmniejszenia ilości danych i wyeliminowania szumów, w przypadku ostaniego baketowania liczy średnią z 501 pozycji
     - wyciąganie zakresów przy pomocy [bigWigToBedGraph](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/bigWigToBedGraph) [pobrane z](http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64.v369/)
     - wyciąga dane dla wszystkich czynników transkrypcyjnych znajdujących się w pliku [chipseq-file-info.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/chipseq-file-info.tsv)
