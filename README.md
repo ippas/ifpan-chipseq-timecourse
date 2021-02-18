@@ -150,9 +150,9 @@ Uruchomić skrypt [analysis_enhancer_range_ep300.R](https://github.com/ippas/ifp
 
 - Wykresy enhancerów dla genów delta ep300
 
-![Kiku](PLOTS/lineplot_enhancer_range_delta_ep300.jpeg)
+![Kiku](PLOTS/lineplot_enhancer_range_delta_ep300.svg)
 
-![Kiku](PLOTS/heatmap_enhancer_delta_ep300.jpeg)
+![Kiku](PLOTS/heatmap_enhancer_delta_ep300.png)
 
 
 
