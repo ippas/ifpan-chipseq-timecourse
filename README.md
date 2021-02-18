@@ -100,8 +100,7 @@ Uruchomić [extract_data_chipseq2.sh](https://github.com/ippas/ifpan-chipseq-tim
 ```bash
  ~/ifpan-chipseq-timecourse/SCRIPTS/./extract_data_chipseq2.sh
  ```
- Skrypt [bigwig_genomic_range_extract_normalize_to_tsv_bucket10.sh [4]](#4)
- - zostają wyciągnięte dane dla enhancerów w zakresie +/-10000 od środka peaku i zapisane do pliku ~/ChIP-seq/DATA/enhancer_bigrange_value.tsv
+- skrypt korzysta z [bigwig_genomic_range_extract_normalize_to_tsv_bucket10.sh [4]](#4) i zostają wyciągnięte dane dla enhancerów w zakresie +/-10000 od środka peaku i zapisane do pliku ~/ChIP-seq/DATA/enhancer_bigrange_value.tsv
 
 
 Przy pomocy komendy ściągnięto plik gtf:
@@ -140,7 +139,7 @@ Uruchomić skrypt [extract_data_chipseq3.sh](https://github.com/ippas/ifpan-chip
  ```
  - korzystając z bedtools intersect i trzech próbek tworzy część wspólną peaków w genomie dla NR3C1 dla time = 60
  - przy pomocy wyznaczonej części wspólnej próbek, wyciąga enhancery znajdujące się w zakresach znajdujących się w [range_all_genes.bed](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/range_all_genes.bed) (+/-100000 od TSS)
- - - dla wybranych enhancerów korzystając z [bigwig_genomic_amplitude_extract_normalize_to_tsv.NR3C1-EP300.sh [5]](#5) wyciąga maksymalną wartość przyłączania się TF do peaku i zapisuje dane do: ~/ChIP-seq/DATA/enhancer_amplitude_value.tsv 
+ - dla wybranych enhancerów korzystając z [bigwig_genomic_amplitude_extract_normalize_to_tsv.NR3C1-EP300.sh [5]](#5) wyciąga maksymalną wartość przyłączania się TF do peaku i zapisuje dane do: ~/ChIP-seq/DATA/enhancer_amplitude_value.tsv 
 
 
 ### Analiza EP300 
@@ -161,8 +160,8 @@ Uruchomić skrypt [delta_ep300.R](https://github.com/ippas/ifpan-chipseq-timecou
 ![Kiku](PLOTS/boxplot_MCTP_MWT_delta_ep300.svg)
 
 
-Uruchomić skrypt [extract_data_chipseq1_ep300.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/extract_data_chipseq1_ep300.sh), który wykonuje:
-- prz pomocy [enhancer_delta_ep300_info.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/enhancer_delta_ep300_info.tsv) i [bigwig_genomic_range_extract_normalize_to_tsv.sh [3]](#3) wyciąga wartości przyłączeń się TF na całym zakresie peaku i zapisuje dane do: ~/ChIP-seq/DATA/enhancer_peaks_delta_ep300.tsv
+Uruchomić skrypt [extract_data_chipseq1_ep300.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/extract_data_chipseq1_ep300.sh), który:
+- korzystając z [enhancer_delta_ep300_info.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/enhancer_delta_ep300_info.tsv) i [bigwig_genomic_range_extract_normalize_to_tsv.sh [3]](#3) wyciąga wartości przyłączeń się TF na całym zakresie peaku i zapisuje dane do: ~/ChIP-seq/DATA/enhancer_peaks_delta_ep300.tsv
 
 
 Uruchomić [centering_peaks_ep300.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/centering_peaks_ep300.R), który:
@@ -171,8 +170,8 @@ Uruchomić [centering_peaks_ep300.sh](https://github.com/ippas/ifpan-chipseq-tim
 - wyznacza przedział +/- 10000 od środka peaku i potrzebne informacje zapisuje do [enhancer_bigrange_delta_ep300_info.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/enhancer_bigrange_delta_ep300_info.tsv)
 
 
-Uruchomić skrypt [extract_data_chipseq2_ep300.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/extract_data_chipseq2_ep300.sh), który wykonuje:
-- przy pomocy [bigwig_genomic_range_extract_normalize_to_tsv_bucket10.sh [4]](#4) i pliku [enhancer_bigrange_delta_ep300_info.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/enhancer_bigrange_delta_ep300_info.tsv) wyciąga dane z przyłączania TF w enhancerach, a wynik zapisuje do pliku ~/ChIP-seq/DATA/enhancer_bigrange_delta_ep300.tsv
+Uruchomić skrypt [extract_data_chipseq2_ep300.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/extract_data_chipseq2_ep300.sh), który:
+- korzystając z [bigwig_genomic_range_extract_normalize_to_tsv_bucket10.sh [4]](#4) i pliku [enhancer_bigrange_delta_ep300_info.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/enhancer_bigrange_delta_ep300_info.tsv) wyciąga dane z przyłączania TF w enhancerach, a wynik zapisuje do pliku ~/ChIP-seq/DATA/enhancer_bigrange_delta_ep300.tsv
 
 
 Uruchomić skrypt [analysis_enhancer_range_ep300.R](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/analysis_enhancer_range_ep300.R), który wykonuje:
