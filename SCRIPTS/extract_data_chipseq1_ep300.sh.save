@@ -1,0 +1,14 @@
+#!/bin/bash
+
+ACCESS_PATH_1=~/ChIP-seq/EXTRACT
+ACCESS_PATH_2=~/ChIP-seq/DATA
+ACCESS_PATH_3
+=~/ifpan-chipseq-timecourse/DATA
+ACCESS_PATH_4=~/ifpan-chipseq-timecourse/SCRIPTS
+
+
+
+echo "extract range enhancers"
+
+~/ifpan-chipseq-timecourse/SCRIPTS/./bigwig_genomic_range_extract_normalize_to_tsv.sh $ACCESS_PATH_3/enhancer_delta_ep300_info.tsv > $ACCESS_PATH_2/enhancer_peaks_delta_ep300.tsv
+
