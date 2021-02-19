@@ -78,8 +78,8 @@ Skrypt wykonuje:
 ![Kiku](PLOTS/lineplot_promotores_relative_changes_fourTF.svg)
 
 4. Uruchomić skrypt [visualization_amplitudes.R](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/visualization_amplitudes.R), który:
-- wczytuje plik ~/ChIP-seq/DATA/enhancer_amplitude_value.tsv, będący wynikiem skryptu [extract_data_chipseq1.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/extract_data_chipseq1.sh)
-- wykres zmian amplitud przyłączania TF w czasie dla najsilniejszych peaków w genie
+- wczytuje plik ~/ChIP-seq/DATA/enhancer_amplitude_value.tsv, będący wynikiem skryptu [extract_data_chipseq1.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/extract_data_chipseq1.sh), następnie usuwa peaki które nachodzą na zakres +/- 2000 od TSS, wybiera peaki
+- tworzy wykres zmian amplitud przyłączania TF do DNA, przy czym usuwane
 - wykres zmian amplitud przyłączania TF (wybrane cztery TF: EP300, H3K27ac, H3K4me1, NR3C1) w czasie dla najsilniejszych peaków w genie
 - wykres przedstawiający Mean Weighted Time (MWT) dla TF i gene regulation
 - wykres przedstawiający Mean Weighted Time (MWT) dla EP300, H3K27ac, H3K4me1, NR3C1 i genów up-regulated
