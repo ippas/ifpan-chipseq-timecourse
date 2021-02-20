@@ -1,37 +1,41 @@
 ####################################poprawić kod, usunąć promotory po wczytaniu pliku
 #  choose peaks without promoters  #
 ####################################
-peaks.enhancer.all.genes <- read.table('~/ifpan-chipseq-timecourse/DATA/peaks_all_genes.tsv', 
-                                       header = TRUE, 
-                                       sep = '\t')
+# peaks.enhancer.all.genes <- read.table('~/ifpan-chipseq-timecourse/DATA/peaks_all_genes.tsv', 
+#                                        header = TRUE, 
+#                                        sep = '\t')
+# 
+# peaks.enhancer.all.genes %>% 
+#   left_join(., gene_chromosome_start_end_strand, by = c("gene.name" = "Gene.name")) %>% 
+#   select(-c(Chromosome.scaffold.name, Gene.stable.ID)) %>% 
+#   mutate(pos.TSS=Gene.start..bp. * (Strand == 1) + Gene.end..bp. * (Strand == -1)) %>% 
+#   mutate(start.range.promoter = pos.TSS - 2000, end.range.promoter = pos.TSS + 2001) %>% 
+#   filter(end_peak < start.range.promoter | start_peak > end.range.promoter) %>% 
+#   .[, 1:5] %>%
+#   mutate(gene.regulation = "NA") %>%
+#   fwrite("~/ifpan-chipseq-timecourse/DATA/peaks_all_genes_without_promoters.tsv",
+#          sep="\t", 
+#          col.names = TRUE, 
+#          row.names = FALSE)
+ 
 
-peaks.enhancer.all.genes %>% 
-  left_join(., gene_chromosome_start_end_strand, by = c("gene.name" = "Gene.name")) %>% 
-  select(-c(Chromosome.scaffold.name, Gene.stable.ID)) %>% 
-  mutate(pos.TSS=Gene.start..bp. * (Strand == 1) + Gene.end..bp. * (Strand == -1)) %>% 
-  mutate(start.range.promoter = pos.TSS - 2000, end.range.promoter = pos.TSS + 2001) %>% 
-  filter(end_peak < start.range.promoter | start_peak > end.range.promoter) %>% 
-  .[, 1:5] %>%
-  mutate(gene.regulation = "NA") %>%
-  fwrite("~/ifpan-chipseq-timecourse/DATA/peaks_all_genes_without_promoters.tsv",
-         sep="\t", 
-         col.names = TRUE, 
-         row.names = FALSE)
+# peaks_all_genes_without_promoters_amplitude <- read.table("~/ChIP-seq/DATA/peaks_all_genes_without_promoters_amplitude.tsv", #zmiana pliku do wczytywania danych
+#                                                           header = FALSE, 
+#                                                           sep = "\t", 
+#                                                           stringsAsFactors = FALSE) %>% 
+#   set_colnames(c("gene.name", "chromosome", "start.range", "end.range", "gene.regulation", "TF", "time", "file", "amplitude"))
 
-
-
-peaks_all_genes_without_promoters_amplitude <- read.table("~/ChIP-seq/DATA/peaks_all_genes_without_promoters_amplitude.tsv", #zmiana pliku do wczytywania danych
-                                                          header = FALSE, 
-                                                          sep = "\t", 
-                                                          stringsAsFactors = FALSE) %>% 
-  set_colnames(c("gene.name", "chromosome", "start.range", "end.range", "gene.regulation", "TF", "time", "file", "amplitude"))
-
+peaks_all_genes_ep300_nr3c1_amplitude <- read.table('~/ifpan-chipseq-timecourse/DATA/peaks_all_genes_ep300_nr3c1_amplitude.tsv',
+                                                    header = TRUE, 
+                                                    sep = "\t") %>%
+  set_colnames(c("gene.name", "chromosome", "start.range", "end.range", "gene.regulation", "TF", "time", "file", "amplitude")) %>% 
+  remove_peak_promoter() 
 
 #####################################################################
 #  choose and plot for too 100 peaks ep300 max differences min-max  #
 #####################################################################
 
-peaks_all_genes_without_promoters_amplitude %>% 
+peaks_all_genes_ep300_nr3c1_amplitude %>% 
   select(-c(file)) %>% 
   group_by(gene.name, start.range, end.range, TF, time, gene.regulation) %>% 
   summarise(amplitude_mean = mean(amplitude)) %>% 

@@ -98,6 +98,7 @@ for(list.vector in list(c("up-regulated", "firebrick", "Enhancers up-regulated",
     mutate(scale.value = scale(value)) %>% 
     na.omit() %>%
     mutate(scale.value = {scale.value[scale.value > threshold] <- threshold; scale.value[scale.value < -threshold] <- -threshold; scale.value}) %>%
+    #apply(1, function(scale.value, threshold){scale.value[scale.value > threshold] <- threshold; scale.value[scale.value < -threshold] <- -threshold; scale.value}, threshold = 2.0) %>%
     ungroup() %>%
     mutate(value = scale.value) %>%
     filter(bucket.range >= 800, bucket.range <= 1200) -> tmp.heatmap
@@ -151,7 +152,7 @@ results %>%
   select(-ensemblid.y) %>%
   set_colnames(c("ensemblid", "gene.name", "chromosome", "start", "end")) %>% 
   mutate(gene.regulation = "NA") %>%
-  mutate(start = ifelse(start < 0, 0, start)) %>% 
+  mutate(start = ifelse(start < 0, 0, start)) %>%
   fwrite('~/ifpan-chipseq-timecourse/DATA/range_all_genes.bed',
          sep="\t",
          col.names = TRUE,

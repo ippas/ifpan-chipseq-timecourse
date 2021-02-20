@@ -34,10 +34,18 @@ enhancer_amplitude <- read.table("~/ChIP-seq/DATA/enhancer_amplitude_value.tsv",
                                  stringsAsFactors = FALSE) %>% 
   set_colnames(c("gene.name", "chromosome", "start.range", "end.range", "gene.regulation", "TF", "time", "file", "amplitude")) %>% 
   remove_peak_promoter() %>%
-  choose_strongest_peak()
+  choose_strongest_peak() %>% 
+  left_join(., {gene_chromosome_start_end_strand %>% filter(Gene.stable.ID  %in% {results %>% .[,2]})}, 
+            by = c("gene.name" = "Gene.name")) %>% 
+  mutate(pos.TSS=Gene.start..bp. * (Strand == 1) + Gene.end..bp. * (Strand == -1)) %>% #marking position TSS for genes
+  select(-c("Chromosome.scaffold.name", "Gene.start..bp.", "Gene.end..bp.", "Strand")) %>% # remove unnecessary columns
+  mutate(diff.TSS.start.peak = abs(pos.TSS-start.range)) %>% # calculate disctance between start enhancer and position TSS
+  group_by(start.range) %>% 
+  filter(diff.TSS.start.peak == min(diff.TSS.start.peak)) %>% # choose gene which are the closest TSS
+  as.data.frame() %>% 
+  ungroup() %>%
+  select(-c("Gene.stable.ID", "pos.TSS", "diff.TSS.start.peak"))
 
-
-tmp_enhancer_amplitude <- enhancer_amplitude %>% mutate(gene.name = "NA") %>% unique 
 
 
 
@@ -48,11 +56,11 @@ svglite(file = "~/ifpan-chipseq-timecourse/PLOTS/boxplot_enhancer_amplitude_four
         width = 10,
         height = 8)
 
-
-tmp_enhancer_amplitude %>%
+enhancer_amplitude %>% 
   filter(TF %in% filtered_TF) %>% 
   group_by(gene.name, start.range, time, TF, gene.regulation) %>% 
   summarise(mean.max.peak = mean(amplitude)) %>% 
+  as.data.frame() %>% 
   {ggplot(., aes(x = as.factor(time), y = log(mean.max.peak), color = gene.regulation)) +
       geom_boxplot(position = position_dodge(), outlier.size = 0) +  
       facet_wrap(TF ~ ., ncol = 4, scales = "free_y") +
@@ -78,34 +86,34 @@ dev.off()
 #######################################################
 # Mean weighted time for four TF, for strongest peaks #
 #######################################################
-svglite(file = "~/ifpan-chipseq-timecourse/PLOTS/boxplot_enhancer_MWT_fourTF.svg", 
-        width = 10,
-        height = 8)
-
-
-tmp_enhancer_amplitude %>% 
-  filter(TF %in% filtered_TF) %>% 
-  group_by(gene.name, start.range, time, TF, gene.regulation) %>% 
-  summarise(mean.max.peak = mean(amplitude)) %>% 
-  spread(., key = "time", value = "mean.max.peak") %>%
-  as.data.frame() %>% 
-  mutate(., mean.weighted.time = rowSums(t(t(.[5:16])*{.[5:16] %>% colnames() %>% as.numeric()/60}))/rowSums(.[,5:16])) %>% #calculate with time = 0
-  select(gene.name, start.range, TF, gene.regulation, mean.weighted.time) %>% 
-  filter(gene.regulation == "up-regulated") %>% 
-  {ggplot(., aes(x = TF, y = mean.weighted.time, color = TF)) +
-      geom_boxplot() +
-      theme(axis.title.x = element_blank()) +
-      theme(axis.text.x = element_text(size = 16),
-            axis.text.y = element_text(size = 16),
-            axis.title.x = element_text(size = 22),
-            axis.title.y = element_text(size = 22),
-            legend.title = element_text(size = 20),
-            legend.text = element_text(size = 18)) +
-      labs(y = "Mean weighted time [hour]",
-           x = "Transcription factor") +
-      ggtitle("Mean weighted time for strongest peak")}
-
-dev.off()
+# svglite(file = "~/ifpan-chipseq-timecourse/PLOTS/boxplot_enhancer_MWT_fourTF.svg", 
+#         width = 10,
+#         height = 8)
+# 
+# 
+# enhancer_amplitude %>% 
+#   filter(TF %in% filtered_TF) %>% 
+#   group_by(gene.name, start.range, time, TF, gene.regulation) %>% 
+#   summarise(mean.max.peak = mean(amplitude)) %>% 
+#   spread(., key = "time", value = "mean.max.peak") %>%
+#   as.data.frame() %>% 
+#   mutate(., mean.weighted.time = rowSums(t(t(.[5:16])*{.[5:16] %>% colnames() %>% as.numeric()/60}))/rowSums(.[,5:16])) %>% #calculate with time = 0
+#   select(gene.name, start.range, TF, gene.regulation, mean.weighted.time) %>% 
+#   filter(gene.regulation == "up-regulated") %>% 
+#   {ggplot(., aes(x = TF, y = mean.weighted.time, color = TF)) +
+#       geom_boxplot() +
+#       theme(axis.title.x = element_blank()) +
+#       theme(axis.text.x = element_text(size = 16),
+#             axis.text.y = element_text(size = 16),
+#             axis.title.x = element_text(size = 22),
+#             axis.title.y = element_text(size = 22),
+#             legend.title = element_text(size = 20),
+#             legend.text = element_text(size = 18)) +
+#       labs(y = "Mean weighted time [hour]",
+#            x = "Transcription factor") +
+#       ggtitle("Mean weighted time for strongest peak")}
+# 
+# dev.off()
 
 rm(tmp_enhancer_amplitude)
 
@@ -167,8 +175,44 @@ spline.data <- upregulated %>%
            replace(time=="t6", 6) %>%
            replace(time=="t7", 7) %>%
            replace(time=="t8", 8) %>% as.numeric) %>%
-  aggregate(. ~ id * time, data = ., FUN = . %>% median) %>%
+  aggregate(. ~ id * time, data = ., FUN = . %>% median) %>% 
   select(time, value)
+  
+  
+# to boxplot derivation
+upregulated %>%
+  t() %>%
+  melt() %>% 
+  mutate(time = Var1 %>% str_split(., "_", simplify = TRUE) %>% .[ ,1]) %>%
+  mutate(id = rep(rownames(upregulated), each = 46)) %>%
+  mutate(time = replace(time, time=="t00", 0) %>%
+           replace(time=="t05", 0.5) %>%
+           replace(time=="t1", 1) %>%
+           replace(time=="t10", 10) %>%
+           replace(time=="t12", 12) %>%
+           replace(time=="t2", 2) %>%
+           replace(time=="t3", 3) %>%
+           replace(time=="t4", 4) %>%
+           replace(time=="t5", 5) %>%
+           replace(time=="t6", 6) %>%
+           replace(time=="t7", 7) %>%
+           replace(time=="t8", 8) %>% as.numeric) %>%
+  aggregate(. ~ id * time, data = ., FUN = . %>% median) %>%
+  mutate(ensemblid = id %>% str_split(., fixed("."), simplify = TRUE) %>% .[ ,1]) %>% 
+  select(ensemblid, time, value) -> spline.data.ensemblid
+
+spline.data.ensemblid %>% 
+  spread(., key = "time", value = "value") %>% 
+  column_to_rownames(., var = "ensemblid") %>% head %>%
+  apply(., 1, function(x){lead(x) - x}) %>% t %>%
+  .[,1:11] %>% 
+  set_colnames(c("15", "45")
+
+mutate(index.max.value = apply(., 1, function(x){as.numeric(x[9:(number.column*2-8)], na.rm=T) %>% which.max})) %>%
+  lead(1:10) - c(1:10)
+
+
+
 
 
 spline.nr3c1 <- enhancer_amplitude %>%
@@ -223,6 +267,7 @@ pdat.exp <- pdat.exp %>% mutate(deriv = scale(lead(yhat) - yhat))
 pdat.exp %>% select(time, deriv) -> pdat.exp
 
 colnames(pdat.exp) <-c("time", 'z')
+
 
 degree = 3
 
@@ -383,7 +428,49 @@ read.table("~/ChIP-seq/DATA/enhancer_peaks_value.tsv",
 
 #########################################################################
 # boxplot for Max Change Time Point (MCTP) and Mean Weighted Time (MWT) #
-#########################################################################  
+#########################################################################  sprawdzić czy jest dobrze, sprawdzić początek kodu, (sprawdzić czy napewno dobre dane na wykresie)
+column_differences <- function(z){
+  m <- c(z[1], z[2])
+  for(i in c(4:14)){
+    y <- abs(as.numeric(z[i]) - as.numeric(z[i-1]))
+    m <-c(m, y)
+  }
+  return(m)
+}
+
+
+data[order(results$pvalue)[1:number_signification_genes],] %>%
+  as.matrix() %>% 
+  #normalize.quantiles() %>% 
+  set_rownames(., rownames(raw.data[match(results.filtered$Geneid, rownames(raw.data)),3:48])) %>% 
+  set_colnames(colnames(raw.data[match(results.filtered$Geneid, rownames(raw.data)),3:48])) %>% 
+  {rownames(.) <- results$gene.name[order(results$pvalue)[1:number_signification_genes]]; .}  %>%
+  as.data.frame() %>% 
+  rownames_to_column(., var = "gene.name") %>% 
+  gather(., key = "samplied", value = "value_expression", -gene.name) %>%
+  left_join(., {samples %>% select(samplied, time)}) %>% 
+  select(-samplied) %>% 
+  group_by(gene.name, time) %>%
+  summarise(mean_value_expression = as.numeric(mean(value_expression))) %>% 
+  left_join(., gene_regulation, by = "gene.name") %>% 
+  spread(., key = "time", value = "mean_value_expression") %>% 
+  as.data.frame() %>% 
+  apply(., 1, column_differences) %>% 
+  t %>% 
+  set_colnames(c("gene.name", "gene.regulation", "15","45", "90", "150", "210", "270", "330", "390", "450", "540", "660")) %>% 
+  as.data.frame() %>%
+  gather(., key = "time", value = "value", -c(gene.name, gene.regulation)) %>%
+  mutate(value = as.numeric(value)) %>% 
+  spread(., key = "time", value = "value") %>% 
+  mutate(sum_row = apply(., 1, function(x){sum(as.numeric(x[3:13]))})) %>% 
+  gather(., key = "time", value = "value", -c(gene.name, gene.regulation, sum_row)) %>% 
+  mutate(time = as.numeric(time)) %>% 
+  mutate(time_value = time *  value) %>%
+  group_by(gene.name, gene.regulation, sum_row) %>%
+  summarise(sum_time_value = sum(time_value)) %>%
+  mutate(max_change_time_point = sum_time_value/sum_row) %>%
+  as.data.frame() -> max.change.time.point.significant 
+
 
 enhancer_amplitude %>% 
   filter(TF %in% filtered_TF) %>% 
@@ -415,7 +502,7 @@ enhancer_amplitude %>%
             rename(value = max_change_time_point) %>% 
             select(c(gene.name, group, gene.regulation, value)) %>% 
             as.data.frame() %>%
-            filter(gene.name %in% {tmp_filtered_enhancer %>% .[,1]})}) -> tmp_combine_MWT_MCTP
+            filter(gene.name %in% {enhancer_amplitude %>% select(gene.name) %>% unique() %>% .[,1]})}) -> tmp_combine_MWT_MCTP
 
 
 #####################
@@ -536,3 +623,48 @@ legend(y=1.1, x=.25, xpd=TRUE,
 
 rm(gene.GR, gene.NOGR, gene.NUGR, tmp_to_color, col1, tmp_dend, tmp_combine_MWT_MCTP)
 rm(tmp_enhancer_amplitude, tmp.data.enhancer.range)
+
+
+
+
+
+
+data[order(results$pvalue)[1:number_signification_genes],] %>%
+  as.matrix() %>% 
+  #normalize.quantiles() %>% 
+  set_rownames(., rownames(raw.data[match(results.filtered$Geneid, rownames(raw.data)),3:48])) %>% 
+  set_colnames(colnames(raw.data[match(results.filtered$Geneid, rownames(raw.data)),3:48])) %>% 
+  {rownames(.) <- results$gene.name[order(results$pvalue)[1:number_signification_genes]]; .}  %>%
+  as.data.frame() %>% 
+  rownames_to_column(., var = "gene.name") %>% 
+  gather(., key = "samplied", value = "value_expression", -gene.name) %>%
+  left_join(., {samples %>% select(samplied, time)}) %>% 
+  select(-samplied) %>% 
+  group_by(gene.name, time) %>%
+  summarise(mean_value_expression = as.numeric(mean(value_expression))) %>% 
+  left_join(., gene_regulation, by = "gene.name") %>% 
+  spread(., key = "time", value = "mean_value_expression") %>% 
+  as.data.frame() %>% 
+  apply(., 1, column_differences) %>% 
+  t %>% 
+  set_colnames(c("gene.name", "gene.regulation", "15","45", "90", "150", "210", "270", "330", "390", "450", "540", "660")) %>% 
+  as.data.frame() %>%
+  gather(., key = "time", value = "value", -c(gene.name, gene.regulation)) %>%
+  mutate(value = as.numeric(value)) %>% 
+  spread(., key = "time", value = "value") %>% 
+  mutate(sum_row = apply(., 1, function(x){sum(as.numeric(x[3:13]))})) %>% 
+  gather(., key = "time", value = "value", -c(gene.name, gene.regulation, sum_row)) %>% 
+  mutate(time = as.numeric(time)) %>% 
+  filter(gene.regulation == "up-regulated") %>% 
+  filter(gene.name %in% {enhancer_amplitude %>% 
+      filter(gene.regulation == "up-regulated") %>% 
+      select(gene.name) %>% 
+      unique() %>% .[,1]}) %>% 
+  {ggplot(., aes(x = as.numeric(time), y = value)) + 
+      }
+
+
+{ggplot(., aes(x = group, y = value, color = group)) +
+    geom_boxplot() +
+    labs(x = "Gene regulation",
+         y = "Time [min]")}
