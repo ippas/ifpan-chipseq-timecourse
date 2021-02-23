@@ -28,12 +28,13 @@ RNA-seq data from the ENCODE project were downloaded with [this link](https://ww
 
 ### ChIP-seq
 
-Dane dla Chip-seq [ściągnięto z](https://www.ncbi.nlm.nih.gov/gds/?term=tim+reddy+dexamethasone+chip-seq+nr3c1),
-Pobrano plik tekstowy gds_result.txt którego nazwę zmieniono na [info-chip-seq-to-download.txt](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/info-chip-seq-to-download.txt). Przypomocy tego pliku stworzono plik zawierający: 
-- nazwę czynnika transkrypcyjnego, 
-- czas w którym nastąpiło utrwalenie komórek, 
-- adress ftp do pobrania danych. 
-Plik wykonano przy użyciu komendy:
+Chip-seq data were dowloaded from [this link](https://www.ncbi.nlm.nih.gov/gds/?term=tim+reddy+dexamethasone+chip-seq+nr3c1),
+The [gds_result.txt](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/info-chip-seq-to-download.txt) was downloaded and translated into a file that contained:
+- TF name
+- time of cell fixation
+- ftp adress for data dowload
+
+With this command:
 
 ```bash
 cat ~/ifpan-chipseq-timecourse/DATA/info-chip-seq-to-download.txt | 
@@ -44,8 +45,7 @@ cat ~/ifpan-chipseq-timecourse/DATA/info-chip-seq-to-download.txt |
    sed 's/(GR)\t//' | 
    awk '{print $2 "\t" $4*60 "\t""ftp://ftp.ncbi.nlm.nih.gov/geo/series/"$6"nnn/"$7"/suppl/"$7"_RAW.tar""\t"$7}' > ~/ifpan-chipseq-timecourse/DATA/chipseq-file-info.tsv
 ```
-
-Używając [info-chip-seq-to-download.txt](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/info-chip-seq-to-download.txt) pobrano pliki korzystając z komendy: 
+files were downloaded with this command:
 
 ```bash
 cat ~/ifpan-chipseq-timecourse/DATA/chipseq-file-info.tsv | 
@@ -53,11 +53,9 @@ cat ~/ifpan-chipseq-timecourse/DATA/chipseq-file-info.tsv |
    xargs -i bash -c 'wget {} -P ~/ChIP-seq/DOWNLOAD'
 ```
 
-2. Uruchomić skrypt [extract_data_chipseq1.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/extract_data_chipseq1.sh) komendą:
- 
- ```bash
- ~/ifpan-chipseq-timecourse/SCRIPTS/extract_data_chipseq1.sh
- ```
+2. Chipseq data were extracted with [this script](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/extract_data_chipseq1.sh), which:
+
+-
 Skrypt wykonuje:
  - przy pomocy [promotores_peaks_info.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/promotores_peaks_info.tsv) i [bigwig_genomic_bucket500_extract_normalize_to_tsv.sh [1]](#1) wyciąga informacje dotyczące przyłączania się TF do DNA w zakresie +/-10000 od TSS i zapisuje do ~/ChIP-seq/DATApromotores_peaks_value.tsv
  - z trzech próbek tworzy część wspólną peaków w genomie dla NR3C1 dla time = 60
