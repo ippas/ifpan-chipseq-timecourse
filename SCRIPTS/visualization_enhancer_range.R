@@ -55,12 +55,12 @@ svglite(file = "~/ifpan-chipseq-timecourse/PLOTS/lineplot_enhancer_relative_chan
         width = 10,
         height = 8)
 
-enhancer_bigrange %>%
+enhancer_bigrange %>% 
   group_by(bucket.range, time, TF, gene.regulation) %>%
   summarize(mean.value = mean(value)) %>%
   mutate(number.regulation=c("down-regulated"=1, "random"=3, "up-regulated"=2)) %>%
   mutate(control = ifelse(number.regulation == 3, 1, 0)) %>%
-  mutate(max = max(mean.value * control)) %>% 
+  mutate(max = max(mean.value * control)) %>% head
   mutate(relative.value = mean.value / max) %>%
   ungroup() %>%  
   mutate(bucket.range = as.numeric(bucket.range)) %>%
@@ -79,6 +79,80 @@ enhancer_bigrange %>%
 
 dev.off()
 
+###########################
+# two way ANOVA enhancers #
+###########################
+# prepare table with data to to way ANOVA
+enhancer_bigrange %>% 
+  mutate(bucket.range = as.numeric(bucket.range)) %>%
+  mutate(gene.name = replace(gene.name, gene.regulation == "random", "NA")) %>% # remove of names of random genes
+  group_by(gene.name, bucket.range, time, TF, gene.regulation) %>%
+  summarize(mean.value = mean(value)) %>%
+  ungroup() %>%
+  as.data.frame() %>%
+  mutate(number.regulation= replace(gene.regulation, gene.regulation=="down-regulated", 1) %>%
+           replace(gene.regulation == "random", 3) %>%
+           replace(gene.regulation == "up-regulated", 2)) %>% 
+  mutate(control = ifelse(number.regulation == 3, 1, 0)) %>% 
+  group_by(bucket.range, time, TF) %>%
+  mutate(max = max(mean.value * control)) %>% 
+  mutate(relative.value = mean.value / max) %>% 
+  ungroup() %>%  
+  mutate(bucket.range = as.numeric(bucket.range)) %>%
+  filter(bucket.range >= 800, bucket.range <= 1200) %>% 
+  as.data.frame() %>% 
+  filter(gene.regulation != "random") %>%
+  group_by(time, gene.regulation, gene.name, TF) %>% 
+  summarise(amplitude = max(relative.value)) -> tmp.enhancer.bigrange
+
+# make two way ANOVA
+lapply(split(tmp.enhancer.bigrange, tmp.enhancer.bigrange$TF),function(x) {aov(amplitude ~ time*gene.regulation, data = x) %>% summary})
+
+
+# posthoc: pairwise.t.test, ech time to time = 0
+tmp.enhancer.bigrange %>% mutate(group = paste(gene.regulation, TF, sep = "_")) -> tmp.enhancer.bigrange.id.gene.regulation
+
+lapply(split(tmp.enhancer.bigrange.id.gene.regulation, tmp.enhancer.bigrange.id.gene.regulation$group),function(x) {pairwise.t.test(x$amplitude, x$time, p.adjust.method = "none")}) %>%
+  lapply(., function(x) {x[[3]] %>% 
+      as.data.frame() %>% 
+      rownames_to_column(., var = "group1") %>% 
+      gather(., "group2", "p.value", -group1) %>% 
+      na.omit()}) %>% 
+  melt %>%
+  select(-variable) %>%
+  set_colnames(c("time1", "time2", "p.value", "group")) %>% 
+  separate(group, c("gene.regulation", "TF"), "_") %>%
+  select("TF", "gene.regulation", "time1", "time2", "p.value") %>% 
+  filter(time2 == 0) %>%
+  fwrite("~/ifpan-chipseq-timecourse/DATA/enhancer_post_hoc_between_time.txv", 
+         sep="\t", 
+         col.names = TRUE, 
+         row.names = FALSE)
+
+
+# posthoc: pairwise.t.test, between down-regulation and up-regulation
+tmp.enhancer.bigrange %>% mutate(group = paste(time, TF, sep = "_")) -> tmp.enhancer.bigrange.id.time
+
+lapply(split(tmp.enhancer.bigrange.id.time, tmp.enhancer.bigrange.id.time$group),function(x) {pairwise.t.test(x$amplitude, x$gene.regulation, p.adjust.method = "none")}) %>%
+  lapply(., function(x) {x[[3]] %>% 
+      as.data.frame() %>% 
+      rownames_to_column(., var = "group1") %>% 
+      gather(., "group2", "p.value", -group1)}) %>% 
+  melt() %>%
+  select(-variable) %>%
+  set_colnames(c("group1", "group2", "p.value", "group")) %>% 
+  separate(group, c("time", "TF"), "_") %>%
+  select("TF", "time", "group1", "group2", "p.value") %>%
+  fwrite("~/ifpan-chipseq-timecourse/DATA/enhancer_post_hoc_between_regulation.txv", 
+         sep="\t", 
+         col.names = TRUE, 
+         row.names = FALSE)
+
+
+rm(tmp.enhancer.bigrange,
+   tmp.enhancer.bigrange.id.gene.regulation,
+   tmp.enhancer.bigrange.id.time)
+
 ############################################################
 # heatmapa bindding TF to DNA +/-2000 from the center peak #
 ############################################################
@@ -93,12 +167,9 @@ for(list.vector in list(c("up-regulated", "firebrick", "Enhancers up-regulated",
   enhancer_bigrange %>% 
     mutate(bucket.range = as.numeric(bucket.range)) %>%
     filter(gene.regulation == list.vector[1]) %>%
-    #filter(TF == "H3K27ac") %>%
-    #group_by(time, TF) %>%
     mutate(scale.value = scale(value)) %>% 
     na.omit() %>%
     mutate(scale.value = {scale.value[scale.value > threshold] <- threshold; scale.value[scale.value < -threshold] <- -threshold; scale.value}) %>%
-    #apply(1, function(scale.value, threshold){scale.value[scale.value > threshold] <- threshold; scale.value[scale.value < -threshold] <- -threshold; scale.value}, threshold = 2.0) %>%
     ungroup() %>%
     mutate(value = scale.value) %>%
     filter(bucket.range >= 800, bucket.range <= 1200) -> tmp.heatmap
@@ -106,36 +177,49 @@ for(list.vector in list(c("up-regulated", "firebrick", "Enhancers up-regulated",
   assign(list.vector[4], {tmp.heatmap %>%
   {ggplot(., aes(x=bucket.range, y=gene.name, fill=value)) +
       geom_tile(aes(x=bucket.range, y=reorder(gene.name, value), fill=value)) +
-      #scale_fill_gradient2(midpoint = 0, low ="blue", mid = "white", high = "red")+
-      #scale_fill_gradient(low="white", high="red") +
       scale_fill_gradient2(low = "blue", high = "red", mid = "white", midpoint = 0) +
       facet_grid(TF~time) +
-      theme(axis.text.y = element_text(size = 2, colour = list.vector[2]),
-            axis.text.x = element_text(angle=45, hjust = 1)) +
-      scale_x_continuous(limits=c(800, 1200),breaks = c(800, 1001, 1200), labels = c("-2000","0", "2000")) +
+      theme(axis.text.y = element_blank(),
+            axis.ticks.y = element_line(color = list.vector[2]),
+            axis.text.x = element_text(size = 6),
+            axis.title.x = element_text(size = 12),
+            axis.title.y = element_text(size = 12),
+            strip.text.x = element_text(size = 10),
+            strip.text.y = element_text(angle = 360, size = 12),
+            legend.title = element_text(size = 12),
+            legend.position = "bottom",
+            legend.text = element_text(size = 10)) +
+      scale_x_continuous(limits=c(800, 1200),breaks = c(800, 1001, 1200), labels = c("-2","0", "+2")) +
+      labs(x = "distance from peak amplitudue [kb]",
+           y = "Gene name",
+           fill = "Chipseq signal") +
       ggtitle(list.vector[3])
   }})
 }
-# 
-# jpeg("~/ifpan-chipseq-timecourse/PLOTS/heatmap_enhancer_top_ep300.jpeg", 
-#      width = 1400, 
-#      height = 802)
 
-png("~/ifpan-chipseq-timecourse/PLOTS/heatmap_enhancer.png", 
-    width = 1400, 
-    height = 802)
+png("~/ifpan-chipseq-timecourse/PLOTS/heatmap_enhancer_top_ep300.png",
+     width = 4960,
+     height = 7016,
+     res = 600)
 
-grid.arrange(up_regulated_plot, down_regulated_plot, random_plot, ncol=2)
+grid.arrange(up_regulated_plot + guides(fill = FALSE), 
+             down_regulated_plot + guides(fill = FALSE),
+            random_plot + guides(fill = FALSE),
+            get_legend(up_regulated_plot),
+            ncol=1, 
+            nrow = 4,
+            heights = c(2, 2, 2, 0.3))
 
 dev.off()
 
+
 rm(up_regulated_plot, down_regulated_plot, random_plot)
 
-# spradzić zmienić nazwę i zmodyfikować skrypty w bashu
+
 #########################################
 # Changes in amplitude for GR and EP300 #
 #########################################
-
+# reading file with transcripts encoding genes
 gtf2 <- read.table('~/ifpan-chipseq-timecourse/DATA/Homo_sapiens.GRCh38.95.protein_coding.gtf', 
                    header = FALSE, sep = '\t', col.names = c("ensemblid", "gene.name"))
 
@@ -159,6 +243,3 @@ results %>%
          row.names = FALSE)
 
 rm(gtf2, enhancer_bigrange)
-
-
-

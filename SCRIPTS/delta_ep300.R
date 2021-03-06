@@ -1,31 +1,7 @@
 ####################################poprawić kod, usunąć promotory po wczytaniu pliku
 #  choose peaks without promoters  #
 ####################################
-# peaks.enhancer.all.genes <- read.table('~/ifpan-chipseq-timecourse/DATA/peaks_all_genes.tsv', 
-#                                        header = TRUE, 
-#                                        sep = '\t')
-# 
-# peaks.enhancer.all.genes %>% 
-#   left_join(., gene_chromosome_start_end_strand, by = c("gene.name" = "Gene.name")) %>% 
-#   select(-c(Chromosome.scaffold.name, Gene.stable.ID)) %>% 
-#   mutate(pos.TSS=Gene.start..bp. * (Strand == 1) + Gene.end..bp. * (Strand == -1)) %>% 
-#   mutate(start.range.promoter = pos.TSS - 2000, end.range.promoter = pos.TSS + 2001) %>% 
-#   filter(end_peak < start.range.promoter | start_peak > end.range.promoter) %>% 
-#   .[, 1:5] %>%
-#   mutate(gene.regulation = "NA") %>%
-#   fwrite("~/ifpan-chipseq-timecourse/DATA/peaks_all_genes_without_promoters.tsv",
-#          sep="\t", 
-#          col.names = TRUE, 
-#          row.names = FALSE)
- 
-
-# peaks_all_genes_without_promoters_amplitude <- read.table("~/ChIP-seq/DATA/peaks_all_genes_without_promoters_amplitude.tsv", #zmiana pliku do wczytywania danych
-#                                                           header = FALSE, 
-#                                                           sep = "\t", 
-#                                                           stringsAsFactors = FALSE) %>% 
-#   set_colnames(c("gene.name", "chromosome", "start.range", "end.range", "gene.regulation", "TF", "time", "file", "amplitude"))
-
-peaks_all_genes_ep300_nr3c1_amplitude <- read.table('~/ifpan-chipseq-timecourse/DATA/peaks_all_genes_ep300_nr3c1_amplitude.tsv',
+peaks_all_genes_ep300_nr3c1_amplitude <- read.table('~/ChIP-seq/DATA/peaks_all_genes_ep300_nr3c1_amplitude.tsv',
                                                     header = TRUE, 
                                                     sep = "\t") %>%
   set_colnames(c("gene.name", "chromosome", "start.range", "end.range", "gene.regulation", "TF", "time", "file", "amplitude")) %>% 
@@ -48,8 +24,7 @@ peaks_all_genes_ep300_nr3c1_amplitude %>%
   select(-gene.name) %>% 
   .[order(.$differ_min_max, decreasing = TRUE),] %>% #sort by differ_min_max
   unique() %>% 
-  #head(150) %>% # choose top 150 peaks
-  left_join(., {peaks_all_genes_without_promoters_amplitude %>% 
+  left_join(., {peaks_all_genes_ep300_nr3c1_amplitude %>% 
       select(-c(file)) %>% 
       group_by(gene.name, start.range, end.range, TF, time, gene.regulation) %>% 
       summarise(amplitude_mean = mean(amplitude)) %>% 
@@ -81,11 +56,11 @@ peaks_all_genes_ep300_nr3c1_amplitude %>%
 ###########################
 data %>%
   as.data.frame() %>%
-  rownames_to_column(., var = "Geneid") %>%
-  left_join(., results[,c(1,4)], by = "Geneid") %>%
+  rownames_to_column(., var = "ensemblid") %>%
+  left_join(., results[,c(2,4)], by = "ensemblid") %>%
   filter(gene.name %in% {delta_ep300 %>% select(gene.name) %>% unique %>% .[, 1]}) %>%
   column_to_rownames(., var = "gene.name") %>%
-  select(-Geneid) %>%
+  select(-ensemblid) %>%
   #filter(gene.name == "ALDH1A1")
   as.matrix() %>%
   apply(1, scale) %>%
@@ -96,25 +71,6 @@ data %>%
   as.data.frame() %>% na.omit() %>%
   as.matrix() -> to.heatmap
   
-# data[order(results$pvalue),] %>%
-#   as.matrix() %>% 
-#   #set_rownames(., rownames(raw.data[match(results$Geneid, rownames(raw.data)),3:48])) %>% head
-#   #set_colnames(colnames(raw.data[match(results$Geneid, rownames(raw.data)),3:48])) %>%
-#   apply(1, scale) %>% 
-#   t %>%
-#   apply(1, function(x, threshold){x[x > threshold] <- threshold; x[x < -threshold] <- -threshold; x}, threshold = 2.0) %>%
-#   t %>%
-#   {rownames(.) <- results$Geneid[order(results$pvalue)]; .}  %>%
-#   {colnames(.) <- colnames(data); .} %>%
-#   as.data.frame() %>% 
-#   rownames_to_column() %>%
-#   filter(rowname %in% {delta_ep300 %>%
-#       select(gene.name) %>% unique %>%
-#       .[, 1]}) %>%
-#   column_to_rownames(., var = "rowname") %>%
-#   as.matrix() %>%
-#   na.omit -> to.heatmap
-
 number_clusters <- 2
 
 # heatmap delta ep300 #
@@ -218,7 +174,7 @@ svglite(file = "~/ifpan-chipseq-timecourse/PLOTS/boxplot_amplitude_delta_ep300.s
         height = 8)
 
 
-peaks_all_genes_without_promoters_amplitude %>%
+peaks_all_genes_ep300_nr3c1_amplitude %>%
   select(-c(file)) %>% 
   group_by(gene.name, start.range, end.range, TF, time, gene.regulation) %>% 
   summarise(amplitude_mean = mean(amplitude)) %>%
@@ -287,7 +243,7 @@ data[order(results$pvalue),] %>%
   select(gene.name, type.data ,gene.regulation, value) -> MCTP_delta_ep300
 
  
-peaks_all_genes_without_promoters_amplitude %>%
+peaks_all_genes_ep300_nr3c1_amplitude %>%
   select(-c(file)) %>% 
   group_by(gene.name, start.range, end.range, TF, time, gene.regulation) %>% 
   summarise(amplitude_mean = mean(amplitude)) %>%
@@ -325,6 +281,12 @@ rbind(MCTP_delta_ep300, MWT_delta_ep300) %>%
 
 dev.off()
 
+# calculate quantiles: Q1, Q2, Q3, and max and min value
+
+rbind(MCTP_delta_ep300, MWT_delta_ep300) %>%
+  rename(group = type.data) -> tmp_MCTP_MWT_delta_ep300
+tapply(tmp_MCTP_MWT_delta_ep300$value, tmp_MCTP_MWT_delta_ep300$group, summary)
+
 rm(MWT_delta_ep300, MCTP_delta_ep300)
 
 ###########################################################
@@ -334,13 +296,13 @@ file_to_search_enhancer <- function(data_frame){
   data_frame %>% 
     select(-c(gene.regulation, amplitude, TF, time)) %>% #remove diff_min_max, code to check!!!
     unique() %>% 
-    left_join(., {peaks_all_genes_without_promoters_amplitude %>% 
+    left_join(., {peaks_all_genes_ep300_nr3c1_amplitude %>% 
         select(gene.name, chromosome) %>% unique()}, by = "gene.name") %>% 
     na.omit() %>%
     mutate(chromosome = str_replace(.$chromosome, "chr", "")) %>% 
     left_join(., gene_regulation_ep300, by = "gene.name") %>%
     na.omit() %>%
-    mutate(ensemblid = "NA") %>%#add select, change number of column 
+    mutate(ensemblid = "NA") %>% #add select, change number of column 
     select(ensemblid, gene.name, chromosome, start.range, end.range, gene.regulation) 
 }
 

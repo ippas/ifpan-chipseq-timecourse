@@ -24,8 +24,8 @@ svglite(file = "~/ifpan-chipseq-timecourse/PLOTS/lineplot_enhancer_range_delta_e
         height = 8)
 
 tmp.enhancer.bigrange.delta.ep300 %>% 
-  group_by(bucket.range, time, TF, gene.regulation) %>%
-  summarize(mean.value = mean(value)) %>% 
+  group_by(bucket.range, time, TF, gene.regulation) %>% 
+  summarise(mean.value = mean(value)) %>% 
   ungroup() %>%  
   mutate(bucket.range = as.numeric(bucket.range)) %>%
   filter(bucket.range >= 800, bucket.range <= 1200)  %>% 
@@ -38,19 +38,18 @@ tmp.enhancer.bigrange.delta.ep300 %>%
       theme(axis.text.x = element_text(angle=45, hjust = 1),
             legend.position = "bottom") +
       scale_x_continuous(limits=c(800, 1200),breaks = c(800, 1001, 1200), labels = c("-2000","0", "2000")) +
-      ggtitle("Peaks for enhancer delta ep300 without promoters")}
-
+      labs(color = "Gene regulation") +
+      ggtitle("Peaks for enhancer delta ep300 without promoters")} 
 dev.off()
 
 ##################################
 # heatmap for enhancer top ep300 #
 ##################################
-for(list.vector in list(c("up-delta_ep300", "lightpink4", "Enhancers up-delta_ep300", "tmp_heatmap_up_delta_ep300"), 
-                        c("down-delta_ep300", "skyblue4", "Enhancers down-delta_ep300", "tmp_heatmap_down_delta_ep300"))){
+for(list.vector in list(c("up-delta_ep300", "lightpink4", "Enhancers up-delta_ep300", "tmp_heatmap_up_delta_ep300", 0.5), 
+                        c("down-delta_ep300", "skyblue4", "Enhancers down-delta_ep300", "tmp_heatmap_down_delta_ep300", 3))){
   tmp.enhancer.bigrange.delta.ep300 %>% 
     mutate(bucket.range = as.numeric(bucket.range)) %>%
     filter(gene.regulation == list.vector[1]) %>%
-    #group_by(time, TF) %>%
     mutate(scale.value = scale(value)) %>% 
     mutate(scale.value = {scale.value[scale.value > threshold] <- threshold; scale.value[scale.value < -threshold] <- -threshold; scale.value}) %>%
     ungroup() %>%
@@ -60,23 +59,50 @@ for(list.vector in list(c("up-delta_ep300", "lightpink4", "Enhancers up-delta_ep
   assign(list.vector[4], {tmp.heatmap %>%
   {ggplot(., aes(x=bucket.range, y=gene.name, fill=value)) +
       geom_tile(aes(x=bucket.range, y=reorder(gene.name, value), fill=value)) +
-      #scale_fill_gradient(low="white", high="red") +
       scale_fill_gradient2(low = "blue", high = "red", mid = "white", midpoint = 0) +
       facet_grid(TF~time) +
-      theme(axis.text.y = element_text(size = 3, colour = list.vector[2]),
-            axis.text.x = element_text(angle=45, hjust = 1)) +
-      scale_x_continuous(limits=c(800, 1200),breaks = c(800, 1001, 1200), labels = c("-2000","0", "2000")) +
+      theme(axis.text.y = element_blank(),
+            axis.ticks.y = element_line(color = list.vector[2], size = as.numeric(list.vector[5])),
+            axis.text.x = element_text(size = 6),
+            axis.title.x = element_text(size = 14),
+            axis.title.y = element_text(size = 14),
+            strip.text.x = element_text(size = 10),
+            strip.text.y = element_text(angle = 360, size = 12),
+            legend.title = element_text(size = 12),
+            legend.position = "bottom",
+            legend.text = element_text(size = 10)) +
+      scale_x_continuous(limits=c(800, 1200),breaks = c(800, 1001, 1200), labels = c("-2","0", "+2")) +
+      labs(x = "distance from peak amplitudue [kb]",
+           y = "Gene name",
+           fill = "Chipseq signal") +
       ggtitle(list.vector[3])
   }})
 }
 
-png("~/ifpan-chipseq-timecourse/PLOTS/heatmap_enhancer_delta_ep300.png", 
-     width = 1400, 
-     height = 802)
 
-grid.arrange(tmp_heatmap_up_delta_ep300, tmp_heatmap_down_delta_ep300, ncol=2)
+get_legend<-function(myggplot){
+  tmp <- ggplot_gtable(ggplot_build(myggplot))
+  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
+  legend <- tmp$grobs[[leg]]
+  return(legend)
+}
+
+
+png("~/ifpan-chipseq-timecourse/PLOTS/heatmap_enhancer_delta_ep300.png",
+    width = 4960,
+    height = 7016,
+    res = 600)
+# png("~/dexamethasone/heatmap_enhancer_delta_ep300.png",
+#     width = 4960,
+#     height = 7016,
+#     res = 600)
+
+grid.arrange(tmp_heatmap_up_delta_ep300 + guides(fill = FALSE), 
+             tmp_heatmap_down_delta_ep300 + guides(fill = FALSE), ncol=1, 
+             get_legend(tmp_heatmap_down_delta_ep300),
+             nrow = 3, heights = c(2.5, 2.5, 0.3))
 dev.off()
 
-rm(tmp_heatmap_up_delta_ep300, tmp_heatmap_down_delta_ep300, tmp.heatmap, tmp.enhancer.bigrange.delta.ep300)
+rm(tmp_heatmap_up_delta_ep300, tmp_heatmap_down_delta_ep300, tmp.heatmap, tmp.enhancer.bigrange.delta.ep300, tmp.legend)
 
 #################################################################################################

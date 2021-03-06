@@ -99,9 +99,6 @@ filtered_TF <- tmp_significant_random_genes_peak_normalized_amplitude %>%
 ################################################
 # making plot with peaks promoters for four TF #
 ################################################
-# jpeg("~/ifpan-chipseq-timecourse/PLOTS/lineplot_promotores_fourTF.jpeg", 
-#      width = 1400, 
-#      height = 802)
 svglite(file = "~/ifpan-chipseq-timecourse/PLOTS/lineplot_promotores_fourTF.svg", 
         width = 10,
         height = 8)
@@ -118,14 +115,7 @@ read.table("~/ChIP-seq/DATA/promotores_peaks_value.tsv",
   {ggplot(., aes(x = as.numeric(bucket.range)*500, y = mean.value, color = as.factor(gene.regulation))) + 
       geom_line(size = 0.5) + 
       facet_grid(TF~time, scales = "free_y") +
-      theme(axis.text.x = element_text(angle=45, hjust = 1, size = 14),
-            axis.text.y = element_text(size = 14),
-            axis.title.x = element_text(size = 18),
-            axis.title.y = element_text(size = 18),
-            strip.text.x = element_text(size = 16),
-            strip.text.y = element_text(size = 16),
-            legend.title = element_text(size = 18),
-            legend.text = element_text(size = 16),
+      theme(axis.text.x = element_text(angle=45, hjust = 1),
             legend.position = "bottom") +
       scale_color_manual(values = c("up-regulated" = "firebrick", 
                                     "random" = "gray", 
@@ -160,14 +150,7 @@ read.table("~/ChIP-seq/DATA/promotores_peaks_value.tsv",
   {ggplot(., aes(x = as.numeric(bucket.range)*500, y = relative.value, color = as.factor(gene.regulation))) + 
       geom_line(size = 0.5) + 
       facet_grid(TF~time, scales = "free_y") +
-      theme(axis.text.x = element_text(angle=45, hjust = 1, size = 14),
-            axis.text.y = element_text(size = 14),
-            axis.title.x = element_text(size = 18),
-            axis.title.y = element_text(size = 18),
-            strip.text.x = element_text(size = 16),
-            strip.text.y = element_text(size = 16),
-            legend.title = element_text(size = 18),
-            legend.text = element_text(size = 16),
+      theme(axis.text.x = element_text(angle=45, hjust = 1),
             legend.position = "bottom") +
       scale_color_manual(values = c("up-regulated" = "firebrick",
                                     "random" = "gray",
@@ -178,3 +161,37 @@ read.table("~/ChIP-seq/DATA/promotores_peaks_value.tsv",
       ggtitle("Relative peak changes for promoters")}
 
 dev.off()
+
+###########################
+# two-way ANOVA promoters #
+###########################
+read.table("~/ChIP-seq/DATA/promotores_peaks_value.tsv",
+           header = FALSE,
+           sep = "\t",
+           stringsAsFactors = FALSE) %>%
+  set_colnames(c("gene.name", "chromosome", "start.range", "end.range", "gene.regulation", "TF", "time", "file", 1:40)) %>%
+  gather(., "bucket.range", "value", -c("gene.name", "chromosome", "start.range", "end.range", "gene.regulation", "TF", "time", "file")) %>%
+  filter(TF %in% filtered_TF) %>% 
+  mutate(gene.name = replace(gene.name, gene.regulation == "random", "NA")) %>%
+  group_by(gene.name, bucket.range, time, TF, gene.regulation) %>%
+  summarize(mean.value = mean(value)) %>%
+  ungroup() %>%
+  as.data.frame() %>%
+  mutate(number.regulation= replace(gene.regulation, gene.regulation=="down-regulated", 1) %>%
+           replace(gene.regulation == "random", 3) %>%
+           replace(gene.regulation == "up-regulated", 2)) %>% 
+  mutate(control = ifelse(number.regulation == 3, 1, 0)) %>% 
+  group_by(bucket.range, time, TF) %>%
+  mutate(max = max(mean.value * control)) %>% 
+  mutate(relative.value = mean.value / max) %>% 
+  ungroup() %>%  
+  mutate(bucket.range = as.numeric(bucket.range)) %>%
+  as.data.frame() %>% 
+  filter(gene.regulation != "random") %>%
+  group_by(time, gene.regulation, gene.name, TF) %>% 
+  summarise(amplitude = max(relative.value)) -> tmp.data.promoters
+
+
+lapply(split(tmp.data.promoters, tmp.data.promoters$TF),function(x) {aov(amplitude ~ time*gene.regulation, data = x) %>% summary})
+
+rm(tmp.data.promoters)

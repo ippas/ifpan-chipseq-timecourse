@@ -28,27 +28,27 @@ samples <- read.delim("~/ifpan-chipseq-timecourse/DATA/sample.info.tsv",
                       stringsAsFactors = FALSE)
 
 data <- raw.data[, 3:48] %>% 
-  as.matrix()
-
-raw.data[, 3:48] %>% 
-  as.matrix() %>% 
-  normalize.quantiles() %>% 
-  set_rownames(., rownames(data)) %>% 
-  set_colnames(colnames(data)) %>%
-  as.data.frame() %>% 
-  rownames_to_column(var="Geneid") %>% 
-  gather(., "time.sample", "value.RNAseq", -c(Geneid)) %>%
-  mutate(log.value.RNAseq = log2(value.RNAseq + 1)) %>%
-  filter(log.value.RNAseq > 1) %>%
-  mutate(number.sample = .$time.sample %>%
-           str_split(., "_", n =2, simplify = TRUE) %>%
-           .[,2]) %>%
-  mutate(time = .$time.sample %>%
-           str_split(., "_", n =2, simplify = TRUE) %>%
-           .[,1]) %>%
-           {ggplot(., aes(x=number.sample, y=log.value.RNAseq)) +
-               geom_boxplot() + 
-               facet_wrap(time ~., ncol = 4)}
+#   as.matrix()
+# 
+# raw.data[, 3:48] %>% 
+#   as.matrix() %>% 
+#   normalize.quantiles() %>% 
+#   set_rownames(., rownames(data)) %>% 
+#   set_colnames(colnames(data)) %>%
+#   as.data.frame() %>% 
+#   rownames_to_column(var="Geneid") %>% 
+#   gather(., "time.sample", "value.RNAseq", -c(Geneid)) %>%
+#   mutate(log.value.RNAseq = log2(value.RNAseq + 1)) %>%
+#   filter(log.value.RNAseq > 1) %>%
+#   mutate(number.sample = .$time.sample %>%
+#            str_split(., "_", n =2, simplify = TRUE) %>%
+#            .[,2]) %>%
+#   mutate(time = .$time.sample %>%
+#            str_split(., "_", n =2, simplify = TRUE) %>%
+#            .[,1]) %>%
+#            {ggplot(., aes(x=number.sample, y=log.value.RNAseq)) +
+#                geom_boxplot() + 
+#                facet_wrap(time ~., ncol = 4)}
 
 #quantile normalization
 raw.data[, 3:48] %>% 
@@ -120,9 +120,6 @@ tmp_dend <- as.dist(1-cor(t(to.plot), method = "spearman")) %>%
   color_branches(., k = number_clusters, col=c("firebrick", "dodgerblue"))
 
 #Create heatmap changes in expression significant genes
-# jpeg("~/ifpan-chipseq-timecourse/PLOTS/heatmap_expression_significant.jpeg", 
-#      width = 1400, 
-#      height = 802)
 svglite(file = "~/ifpan-chipseq-timecourse/PLOTS/heatmap_expression_significant.svg", 
         width = 10,
         height = 8)
@@ -245,10 +242,6 @@ random.prepared %>% melt() %>%
 ###############################################################################
 # Create line plot relative changes in expression significant and random genes#
 ###############################################################################
-
-# jpeg("~/ifpan-chipseq-timecourse/PLOTS/lineplot_change_expression.jpeg", 
-#      width = 1400, 
-#      height = 802)
 svglite(file = "~/ifpan-chipseq-timecourse/PLOTS/lineplot_change_expression.svg", 
         width = 10,
         height = 8)
@@ -280,12 +273,7 @@ to.plot %>%
           aes(x = as.numeric(time), y = mean, color = as.factor(gene.regulation))) +
       geom_line(aes(group = gene.name), alpha = 0.01) +
       geom_smooth(aes(group = gene.regulation), se = FALSE, size = 1) +
-      theme(axis.text.x = element_text(size = 14),
-            axis.text.y = element_text(size = 10),
-            axis.title.x = element_text(size = 18),
-            axis.title.y = element_text(size = 18),
-            legend.title = element_text(size = 18),
-            legend.text = element_text(size = 16),
+      theme(
             legend.position = "bottom") +
       scale_color_manual(values = c("random" = "gray",
                                     "up-regulated" = "firebrick", 
@@ -303,46 +291,46 @@ rm(to.plot,
 
 #########################
 # Max change time point #
-#########################
-column_differences <- function(z){
-  m <- c(z[1], z[2])
-  for(i in c(4:14)){
-    y <- abs(as.numeric(z[i]) - as.numeric(z[i-1]))
-    m <-c(m, y)
-  }
-  return(m)
-}
-
-
-data[order(results$pvalue)[1:number_signification_genes],] %>%
-  as.matrix() %>% 
-  set_rownames(., rownames(raw.data[match(results.filtered$Geneid, rownames(raw.data)),3:48])) %>% 
-  set_colnames(colnames(raw.data[match(results.filtered$Geneid, rownames(raw.data)),3:48])) %>% 
-  {rownames(.) <- results$gene.name[order(results$pvalue)[1:number_signification_genes]]; .}  %>%
-  as.data.frame() %>% 
-  rownames_to_column(., var = "gene.name") %>% 
-  gather(., key = "samplied", value = "value_expression", -gene.name) %>%
-  left_join(., {samples %>% select(samplied, time)}) %>% 
-  select(-samplied) %>% 
-  group_by(gene.name, time) %>%
-  summarise(mean_value_expression = as.numeric(mean(value_expression))) %>% 
-  left_join(., gene_regulation, by = "gene.name") %>% 
-  spread(., key = "time", value = "mean_value_expression") %>% 
-  as.data.frame() %>% 
-  apply(., 1, column_differences) %>% 
-  t %>% 
-  set_colnames(c("gene.name", "gene.regulation", "15","45", "90", "150", "210", "270", "330", "390", "450", "540", "660")) %>% 
-  as.data.frame() %>%
-  gather(., key = "time", value = "value", -c(gene.name, gene.regulation)) %>%
-  mutate(value = as.numeric(value)) %>% 
-  spread(., key = "time", value = "value") %>% 
-  mutate(sum_row = apply(., 1, function(x){sum(as.numeric(x[3:13]))})) %>% 
-  gather(., key = "time", value = "value", -c(gene.name, gene.regulation, sum_row)) %>% 
-  mutate(time = as.numeric(time)) %>% 
-  mutate(time_value = time *  value) %>%
-  group_by(gene.name, gene.regulation, sum_row) %>%
-  summarise(sum_time_value = sum(time_value)) %>%
-  mutate(max_change_time_point = sum_time_value/sum_row) -> max.change.time.point.significant
+# #########################
+# column_differences <- function(z){
+#   m <- c(z[1], z[2])
+#   for(i in c(4:14)){
+#     y <- abs(as.numeric(z[i]) - as.numeric(z[i-1]))
+#     m <-c(m, y)
+#   }
+#   return(m)
+# }
+# 
+# 
+# data[order(results$pvalue)[1:number_signification_genes],] %>%
+#   as.matrix() %>% 
+#   set_rownames(., rownames(raw.data[match(results.filtered$Geneid, rownames(raw.data)),3:48])) %>% 
+#   set_colnames(colnames(raw.data[match(results.filtered$Geneid, rownames(raw.data)),3:48])) %>% 
+#   {rownames(.) <- results$gene.name[order(results$pvalue)[1:number_signification_genes]]; .}  %>%
+#   as.data.frame() %>% 
+#   rownames_to_column(., var = "gene.name") %>% 
+#   gather(., key = "samplied", value = "value_expression", -gene.name) %>%
+#   left_join(., {samples %>% select(samplied, time)}) %>% 
+#   select(-samplied) %>% 
+#   group_by(gene.name, time) %>%
+#   summarise(mean_value_expression = as.numeric(mean(value_expression))) %>% 
+#   left_join(., gene_regulation, by = "gene.name") %>% 
+#   spread(., key = "time", value = "mean_value_expression") %>% 
+#   as.data.frame() %>% 
+#   apply(., 1, column_differences) %>% 
+#   t %>% 
+#   set_colnames(c("gene.name", "gene.regulation", "15","45", "90", "150", "210", "270", "330", "390", "450", "540", "660")) %>% 
+#   as.data.frame() %>%
+#   gather(., key = "time", value = "value", -c(gene.name, gene.regulation)) %>%
+#   mutate(value = as.numeric(value)) %>% 
+#   spread(., key = "time", value = "value") %>% 
+#   mutate(sum_row = apply(., 1, function(x){sum(as.numeric(x[3:13]))})) %>% 
+#   gather(., key = "time", value = "value", -c(gene.name, gene.regulation, sum_row)) %>% 
+#   mutate(time = as.numeric(time)) %>% 
+#   mutate(time_value = time *  value) %>%
+#   group_by(gene.name, gene.regulation, sum_row) %>%
+#   summarise(sum_time_value = sum(time_value)) %>%
+#   mutate(max_change_time_point = sum_time_value/sum_row) -> max.change.time.point.significant
 
 # jpeg("~/ifpan-chipseq-timecourse/PLOTS/boxplot_MCTP.jpeg", 
 #      width = 1400, 
@@ -399,12 +387,6 @@ data[order(results$pvalue)[1:number_signification_genes],] %>%
   {ggplot(.,aes(x = log2mean)) + 
       geom_density(aes(y=..density.., color = gene.regulation)) +
       geom_histogram(aes(y=..density.., fill = gene.regulation), position="identity", alpha=0.4, bins = 30) +
-      theme(axis.text.x = element_text(size = 14),
-            axis.text.y = element_text(size = 10),
-            axis.title.x = element_text(size = 18),
-            axis.title.y = element_text(size = 18),
-            legend.title = element_text(size = 18),
-            legend.text = element_text(size = 16)) +
       scale_color_manual(values = c("up-regulated" = "firebrick",
                                     "random" = "gray20",
                                     "down-regulated" = "dodgerblue")) +
@@ -436,12 +418,6 @@ data[order(results$pvalue)[1:number_signification_genes],] %>%
   filter(median < 90000) %>%
   {ggplot(.,aes(x = median)) + 
       geom_histogram(aes(y=..density.., fill = gene.regulation), position="identity", alpha=0.4) +
-      theme(axis.text.x = element_text(size = 14),
-            axis.text.y = element_text(size = 10),
-            axis.title.x = element_text(size = 18),
-            axis.title.y = element_text(size = 18),
-            legend.title = element_text(size = 18),
-            legend.text = element_text(size = 16)) +
       scale_color_manual(values = c("up-regulated" = "firebrick",
                                     "random" = "gray20",
                                     "down-regulated" = "dodgerblue")) +
@@ -506,6 +482,3 @@ random %>%
          sep="\t", 
          col.names = TRUE, 
          row.names = FALSE)
-
-
-
