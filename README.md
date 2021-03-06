@@ -93,8 +93,9 @@ Skrypt wykonuje:
 
 ![Kiku](PLOTS/boxplot_MWT_MCTP.svg)
 
-![Kiku](PLOTS/boxlineplot_expression_NR3C1_EP300.svg)
+![Kiku](PLOTS/boxlineplot_derivative_expression.svg)
 
+![Kiku](PLOTS/boxlineplot_changes_NR3C1_EP300.svg)
 
  
 Uruchomić [extract_data_chipseq2.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/extract_data_chipseq2.sh) komendą:
