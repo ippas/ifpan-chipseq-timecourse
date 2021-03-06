@@ -183,7 +183,7 @@ for(list.vector in list(c("up-regulated", "firebrick", "Enhancers up-regulated",
             axis.ticks.y = element_line(color = list.vector[2]),
             axis.text.x = element_text(size = 6),
             axis.title.x = element_text(size = 12),
-            axis.title.y = element_text(size = 12),
+            axis.title.y = element_blank(),
             strip.text.x = element_text(size = 10),
             strip.text.y = element_text(angle = 360, size = 12),
             legend.title = element_text(size = 12),
@@ -197,7 +197,16 @@ for(list.vector in list(c("up-regulated", "firebrick", "Enhancers up-regulated",
   }})
 }
 
-png("~/ifpan-chipseq-timecourse/PLOTS/heatmap_enhancer_top_ep300.png",
+# function to extract legend from plot
+get_legend<-function(myggplot){
+  tmp <- ggplot_gtable(ggplot_build(myggplot))
+  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
+  legend <- tmp$grobs[[leg]]
+  return(legend)
+}
+
+
+png("~/ifpan-chipseq-timecourse/PLOTS/heatmap_enhancer.png",
      width = 4960,
      height = 7016,
      res = 600)
@@ -211,7 +220,6 @@ grid.arrange(up_regulated_plot + guides(fill = FALSE),
             heights = c(2, 2, 2, 0.3))
 
 dev.off()
-
 
 rm(up_regulated_plot, down_regulated_plot, random_plot)
 

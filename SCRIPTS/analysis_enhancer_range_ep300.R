@@ -64,8 +64,8 @@ for(list.vector in list(c("up-delta_ep300", "lightpink4", "Enhancers up-delta_ep
       theme(axis.text.y = element_blank(),
             axis.ticks.y = element_line(color = list.vector[2], size = as.numeric(list.vector[5])),
             axis.text.x = element_text(size = 6),
-            axis.title.x = element_text(size = 14),
-            axis.title.y = element_text(size = 14),
+            axis.title.x = element_blank(),
+            axis.title.y = element_text(size = 12),
             strip.text.x = element_text(size = 10),
             strip.text.y = element_text(angle = 360, size = 12),
             legend.title = element_text(size = 12),
@@ -77,14 +77,6 @@ for(list.vector in list(c("up-delta_ep300", "lightpink4", "Enhancers up-delta_ep
            fill = "Chipseq signal") +
       ggtitle(list.vector[3])
   }})
-}
-
-
-get_legend<-function(myggplot){
-  tmp <- ggplot_gtable(ggplot_build(myggplot))
-  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
-  legend <- tmp$grobs[[leg]]
-  return(legend)
 }
 
 
