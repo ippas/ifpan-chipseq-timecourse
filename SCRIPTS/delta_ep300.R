@@ -274,7 +274,8 @@ svglite(file = "~/ifpan-chipseq-timecourse/PLOTS/boxplot_MCTP_MWT_delta_ep300.sv
         height = 8)
 
 rbind(MCTP_delta_ep300, MWT_delta_ep300) %>% 
-{ggplot(., aes(x = type.data, y = value, color = type.data)) + 
+  mutate(type.data = factor(.$type.data, levels = c("NR3C1", "expression", "EP300"))) %>%
+  {ggplot(., aes(x = type.data, y = value, color = type.data)) + 
     geom_boxplot() + 
     theme(axis.title.x = element_blank())}
 
