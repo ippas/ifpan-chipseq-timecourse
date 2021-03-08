@@ -61,7 +61,6 @@ data %>%
   filter(gene.name %in% {delta_ep300 %>% select(gene.name) %>% unique %>% .[, 1]}) %>%
   column_to_rownames(., var = "gene.name") %>%
   select(-ensemblid) %>%
-  #filter(gene.name == "ALDH1A1")
   as.matrix() %>%
   apply(1, scale) %>%
   t %>%
@@ -166,40 +165,40 @@ dev.off()
 
 
 
-#####################################################################
-# Boxplot, which show change amplitude for enhancer during the time #
-#####################################################################
-svglite(file = "~/ifpan-chipseq-timecourse/PLOTS/boxplot_amplitude_delta_ep300.svg", 
-        width = 10,
-        height = 8)
-
-
-peaks_all_genes_ep300_nr3c1_amplitude %>%
-  select(-c(file)) %>% 
-  group_by(gene.name, start.range, end.range, TF, time, gene.regulation) %>% 
-  summarise(amplitude_mean = mean(amplitude)) %>%
-  rename(amplitude = amplitude_mean) %>%
-  ungroup %>%
-  mutate(id = paste(gene.name, start.range, end.range, sep = '.')) %>% 
-  filter(id %in% {delta_ep300 %>% #filter by delta_ep300
-      mutate(id = paste(gene.name, start.range, end.range, sep = '.')) %>%
-      .[, 8]}) %>% 
-  select(-id) %>% 
-  group_by(gene.name, start.range, time, TF) %>% 
-  summarise(mean.max.peak = mean(amplitude)) %>% 
-  left_join(., gene_regulation_ep300, by = "gene.name") %>%
-  na.omit %>%
-  {ggplot(., aes(x = as.factor(time), y = log(mean.max.peak), color = gene.regulation)) +
-      geom_boxplot(position = position_dodge(), outlier.size = 0) +  
-      facet_wrap(TF ~ ., ncol = 2, scales = "free_y" ) +
-      theme(legend.position = "bottom") +
-      scale_color_manual(values = c("up-delta_ep300" = "lightpink4", 
-                                    "down-delta_ep300" = "skyblue4")) +
-      labs(x = "Time [min]",
-           y = "Log amplitude values") +
-      ggtitle("Delta ep300")}
-
-dev.off()
+# #####################################################################
+# # Boxplot, which show change amplitude for enhancer during the time #
+# #####################################################################
+# svglite(file = "~/ifpan-chipseq-timecourse/PLOTS/boxplot_amplitude_delta_ep300.svg", 
+#         width = 10,
+#         height = 8)
+# 
+# 
+# peaks_all_genes_ep300_nr3c1_amplitude %>%
+#   select(-c(file)) %>% 
+#   group_by(gene.name, start.range, end.range, TF, time, gene.regulation) %>% 
+#   summarise(amplitude_mean = mean(amplitude)) %>%
+#   rename(amplitude = amplitude_mean) %>%
+#   ungroup %>%
+#   mutate(id = paste(gene.name, start.range, end.range, sep = '.')) %>% 
+#   filter(id %in% {delta_ep300 %>% #filter by delta_ep300
+#       mutate(id = paste(gene.name, start.range, end.range, sep = '.')) %>%
+#       .[, 8]}) %>% 
+#   select(-id) %>% 
+#   group_by(gene.name, start.range, time, TF) %>% 
+#   summarise(mean.max.peak = mean(amplitude)) %>% 
+#   left_join(., gene_regulation_ep300, by = "gene.name") %>%
+#   na.omit %>%
+#   {ggplot(., aes(x = as.factor(time), y = log(mean.max.peak), color = gene.regulation)) +
+#       geom_boxplot(position = position_dodge(), outlier.size = 0) +  
+#       facet_wrap(TF ~ ., ncol = 2, scales = "free_y" ) +
+#       theme(legend.position = "bottom") +
+#       scale_color_manual(values = c("up-delta_ep300" = "lightpink4", 
+#                                     "down-delta_ep300" = "skyblue4")) +
+#       labs(x = "Time [min]",
+#            y = "Log amplitude values") +
+#       ggtitle("Delta ep300")}
+# 
+# dev.off()
 
 
 ###########################################
@@ -281,13 +280,37 @@ rbind(MCTP_delta_ep300, MWT_delta_ep300) %>%
 
 dev.off()
 
+#####################################
+# Statistic: ANOVA, pairwise.t.test #
+#####################################
+sink("~/ifpan-chipseq-timecourse/DATA/MWT_MCTP_delta_ep300_ANOVA.txt")
+rbind(MCTP_delta_ep300, MWT_delta_ep300) %>%
+  aov(value ~ type.data + Error(gene.name), data = .) %>%
+  summary() %>% print()
+sink()  
+
 # calculate quantiles: Q1, Q2, Q3, and max and min value
 
-rbind(MCTP_delta_ep300, MWT_delta_ep300) %>%
+rbind(MCTP_delta_ep300, MWT_delta_ep300) %>% 
   rename(group = type.data) -> tmp_MCTP_MWT_delta_ep300
-tapply(tmp_MCTP_MWT_delta_ep300$value, tmp_MCTP_MWT_delta_ep300$group, summary)
+tapply(tmp_MCTP_MWT_delta_ep300$value, tmp_MCTP_MWT_delta_ep300$group, summary) %>%
+  lapply(., function(x) { x %>% 
+      t %>% 
+      t %>% 
+      as.data.frame() %>% 
+      select(-Var2) %>% 
+      set_colnames(c("type_summary", "value"))}) %>%
+  melt() %>% 
+  select(-variable) %>% 
+  rename(type_data = L1) %>%
+  select(type_data, type_summary, value) %>% 
+  spread(., key = "type_summary", value = "value") %>%
+  fwrite("~/ifpan-chipseq-timecourse/DATA/MWT_MCTP_delta_ep300_basic_summary.tsv", 
+         sep="\t", 
+         col.names = TRUE, 
+         row.names = FALSE)
 
-rm(MWT_delta_ep300, MCTP_delta_ep300)
+rm(MWT_delta_ep300, MCTP_delta_ep300, tmp_MCTP_MWT_delta_ep300)
 
 ###########################################################
 # Function prepare dataframe for extract data to enhancer #

@@ -105,9 +105,10 @@ enhancer_bigrange %>%
   group_by(time, gene.regulation, gene.name, TF) %>% 
   summarise(amplitude = max(relative.value)) -> tmp.enhancer.bigrange
 
-# make two way ANOVA
+# make two way ANOVA and save to file
+sink("~/ifpan-chipseq-timecourse/DATA/enhancer_relative_amplitude_ANOVA.txt")
 lapply(split(tmp.enhancer.bigrange, tmp.enhancer.bigrange$TF),function(x) {aov(amplitude ~ time*gene.regulation, data = x) %>% summary})
-
+sink()
 
 # posthoc: pairwise.t.test, ech time to time = 0
 tmp.enhancer.bigrange %>% mutate(group = paste(gene.regulation, TF, sep = "_")) -> tmp.enhancer.bigrange.id.gene.regulation
@@ -124,7 +125,7 @@ lapply(split(tmp.enhancer.bigrange.id.gene.regulation, tmp.enhancer.bigrange.id.
   separate(group, c("gene.regulation", "TF"), "_") %>%
   select("TF", "gene.regulation", "time1", "time2", "p.value") %>% 
   filter(time2 == 0) %>%
-  fwrite("~/ifpan-chipseq-timecourse/DATA/enhancer_post_hoc_between_time.txv", 
+  fwrite("~/ifpan-chipseq-timecourse/DATA/enhancer_post_hoc_between_time.tsv", 
          sep="\t", 
          col.names = TRUE, 
          row.names = FALSE)
@@ -143,7 +144,7 @@ lapply(split(tmp.enhancer.bigrange.id.time, tmp.enhancer.bigrange.id.time$group)
   set_colnames(c("group1", "group2", "p.value", "group")) %>% 
   separate(group, c("time", "TF"), "_") %>%
   select("TF", "time", "group1", "group2", "p.value") %>%
-  fwrite("~/ifpan-chipseq-timecourse/DATA/enhancer_post_hoc_between_regulation.txv", 
+  fwrite("~/ifpan-chipseq-timecourse/DATA/enhancer_post_hoc_between_regulation.tsv", 
          sep="\t", 
          col.names = TRUE, 
          row.names = FALSE)
