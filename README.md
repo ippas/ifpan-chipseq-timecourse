@@ -173,7 +173,9 @@ Uruchomić skrypt [delta_ep300.R](https://github.com/ippas/ifpan-chipseq-timecou
 
 ![Kiku](PLOTS/lineplot_change_expression_delta_ep300.svg)
 
-![Kiku](PLOTS/boxplot_amplitude_delta_ep300.svg)
+![Kiku](PLOTS/boxplot_MCTP_MWT_delta_ep300.svg)
+
+![Kiku](PLOTS/boxplot_MCTP_MWT_delta_ep300.svg)
 
 ![Kiku](PLOTS/boxplot_MCTP_MWT_delta_ep300.svg)
 
