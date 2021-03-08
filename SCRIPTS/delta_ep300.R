@@ -312,6 +312,183 @@ tapply(tmp_MCTP_MWT_delta_ep300$value, tmp_MCTP_MWT_delta_ep300$group, summary) 
 
 rm(MWT_delta_ep300, MCTP_delta_ep300, tmp_MCTP_MWT_delta_ep300)
 
+
+#########################################################
+# timecourse graph, expression and combine EP300, NR3C1 #
+#########################################################
+
+gene_regulation_ep300 %>%
+  left_join(., {genes.names %>% filter(Gene.stable.ID %in% {results %>% select(ensemblid) %>% unique %>% .[,1]})}, by = c("gene.name" = "Gene.name")) %>%
+  select(-Gene.stable.ID.version) %>%
+  rename(gene.id = Gene.stable.ID) -> gene_regulation_ep300
+
+
+up_delta_ep300 <- data[((rownames(data) %>% str_split(., fixed("."), n = 2, simplify = TRUE) %>% .[, 1]) %in% gene_regulation_ep300$gene.id[which(gene_regulation_ep300$gene.regulation == "up-delta_ep300")]),] %>%
+  apply(1, fc) %>% t  
+colnames(up_delta_ep300) <- colnames(raw.data[3:48])
+
+
+##################
+# for expression #
+##################
+
+# ## PART 2 ##
+# ## prepare data to plot ###
+up_delta_ep300 %>% 
+  t() %>%
+  melt() %>% 
+  mutate(time = Var1 %>% str_split(., "_", simplify = TRUE) %>% .[ ,1]) %>%
+  mutate(id = rep(rownames(up_delta_ep300), each = ncol(up_delta_ep300))) %>%
+  mutate(time = replace(time, time=="t00", 0) %>%
+           replace(time=="t05", 0.5) %>%
+           replace(time=="t1", 1) %>%
+           replace(time=="t10", 10) %>%
+           replace(time=="t12", 12) %>%
+           replace(time=="t2", 2) %>%
+           replace(time=="t3", 3) %>%
+           replace(time=="t4", 4) %>%
+           replace(time=="t5", 5) %>%
+           replace(time=="t6", 6) %>%
+           replace(time=="t7", 7) %>%
+           replace(time=="t8", 8) %>% as.numeric) %>%
+  aggregate(. ~ id * time, data = ., FUN = . %>% median) %>% 
+  mutate(ensemblid = id %>% str_split(., fixed("."), simplify = TRUE) %>% .[ ,1]) %>% 
+  select(ensemblid, time, value) %>%
+  left_join(., {gene_chromosome_start_end_strand[, c(1, 5)] %>% filter(Gene.stable.ID  %in% {results %>% .[,2]})}, 
+            by = c("ensemblid" = "Gene.stable.ID")) %>%
+  select(time, value) -> spline.exp.delta.ep300
+
+
+## PART 3 ##
+## prepare boxplot ###
+
+with(spline.exp.delta.ep300, boxplot(value ~ time))
+colnames(spline.exp.delta.ep300) <- c("time", "z")
+spline.exp.delta.ep300$group <- c(rep('expression', nrow(spline.exp.delta.ep300)))
+
+
+#remove.outliers <- function(x) {!x %in% boxplot.stats(x)$out}
+spline.exp.delta.ep300 <- spline.exp.delta.ep300 %>%
+  group_by(time) %>%
+  filter(remove.outliers(z))
+
+## PART 4 ##
+## prepare lines to plot - binding at the time for NR3C1 and EP300 and derivative for expression
+
+degree = 3
+mod.exp.delta.ep300 <- with(spline.exp.delta.ep300, lm(z ~ bs(time, degree = degree)))
+pdat.exp.delta.ep300 <- with(spline.exp.delta.ep300, data.frame(time = seq(min(time), max(time), length = 100)))
+pdat.exp.delta.ep300 <- transform(pdat.exp.delta.ep300, yhat = predict(mod.exp.delta.ep300, newdata = pdat.exp.delta.ep300))
+pdat.exp.delta.ep300 <- pdat.exp.delta.ep300 %>% mutate(deriv = 100 * (lead(yhat) - yhat))
+pdat.exp.delta.ep300$group <- c(rep('expression changes', nrow(pdat.exp.delta.ep300)))
+
+
+## PART 5 ##
+## plot boxplot and lines on top ##
+
+svglite(file = "~/ifpan-chipseq-timecourse/PLOTS/boxlineplot_derivative_expression_delta_ep300.svg",
+        width = 10,
+        height = 8)
+
+ggplot(spline.exp.delta.ep300, aes(x = time, y = z)) + 
+  geom_boxplot(data = spline.exp.delta.ep300, aes(group = time), outlier.shape = NA, alpha=0.4, color = 'grey20') +
+  ylim(-1,5) +
+  geom_line(inheret.aes = FALSE, data = pdat.exp.delta.ep300, aes(x = time, y = yhat), alpha=0.4, color = 'grey20') +
+  geom_line(inheret.aes = FALSE, data = pdat.exp.delta.ep300, aes(x = time, y = deriv), size=1.5)
+
+dev.off()
+
+#######################
+# for ep300 and nr3c1 #
+#######################
+spline.nr3c1.delta.ep300 <- peaks_all_genes_ep300_nr3c1_amplitude %>% 
+  mutate(id = paste(gene.name, start.range, end.range, sep = "_")) %>% 
+  filter(id %in% {delta_ep300 %>% mutate(id = paste(gene.name, start.range, end.range, sep = "_")) %>% select(id) %>% unique() %>% .[,1]}) %>%
+  select(-c(id, gene.regulation)) %>%
+  left_join(., gene_regulation_ep300, by = "gene.name") %>% 
+  filter(gene.regulation == "up-delta_ep300") %>% 
+  filter(TF == "NR3C1") %>% 
+  mutate(id = paste(chromosome, start.range, end.range, sep = ".")) %>%
+  select(id, time, amplitude) %>%
+  mutate(time = time / 60) %>%
+  group_by(id) %>%
+  data.frame %>%
+  aggregate(. ~ id * time, data = ., FUN = . %>% median) %>%
+  group_by(id) %>% 
+  mutate(z = scale(amplitude)) %>%
+  ungroup() %>%
+  select(time, z)
+
+
+spline.ep300.delta.ep300 <- peaks_all_genes_ep300_nr3c1_amplitude %>% 
+  mutate(id = paste(gene.name, start.range, end.range, sep = "_")) %>% 
+  filter(id %in% {delta_ep300 %>% mutate(id = paste(gene.name, start.range, end.range, sep = "_")) %>% select(id) %>% unique() %>% .[,1]}) %>%
+  select(-c(id, gene.regulation)) %>%
+  left_join(., gene_regulation_ep300, by = "gene.name") %>% 
+  filter(gene.regulation == "up-delta_ep300") %>% 
+  filter(TF == "EP300") %>%
+  mutate(id = paste(chromosome, start.range, end.range, sep = ".")) %>%
+  select(id, time, amplitude) %>%
+  mutate(time = time / 60) %>%
+  group_by(id) %>%
+  data.frame %>%
+  aggregate(. ~ id * time, data = ., FUN = . %>% median) %>%
+  group_by(id) %>% 
+  mutate(z = scale(amplitude)) %>%
+  ungroup() %>%
+  select(time, z)
+
+## PART 3 ##
+## prepare boxplot ###
+spline.ep300.delta.ep300$group <- c(rep('EP300', nrow(spline.ep300.delta.ep300)))
+spline.nr3c1.delta.ep300$group <- c(rep('NR3C1', nrow(spline.nr3c1.delta.ep300)))
+
+boxplot.data.delta.ep300 <- rbind(spline.nr3c1.delta.ep300, spline.ep300.delta.ep300) %>% mutate(id = paste(time, group, sep = "_"))
+
+## PART 4 ##
+## prepare lines to plot - binding at the time for NR3C1 and EP300 and derivative for expression
+
+mod.gr.delta.ep300 <- with(spline.nr3c1.delta.ep300, lm(z ~ bs(time, degree = degree)))
+pdat.gr.delta.ep300 <- with(spline.nr3c1.delta.ep300, data.frame(time = seq(min(time), max(time), length = 100)))
+pdat.gr.delta.ep300 <- transform(pdat.gr.delta.ep300, z = scale(predict(mod.gr.delta.ep300, newdata = pdat.gr.delta.ep300)))
+
+mod.ep.delta.ep300 <- with(spline.ep300.delta.ep300, lm(z ~ bs(time, degree = degree)))
+pdat.ep.delta.ep300 <- with(spline.ep300.delta.ep300, data.frame(time = seq(min(time), max(time), length = 100)))
+pdat.ep.delta.ep300 <- transform(pdat.ep.delta.ep300, z = scale(predict(mod.ep.delta.ep300, newdata = pdat.ep.delta.ep300)))
+
+pdat.ep.delta.ep300$group <- c(rep('EP300', nrow(pdat.ep.delta.ep300)))
+pdat.gr.delta.ep300$group <- c(rep('NR3C1', nrow(pdat.gr.delta.ep300)))
+
+lineplot.data.delta.ep300 <- rbind(pdat.ep.delta.ep300, pdat.gr.delta.ep300)
+
+
+svglite(file = "~/ifpan-chipseq-timecourse/PLOTS/boxlineplot_changes_NR3C1_EP300_delta_ep300.svg",
+        width = 10,
+        height = 8)
+
+ggplot() + 
+  geom_boxplot(data = boxplot.data.delta.ep300, aes(x=as.numeric(time), y=z, fill=group, group = id), outlier.shape = NA, alpha=0.4, color = 'grey') +
+  geom_line(data = lineplot.data.delta.ep300, aes(x = as.numeric(time), y = z, color = group), size=1.5)
+
+dev.off()
+
+
+rm(up_delta_ep300,
+   degree, 
+   mod.exp.delta.ep300,
+   pdat.exp.delta.ep300,
+   spline.nr3c1.delta.ep300,
+   spline.ep300.delta.ep300,
+   boxplot.data.delta.ep300,
+   mod.gr.delta.ep300,
+   pdat.gr.delta.ep300,
+   mod.ep.delta.ep300,
+   pdat.ep.delta.ep300,
+   lineplot.data.delta.ep300)
+
+
+
+
 ###########################################################
 # Function prepare dataframe for extract data to enhancer #
 ###########################################################
