@@ -50,7 +50,7 @@ ACCESS_PATH_3=~/ifpan-chipseq-timecourse/SCRIPTS
 ACCESS_PATH_4=~/ChIP-seq/DOWNLOAD
 MARKER="peak_all"
 
-cat $ACCESS_PATH_2/chipseq-file-info.tsv | grep -v Control | grep -P 'NR3C1|EP300' |  while read LINE
+cat $ACCESS_PATH_2/chipseq-file-info.tsv | grep -v Control | grep -P 'NR3C1|EP300|H3K27ac|H3K4me1' |  while read LINE
 #cat $ACCESS_PATH_2/chipseq-file-info.tsv | grep -v Control |  while read LINE
 do
   TF_NAME=$(echo $LINE | cut -d $' ' -f 1)

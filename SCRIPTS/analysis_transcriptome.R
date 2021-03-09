@@ -268,7 +268,9 @@ to.plot %>%
   arrange(gene.name, time) %>% 
   group_by(gene.name, gene.regulation) %>%
   mutate(mean = mean - mean[1]) %>% 
-  ungroup %>% 
+  ungroup -> tmp_expression_normalize
+
+tmp_expression_normalize %>%
   {ggplot(., 
           aes(x = as.numeric(time), y = mean, color = as.factor(gene.regulation))) +
       geom_line(aes(group = gene.name), alpha = 0.01) +
@@ -285,9 +287,17 @@ to.plot %>%
 
 dev.off()
 
+tmp_expression_normalize %>%
+  fwrite("~/ifpan-chipseq-timecourse/DATA/expression_normalize_significant_random.tsv", 
+         sep="\t", 
+         col.names = TRUE, 
+         row.names = FALSE)
+
+
 # remove tmp variable
 rm(to.plot,
-   tmp_dend)
+   tmp_dend,
+   tmp_expression_normalize)
 
 #########################
 # Max change time point #

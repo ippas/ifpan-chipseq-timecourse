@@ -35,7 +35,7 @@ enhancer_bigrange %>%
   filter(bucket.range >= 800, bucket.range <= 1200)  %>% 
   {ggplot(., aes(x = bucket.range, y = mean.value, color = gene.regulation)) + 
       geom_line(size = 0.5) + 
-      facet_grid(TF~time) +
+      facet_grid(TF~time, scale = "free_y") +
       theme(legend.position = "bottom") +
       scale_color_manual(values = c("up-regulated" = "firebrick", 
                                     "random" = "gray", 
@@ -60,7 +60,7 @@ enhancer_bigrange %>%
   summarize(mean.value = mean(value)) %>%
   mutate(number.regulation=c("down-regulated"=1, "random"=3, "up-regulated"=2)) %>%
   mutate(control = ifelse(number.regulation == 3, 1, 0)) %>%
-  mutate(max = max(mean.value * control)) %>% head
+  mutate(max = max(mean.value * control)) %>% 
   mutate(relative.value = mean.value / max) %>%
   ungroup() %>%  
   mutate(bucket.range = as.numeric(bucket.range)) %>%
