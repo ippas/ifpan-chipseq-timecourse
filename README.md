@@ -13,7 +13,7 @@ RNA-seq data from the ENCODE project were downloaded with [this link](https://ww
 1. Downloaded data are loaded (including data downloaded from genebank)
 2. Raw read counts are normalised (normalize quantiles)
 3. Differentially Expressed Genes (DEGs) are selected based on one-way ANOVA (n = 745 genes with FDR < 0.0000001 treshold)
-4. DEGs are divided into two clusters - upregulated (n = 370) and downregulated (n = 375)
+4. DEGs are divided into two clusters - upregulated (n = 374) and downregulated (n = 371)
 5. A list of random genes with similar expression levels is chosen (n = 745)
 6. Following graphs are prepared: line graph, heatmap, boxplot of weighted timepoint of max change, RPKM histogram (calculated according to [this info](https://www.biostars.org/p/273537/), transcript length histogram (accordint to: [transcript.length.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/transcript_length.tsv)
 7. Additional tables for further analyses are prepared: [promotores_peaks_info.tsv]()https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/promotores_peaks_info.tsv and [enhancer_info.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/enhancer_info.tsv) do znalezienia enhancerów - these ables contain information about gene identifiers, location and cluster.
