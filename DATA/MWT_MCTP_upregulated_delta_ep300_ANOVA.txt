@@ -1,0 +1,17 @@
+
+Error: gene.name
+                 Df Sum Sq Mean Sq F value  Pr(>F)   
+type.data         4  34742    8686   3.914 0.00412 **
+gene.regulation   1    377     377   0.170 0.68067   
+Residuals       291 645774    2219                   
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Error: Within
+                            Df Sum Sq Mean Sq F value Pr(>F)    
+type.data                    4 625511  156378  209.47 <2e-16 ***
+gene.regulation              1     15      15    0.02  0.888    
+type.data:gene.regulation    4  79142   19785   26.50 <2e-16 ***
+Residuals                 1264 943647     747                   
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
