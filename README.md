@@ -175,6 +175,12 @@ Uruchomić skrypt [delta_ep300.R](https://github.com/ippas/ifpan-chipseq-timecou
 - oblicza mean weighted time (MWT) przyłączania TF (NR3C1, EP300, H3K27ac, H3K4me1) do enhancerów w genach up-delta_ep300
 - oblicza max change time point (MCTP) dla expressji genów up-delta_ep300 dla których zostały wybrane enhancery
 - oblicza dla MWT i MCTP minimalną wartość kwantyle: Q1, Q2, Q3 i maksymalną wartość i zapisuje [do pliku](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/MWT_MCTP_delta_ep300_basic_summary.tsv)
+- wykonuje one-way ANOVE dla MWT i MCTP z poprawką na gene.name (+Error(gene.name)) wynik [zapisuje do](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/MWT_MCTP_delta_ep300_ANOVA.txt)
+- wykouje pairwise.t.test i wykonuje poprawkę bonferroniego w grupach tam gdzie występuje expression i NR3C1, wynik [zapisuje do](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/MWT_MCTP_delta_ep300_pairwise.t.test_bonferroni.tsv)
+- wykonuje boxplot MWT (EP300, NR3C1, H3K27ac, H3K4me1) i MCTP dla genów up-delta_ep300
+- tworzy połączony boxplot MWT i MCTP dla genów upregulowanych i up-delta_ep300
+- wykonuje two-way ANOVA pomiędzy typem genów i w obrębie MWT i MCTP, wynik [zapisuje do](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/MWT_MCTP_upregulated_delta_ep300_ANOVA.txt)
+- wykonuje pairwise.t.test pomiędzy upregulated i up-delta_ep300, a wynik [zapisuje do](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/upregulated_delta_ep300_pairwise.t.test.tsv)
 - wykonuje boxplot ekspresji genów up-delta_ep300 oraz linię przedstawiającą pochodną ekspresji tych genów
 - wykonuje boxplot amplitud przyłączania się EP300 i NR3C1 do enhancerów dla genów up-delta_ep300
 - tworzy [enhancer_delta_ep300_info.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/enhancer_delta_ep300_info.tsv), który zawiera informacje do wyciągnięcia dancyh o przyłączaniu TF do całego zakresu peaku
@@ -184,6 +190,8 @@ Uruchomić skrypt [delta_ep300.R](https://github.com/ippas/ifpan-chipseq-timecou
 ![Kiku](PLOTS/lineplot_change_expression_delta_ep300.svg)
 
 ![Kiku](PLOTS/boxplot_MCTP_MWT_delta_ep300.svg)
+
+![Kiku](PLOTS/boxplot_MCTP_MWT_upregulated_delta_ep300.svg)
 
 ![Kiku](PLOTS/boxlineplot_derivative_expression_delta_ep300.svg)
 
