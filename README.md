@@ -244,7 +244,7 @@ Do wyciągania danych dla Chip-seq z plików bigWig przygotowano skrypty:
 - <a id="5">[5]</a> [bigwig_genomic_amplitude_extract_normalize_to_tsv.NR3C1-EP300.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/bigwig_genomic_amplitude_extract_normalize_to_tsv.NR3C1-EP300.sh)
     - wyciąga amplitudy z podanych zakresów w plikach bigwig
     - wyciąga amplitudy przy pomocy [bigWigSummary](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/bigWigSummary) [pobrane z](http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64.v369/)
-    - wyciąga dane dla dwóch czynników transkrypcyjnych: NR3C1 i EP300
+    - wyciąga dane dla czterech czynników transkrypcyjnych: NR3C1, EP300, H3K27ac i H3K4me1
 - wszystkie powyższe skrypty wykonują normalizację danych korzystając ze skryptów:
     - [bigWigToBedGraph](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/bigWigToBedGraph) [pobrane z](http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64.v369/)
     - [normalize_bedgraph.py](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/normalize_bedgraph.py) [pobrane z](https://github.com/porchard/normalize_bedgraph)
