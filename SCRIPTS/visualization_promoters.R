@@ -1,8 +1,11 @@
+# Run analysis_transcriptome.R and next extract_data_chipseq1.sh before running this script
+
+
+
+
 # ###############################################
 # # making plot with peaks promoters for all TF #
 # ###############################################
-# 
-# # code make line plot promoters for all TF
 # svglite(file = "~/ifpan-chipseq-timecourse/PLOTS/lineplot_promotores.svg", 
 #         width = 10,
 #         height = 8)
@@ -42,9 +45,6 @@
 # ##################################################################
 # # making plot with peaks promoters for all TF - relative changes #
 # ##################################################################
-# # jpeg("~/ifpan-chipseq-timecourse/PLOTS/lineplot_promotores_relative_changes.jpeg", 
-# #      width = 1400, 
-# #      height = 802)
 # svglite(file = "~/ifpan-chipseq-timecourse/PLOTS/lineplot_promotores_relative_changes.svg", 
 #         width = 10,
 #         height = 8)

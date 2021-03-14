@@ -78,7 +78,7 @@ do
     #convert bedgraph to bigwig
     $ACCESS_PATH_3/./bedGraphToBigWig $ACCESS_PATH_1/tmp.normalize.$REPLICATE.bdg $ACCESS_PATH_2/hg38.chrom.sizes $ACCESS_PATH_1/tmp.normalize.$REPLICATE.bw
     NORMALIZE_FILE=$ACCESS_PATH_1/tmp.normalize.$REPLICATE.bw
-#    NORMALIZE_FILE=$BIGWIG_FILE
+    #NORMALIZE_FILE=$BIGWIG_FILE
 
     get_coverages_for_file $INPUT_FILE $NORMALIZE_FILE
     rm $ACCESS_PATH_1/tmp.unnormalize.$REPLICATE.bgd $ACCESS_PATH_1/tmp.normalize.$REPLICATE.bdg $ACCESS_PATH_1/tmp.normalize.$REPLICATE.bw

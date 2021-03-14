@@ -1,3 +1,6 @@
+# Run visualization_amplitudes.R and next extract_data_chipseq2.sh before running this script
+
+
 #############################################################################
 # loading the data for enhacer with birange (+/-10000 from the center peak) #
 #############################################################################

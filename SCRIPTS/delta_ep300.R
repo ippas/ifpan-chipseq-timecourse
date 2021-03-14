@@ -1,4 +1,7 @@
-####################################poprawić kod, usunąć promotory po wczytaniu pliku
+# Run visualization_enhancer_range.R and next extract_data_chipseq3.sh before running this script
+
+
+####################################
 #  choose peaks without promoters  #
 ####################################
 peaks_all_genes_ep300_nr3c1_amplitude <- read.table('~/ChIP-seq/DATA/peaks_all_genes_ep300_nr3c1_amplitude.tsv',
@@ -239,7 +242,8 @@ data[order(results$pvalue),] %>%
   filter(gene.regulation == "up-delta_ep300") %>% 
   mutate(type.data = "expression") %>%
   rename(value = max_change_time_point) %>%
-  select(gene.name, type.data ,gene.regulation, value) -> MCTP_delta_ep300
+  select(gene.name, type.data ,gene.regulation, value) %>%
+  filter(remove.outliers(value)) -> MCTP_delta_ep300
 
  
 peaks_all_genes_ep300_nr3c1_amplitude %>%
@@ -264,8 +268,9 @@ peaks_all_genes_ep300_nr3c1_amplitude %>%
   filter(gene.regulation == "up-delta_ep300") %>% 
   mutate(mean.weighted.time = mean.weighted.time*60) %>% 
   select(-start.range) %>%
-  rename(type.data = TF, value = mean.weighted.time) -> MWT_delta_ep300
-  
+  rename(type.data = TF, value = mean.weighted.time) %>%
+  filter(remove.outliers(value)) -> MWT_delta_ep300
+
 #########################
 # Plot for MCTP and MWT #
 #########################
@@ -274,16 +279,17 @@ svglite(file = "~/ifpan-chipseq-timecourse/PLOTS/boxplot_MCTP_MWT_delta_ep300.sv
         height = 8)
 
 rbind(MCTP_delta_ep300, MWT_delta_ep300) %>% 
-  mutate(type.data = factor(.$type.data, levels = c("NR3C1", "expression", "EP300"))) %>%
+  mutate(type.data = factor(.$type.data, levels = c("NR3C1", "H3K4me1", "H3K27ac", "expression", "EP300"))) %>%
   {ggplot(., aes(x = type.data, y = value, color = type.data)) + 
     geom_boxplot() + 
     theme(axis.title.x = element_blank())}
 
 dev.off()
 
-#####################################
-# Statistic: ANOVA, pairwise.t.test #
-#####################################
+
+##################################################
+# Statistic: ANOVA, pairwise.t.test, delta_ep300 #
+##################################################
 sink("~/ifpan-chipseq-timecourse/DATA/MWT_MCTP_delta_ep300_ANOVA.txt")
 rbind(MCTP_delta_ep300, MWT_delta_ep300) %>%
   aov(value ~ type.data + Error(gene.name), data = .) %>%
@@ -294,6 +300,22 @@ sink()
 
 rbind(MCTP_delta_ep300, MWT_delta_ep300) %>% 
   rename(group = type.data) -> tmp_MCTP_MWT_delta_ep300
+
+pairwise.t.test(tmp_MCTP_MWT_delta_ep300$value, tmp_MCTP_MWT_delta_ep300$group, p.adjust.method = "none") %>% 
+  .[3] %>% 
+  as.data.frame() %>% 
+  rownames_to_column(., var = "group1") %>% 
+  gather(., "group2", "p.value", -group1) %>%
+  mutate(group2 = str_replace(.$group2, "p.value.", "")) %>%
+  filter(group1 == "expression" | group1 == "NR3C1" | group2 == "expression" | group2 == "NR3C1") %>% 
+  na.omit() %>%
+  mutate(p.value = p.adjust(.$p.value, method = "bonferroni")) %>%
+  fwrite("~/ifpan-chipseq-timecourse/DATA/MWT_MCTP_delta_ep300_pairwise.t.test_bonferroni.tsv", 
+         sep="\t", 
+         col.names = TRUE, 
+         row.names = FALSE)
+  
+  
 tapply(tmp_MCTP_MWT_delta_ep300$value, tmp_MCTP_MWT_delta_ep300$group, summary) %>%
   lapply(., function(x) { x %>% 
       t %>% 
@@ -311,7 +333,53 @@ tapply(tmp_MCTP_MWT_delta_ep300$value, tmp_MCTP_MWT_delta_ep300$group, summary) 
          col.names = TRUE, 
          row.names = FALSE)
 
-rm(MWT_delta_ep300, MCTP_delta_ep300, tmp_MCTP_MWT_delta_ep300)
+#######################################################################3
+svglite(file = "~/ifpan-chipseq-timecourse/PLOTS/boxplot_MCTP_MWT_upregulated_delta_ep300.svg", 
+        width = 10,
+        height = 8)
+
+rbind(MCTP_delta_ep300, MWT_delta_ep300, {tmp_combine_MWT_MCTP %>% rename(type.data = group)}) %>%
+  mutate(type.data = factor(.$type.data, levels = c("NR3C1", "H3K4me1", "H3K27ac", "expression", "EP300"))) %>%
+  {ggplot(., aes(x = type.data, y = value, color = gene.regulation)) + 
+      geom_boxplot() + 
+      theme(axis.title.x = element_blank())}
+
+dev.off()
+
+##########################################################################
+# Statistic: ANOVA, pairwise.t.test, between upregulated and delta_ep300 #
+##########################################################################
+
+sink("~/ifpan-chipseq-timecourse/DATA/MWT_MCTP_upregulated_delta_ep300_ANOVA.txt")
+rbind(MCTP_delta_ep300, MWT_delta_ep300, {tmp_combine_MWT_MCTP %>% rename(type.data = group)}) %>%
+  aov(value ~ type.data*gene.regulation + Error(gene.name), data = .) %>% summary
+sink()
+
+rbind(MCTP_delta_ep300, MWT_delta_ep300, {tmp_combine_MWT_MCTP %>% rename(type.data = group)}) -> tmp_MWT_MCTP_upregulated_deltaep300 
+
+
+lapply(split(tmp_MWT_MCTP_upregulated_deltaep300, 
+             tmp_MWT_MCTP_upregulated_deltaep300$type.data),function(x) {pairwise.t.test(x$value, x$gene.regulation, p.adjust.method = "none")}) %>%
+  lapply(., function(x) {x[[3]] %>% 
+      as.data.frame() %>% 
+      rownames_to_column(., var = "group1") %>% 
+      gather(., "group2", "p.value", -group1)}) %>% 
+  melt() %>%
+  select(-variable) %>%
+  set_colnames(c("group1", "group2", "p.value", "group")) %>% 
+  select("group", "group1", "group2", "p.value") %>%
+  fwrite("~/ifpan-chipseq-timecourse/DATA/upregulated_delta_ep300_pairwise.t.test.tsv", 
+         sep="\t", 
+         col.names = TRUE, 
+         row.names = FALSE)
+  
+  
+rm(MWT_delta_ep300, 
+   MCTP_delta_ep300, 
+   tmp_MCTP_MWT_delta_ep300, 
+   tmp_MWT_MCTP_upregulated_deltaep300)
+########################################################################
+
 
 
 #########################################################
@@ -319,7 +387,7 @@ rm(MWT_delta_ep300, MCTP_delta_ep300, tmp_MCTP_MWT_delta_ep300)
 #########################################################
 
 gene_regulation_ep300 %>%
-  left_join(., {genes.names %>% filter(Gene.stable.ID %in% {results %>% select(ensemblid) %>% unique %>% .[,1]})}, by = c("gene.name" = "Gene.name")) %>%
+  left_join(., {genes.names %>% filter(Gene.stable.ID %in% {results %>% select(ensemblid) %>% unique %>% .[,1]})}, by = c("gene.name" = "Gene.name")) %>% 
   select(-Gene.stable.ID.version) %>%
   rename(gene.id = Gene.stable.ID) -> gene_regulation_ep300
 
@@ -503,7 +571,7 @@ file_to_search_enhancer <- function(data_frame){
     mutate(chromosome = str_replace(.$chromosome, "chr", "")) %>% 
     left_join(., gene_regulation_ep300, by = "gene.name") %>%
     na.omit() %>%
-    mutate(ensemblid = "NA") %>% #add select, change number of column 
+    mutate(ensemblid = "NA") %>% 
     select(ensemblid, gene.name, chromosome, start.range, end.range, gene.regulation) 
 }
 
@@ -522,3 +590,15 @@ rm(delta_ep300,
    number_clusters, 
    tmp_dend, 
    gene_regulation_ep300)
+
+
+#################################################################
+# checking how many genes are in the fdr 0.0000001 to 0.1 range #
+#################################################################
+gene_regulation_ep300 %>%
+  left_join(., {genes.names %>% filter(Gene.stable.ID %in% {results %>% select(ensemblid) %>% unique %>% .[,1]})}, by = c("gene.name" = "Gene.name")) %>% 
+  left_join(., results[, c(2,5)], by = c("Gene.stable.ID" = "ensemblid")) %>% 
+  mutate(fdr = p.adjust(.$pvalue, method = "fdr")) %>% filter(fdr < 0.1, fdr > 0.0000001) %>% dim %>% .[1]
+
+gene_regulation_ep300 %>% 
+  filter(gene.name %in% {enhancer_amplitude %>% select(gene.name) %>% unique() %>% .[,1]}) %>% dim %>% .[1]

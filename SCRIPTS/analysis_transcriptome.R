@@ -268,9 +268,7 @@ to.plot %>%
   arrange(gene.name, time) %>% 
   group_by(gene.name, gene.regulation) %>%
   mutate(mean = mean - mean[1]) %>% 
-  ungroup -> tmp_expression_normalize
-
-tmp_expression_normalize %>%
+  ungroup %>%
   {ggplot(., 
           aes(x = as.numeric(time), y = mean, color = as.factor(gene.regulation))) +
       geom_line(aes(group = gene.name), alpha = 0.01) +
@@ -286,22 +284,31 @@ tmp_expression_normalize %>%
            y = "Relative changes in gene expression")}
 
 dev.off()
-
-tmp_expression_normalize %>%
+##################################################################
+data[order(results$pvalue)[1:number_signification_genes],] %>%
+  as.matrix() %>% 
+  set_rownames(., rownames(raw.data[match(results.filtered$Geneid, rownames(raw.data)),3:48])) %>% 
+  set_colnames(colnames(raw.data[match(results.filtered$Geneid, rownames(raw.data)),3:48])) %>% 
+  {rownames(.) <- results$gene.name[order(results$pvalue)[1:number_signification_genes]]; .}  %>%
+  {colnames(.) <- colnames(data); .} %>%
+  as.data.frame() %>% 
+  rownames_to_column(., var = "gene.name") %>% 
+  mutate(mean = apply(., 1, function(x){mean(as.numeric(x[2:47]))})) %>% 
+  left_join(., results[, c(4,5)], by = "gene.name") %>%
   fwrite("~/ifpan-chipseq-timecourse/DATA/expression_normalize_significant_random.tsv", 
          sep="\t", 
          col.names = TRUE, 
          row.names = FALSE)
-
-
+  
+  
+###################################################################
 # remove tmp variable
 rm(to.plot,
-   tmp_dend,
-   tmp_expression_normalize)
+   tmp_dend)
 
 #########################
 # Max change time point #
-# #########################
+#########################
 # column_differences <- function(z){
 #   m <- c(z[1], z[2])
 #   for(i in c(4:14)){

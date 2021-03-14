@@ -1,8 +1,9 @@
-#################################################################################################
+# Run centering_peaks_ep300.R and next extract_data_chipseq2_ep300.sh before running this script
+
+
 #####################################
 # analysis enhancer for delta ep300 #
 #####################################
-
 
 ###############################################
 # read file with data for ehnacer delta ep300 #
@@ -84,10 +85,7 @@ png("~/ifpan-chipseq-timecourse/PLOTS/heatmap_enhancer_delta_ep300.png",
     width = 4960,
     height = 7016,
     res = 600)
-# png("~/dexamethasone/heatmap_enhancer_delta_ep300.png",
-#     width = 4960,
-#     height = 7016,
-#     res = 600)
+
 
 grid.arrange(tmp_heatmap_up_delta_ep300 + guides(fill = FALSE), 
              tmp_heatmap_down_delta_ep300 + guides(fill = FALSE), ncol=1, 
