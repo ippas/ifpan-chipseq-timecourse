@@ -13,7 +13,7 @@ RNA-seq data from the ENCODE project were downloaded with [this link](https://ww
 1. Downloaded data are loaded (including data downloaded from genebank)
 2. Raw read counts are normalised (normalize quantiles)
 3. Differentially Expressed Genes (DEGs) are selected based on one-way ANOVA (n = 745 genes with FDR < 0.0000001 treshold)
-4. DEGs are divided into two clusters - upregulated (n = 370) and downregulated (n = 375)
+4. DEGs are divided into two clusters - upregulated (n = 374) and downregulated (n = 371)
 5. A list of random genes with similar expression levels is chosen (n = 745)
 6. Following graphs are prepared: line graph, heatmap, boxplot of weighted timepoint of max change, RPKM histogram (calculated according to [this info](https://www.biostars.org/p/273537/), transcript length histogram (accordint to: [transcript.length.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/transcript_length.tsv)
 7. Additional tables for further analyses are prepared: [promotores_peaks_info.tsv]()https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/promotores_peaks_info.tsv and [enhancer_info.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/enhancer_info.tsv) do znalezienia enhancerów - these ables contain information about gene identifiers, location and cluster.
@@ -175,6 +175,12 @@ Uruchomić skrypt [delta_ep300.R](https://github.com/ippas/ifpan-chipseq-timecou
 - oblicza mean weighted time (MWT) przyłączania TF (NR3C1, EP300, H3K27ac, H3K4me1) do enhancerów w genach up-delta_ep300
 - oblicza max change time point (MCTP) dla expressji genów up-delta_ep300 dla których zostały wybrane enhancery
 - oblicza dla MWT i MCTP minimalną wartość kwantyle: Q1, Q2, Q3 i maksymalną wartość i zapisuje [do pliku](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/MWT_MCTP_delta_ep300_basic_summary.tsv)
+- wykonuje one-way ANOVE dla MWT i MCTP z poprawką na gene.name (+Error(gene.name)) wynik [zapisuje do](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/MWT_MCTP_delta_ep300_ANOVA.txt)
+- wykouje pairwise.t.test i wykonuje poprawkę bonferroniego w grupach tam gdzie występuje expression i NR3C1, wynik [zapisuje do](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/MWT_MCTP_delta_ep300_pairwise.t.test_bonferroni.tsv)
+- wykonuje boxplot MWT (EP300, NR3C1, H3K27ac, H3K4me1) i MCTP dla genów up-delta_ep300
+- tworzy połączony boxplot MWT i MCTP dla genów upregulowanych i up-delta_ep300
+- wykonuje two-way ANOVA pomiędzy typem genów i w obrębie MWT i MCTP, wynik [zapisuje do](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/MWT_MCTP_upregulated_delta_ep300_ANOVA.txt)
+- wykonuje pairwise.t.test pomiędzy upregulated i up-delta_ep300, a wynik [zapisuje do](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/upregulated_delta_ep300_pairwise.t.test.tsv)
 - wykonuje boxplot ekspresji genów up-delta_ep300 oraz linię przedstawiającą pochodną ekspresji tych genów
 - wykonuje boxplot amplitud przyłączania się EP300 i NR3C1 do enhancerów dla genów up-delta_ep300
 - tworzy [enhancer_delta_ep300_info.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/enhancer_delta_ep300_info.tsv), który zawiera informacje do wyciągnięcia dancyh o przyłączaniu TF do całego zakresu peaku
@@ -184,6 +190,8 @@ Uruchomić skrypt [delta_ep300.R](https://github.com/ippas/ifpan-chipseq-timecou
 ![Kiku](PLOTS/lineplot_change_expression_delta_ep300.svg)
 
 ![Kiku](PLOTS/boxplot_MCTP_MWT_delta_ep300.svg)
+
+![Kiku](PLOTS/boxplot_MCTP_MWT_upregulated_delta_ep300.svg)
 
 ![Kiku](PLOTS/boxlineplot_derivative_expression_delta_ep300.svg)
 
@@ -236,7 +244,7 @@ Do wyciągania danych dla Chip-seq z plików bigWig przygotowano skrypty:
 - <a id="5">[5]</a> [bigwig_genomic_amplitude_extract_normalize_to_tsv.NR3C1-EP300.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/bigwig_genomic_amplitude_extract_normalize_to_tsv.NR3C1-EP300.sh)
     - wyciąga amplitudy z podanych zakresów w plikach bigwig
     - wyciąga amplitudy przy pomocy [bigWigSummary](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/bigWigSummary) [pobrane z](http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64.v369/)
-    - wyciąga dane dla dwóch czynników transkrypcyjnych: NR3C1 i EP300
+    - wyciąga dane dla czterech czynników transkrypcyjnych: NR3C1, EP300, H3K27ac i H3K4me1
 - wszystkie powyższe skrypty wykonują normalizację danych korzystając ze skryptów:
     - [bigWigToBedGraph](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/bigWigToBedGraph) [pobrane z](http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64.v369/)
     - [normalize_bedgraph.py](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/normalize_bedgraph.py) [pobrane z](https://github.com/porchard/normalize_bedgraph)
