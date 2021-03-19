@@ -1,5 +1,4 @@
 # ifpan-chipseq-timecourse
-###### Mateusz Zieba
 ---
 
   
@@ -55,28 +54,36 @@ cat ~/ifpan-chipseq-timecourse/DATA/chipseq-file-info.tsv |
 
 Chipseq data were extracted with [extract_data_chipseq1.sh)](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/extract_data_chipseq1.sh), which:
 1. using the [promotores_peaks_info.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/promotores_peaks_info.tsv) i [bigwig_genomic_bucket500_extract_normalize_to_tsv.sh [1]](#1) extract information about the attachment of transcriptional factors to DNA from range +/-10000 from transcriptional start site (TSS) and saves results to file ~/ChIP-seq/DATApromotores_peaks_value.tsv
-2. Make common part for three samples file type BED containing information about occuring peaks in the genome for NR3C1 and time equal 60 minutes.
+2. Make common part for three samples file type .BED containing information about occuring peaks in the genome for NR3C1 and time equal 60 minutes.
 3. Using a [enhancer_info.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/enhancer_info.tsv) containing information about range +/-100000 from TSS for each gene and done file with common part of peaks in a genome, extract peaks which interesect range set for significant and ranodm genes
 4. For selected peaks using [bigwig_genomic_amplitude_extract_normalize_to_tsv.sh [2]](#2), they are pulled out amplitudes value binding TF to DNA, inside range of peak, and this data are saved to: ~/ChIP-seq/DATA/enhancer_amplitude_value.tsv.
 5. For selected peaks using [bigwig_genomic_range_extract_normalize_to_tsv.sh [3]](#3), they are pulled out values binding TF to DNA for each position inside a range of peak, and this data are saved to: ~/ChIP-seq/DATA/enhancer_peaks_value.tsv
 
--
-Skrypt wykonuje:
- - przy pomocy [promotores_peaks_info.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/promotores_peaks_info.tsv) i [bigwig_genomic_bucket500_extract_normalize_to_tsv.sh [1]](#1) wyciąga informacje dotyczące przyłączania się TF do DNA w zakresie +/-10000 od TSS i zapisuje do ~/ChIP-seq/DATApromotores_peaks_value.tsv
- - z trzech próbek tworzy część wspólną peaków w genomie dla NR3C1 dla time = 60
- - przy pomocy wyznaczonej części wspólnej peaków, wyciąga enhancery znajdujące się w zakresach znajdujących się w [enhancer_info.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/enhancer_info.tsv) (+/-100000 od TSS)
- - dla wybranych enhancerów korzystając z [bigwig_genomic_amplitude_extract_normalize_to_tsv.sh [2]](#2) wyciąga maksymalną wartość przyłączania się TF do peaku i zapisuje dane do: ~/ChIP-seq/DATA/enhancer_amplitude_value.tsv 
- - dla wybranych enhancerów korzystając z [bigwig_genomic_range_extract_normalize_to_tsv.sh [3]](#3) wyciąga wartości przyłączeń się TF na całym zakresie peaku i zapisuje dane do: ~/ChIP-seq/DATA/enhancer_peaks_value.tsv
+
+[visualization_promoters.R](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/visualization_promoters.R) using data from ~/ChIP-seq/DATA/promotores_peaks_value.tsv contains visualization gene promotets code:
+1. First graph show changes in binding TF to DNA.
+2. Second graph show changes in binding TF to DNA relative to random genes.
+
 
 3. Uruchomić skrypt [visualization_promoters.R](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/visualization_promoters.R), który wykonuje wykresy:
 - wczytuje plik ~/ChIP-seq/DATA/promotores_peaks_value.tsv, który jest wynikiem skryptu [extract_data_chipseq1.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/extract_data_chipseq1.sh)
 - wykres liniowy predstawiający średnią z grupy przyłączenia się TF (wybrane cztery TF: EP300, H3K27ac, H3K4me1, NR3C1) do promotorów w pozycjach =/- 10000 od TSS,
 - wykres liniowy predstawiający średnią z grupy przyłączenia się TF (wybrane cztery TF: EP300, H3K27ac, H3K4me1, NR3C1) do promotorów w pozycjach =/- 10000 od TSS, w odniesieniu do genów z grupy random
 
-
 ![Kiku](PLOTS/lineplot_promotores_fourTF.svg)
 
 ![Kiku](PLOTS/lineplot_promotores_relative_changes_fourTF.svg)
+
+
+[visualization_amplitudes.R](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/visualization_amplitudes.R) using data from ~/ChIP-seq/DATA/enhancer_amplitude_value.tsv contains enhancers analysis enhancers code:
+1. Removes peaks that intersect the range +/-2000 nucleotide from TSS
+2. Calculates mean amplitudes from a 12-time course and samples and selects peak which has the strongest value. If one peak has been assigned to several genes, peak is matched to the gene to which the TSS is closer.
+3. Creates a graph of amplitude changes for peaks
+4. Creates a graph showing the expression and dyamics of expression
+5. Calculates MWT (Mean Weighted Time) binding TF to DNA in enhancers for up-regulated genes and also calculates MCTP (Max Change Time Point) for expression of up-regulated genes and both remove outliers.
+6. Creates a boxplot showing MWT and MCTP
+7. Calculates vasic statistics: Q1, Q2, Q3, minimum, and maximum value for MWT and MCTP and [save to](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/MWT_MCTP_basic_summary.tsv) 
+8. 
 
 4. Uruchomić skrypt [visualization_amplitudes.R](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/visualization_amplitudes.R), który:
 - wczytuje plik ~/ChIP-seq/DATA/enhancer_amplitude_value.tsv, będący wynikiem skryptu [extract_data_chipseq1.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/extract_data_chipseq1.sh)
@@ -90,6 +97,7 @@ Skrypt wykonuje:
 - oblicza max change time point (MCTP) dla expressji genów upregulowanych dla których zostały wybrane enhancery
 - tworzy boxplot na którym zostaje przedstawiony mean weighted time przyłączania TF oraz max change time point ekspressji genów upregulowanych 
 - oblicza dla MWT i MCTP minimalną wartość kwantyle: Q1, Q2, Q3 i maksymalną wartość i zapisuje [do plikue](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/MWT_MCTP_basic_summary.tsv)
+
 - na danych z MWT i MCTP wykonuje dwucznnikową anowę z błędem +Error(gene.nama) oraz pairwise.t.test i wykonuje poprawkę borferroniego w prach gdzie występojue NR3C1 i ekspresja
 - wykonuje jednoczynnikową ANOVE z poprawką z poprawką na błąd Error(gene.name), a wynik za [pisuje do](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/MWT_MCTP_ANOVA.txt)
 - wykonuje pairwise.t.test i wykonuje poprawkę bonferroniego w porównaniach gdzie występuje expression i NR3C1 i tabelę [zapisuje do](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/MWT_MCTP_pairwise.t.test_bonferroni.tsv)
