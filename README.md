@@ -53,7 +53,12 @@ cat ~/ifpan-chipseq-timecourse/DATA/chipseq-file-info.tsv |
    xargs -i bash -c 'wget {} -P ~/ChIP-seq/DOWNLOAD'
 ```
 
-2. Chipseq data were extracted with [this script](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/extract_data_chipseq1.sh), which:
+Chipseq data were extracted with [extract_data_chipseq1.sh)](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/extract_data_chipseq1.sh), which:
+1. using the [promotores_peaks_info.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/promotores_peaks_info.tsv) i [bigwig_genomic_bucket500_extract_normalize_to_tsv.sh [1]](#1) extract information about the attachment of transcriptional factors to DNA from range +/-10000 from transcriptional start site (TSS) and saves results to file ~/ChIP-seq/DATApromotores_peaks_value.tsv
+2. Make common part for three samples file type BED containing information about occuring peaks in the genome for NR3C1 and time equal 60 minutes.
+3. Using a [enhancer_info.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/enhancer_info.tsv) containing information about range +/-100000 from TSS for each gene and done file with common part of peaks in a genome, extract peaks which interesect range set for significant and ranodm genes
+4. For selected peaks using [bigwig_genomic_amplitude_extract_normalize_to_tsv.sh [2]](#2), they are pulled out amplitudes value binding TF to DNA, inside range of peak, and this data are saved to: ~/ChIP-seq/DATA/enhancer_amplitude_value.tsv.
+5. For selected peaks using [bigwig_genomic_range_extract_normalize_to_tsv.sh [3]](#3), they are pulled out values binding TF to DNA for each position inside a range of peak, and this data are saved to: ~/ChIP-seq/DATA/enhancer_peaks_value.tsv
 
 -
 Skrypt wykonuje:
