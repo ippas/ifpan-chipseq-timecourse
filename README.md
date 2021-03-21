@@ -137,7 +137,7 @@ Download the gtf file using command:
 wget  ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_36/gencode.v36.annotation.gtf.gz
 ```
 
-Using command velow select genes encoding proteins and save to [Homo_sapiens.GRCh38.95.protein_coding.gtf](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/Homo_sapiens.GRCh38.95.protein_coding.gtf):
+Using command below select genes encoding proteins and save to [Homo_sapiens.GRCh38.95.protein_coding.gtf](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/Homo_sapiens.GRCh38.95.protein_coding.gtf):
 
 ```bash
 zcat ~/ChIP-seq/DATA/gencode.v36.annotation.gtf | 
