@@ -61,8 +61,8 @@ Chipseq data were extracted with [extract_data_chipseq1.sh)](https://github.com/
 
 
 [visualization_promoters.R](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/visualization_promoters.R) using data from ~/ChIP-seq/DATA/promotores_peaks_value.tsv contains visualization gene promotets code:
-1. First graph show changes in binding TF to DNA.
-2. Second graph show changes in binding TF to DNA relative to random genes.
+1. First line graph show changes in binding TF to DNA.
+2. Second line graph show changes in binding TF to DNA relative to random genes.
 
 
 3. Uruchomić skrypt [visualization_promoters.R](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/visualization_promoters.R), który wykonuje wykresy:
@@ -75,7 +75,7 @@ Chipseq data were extracted with [extract_data_chipseq1.sh)](https://github.com/
 ![Kiku](PLOTS/lineplot_promotores_relative_changes_fourTF.svg)
 
 
-[visualization_amplitudes.R](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/visualization_amplitudes.R) using data from ~/ChIP-seq/DATA/enhancer_amplitude_value.tsv contains enhancers analysis enhancers code:
+[visualization_amplitudes.R](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/visualization_amplitudes.R) using data from ~/ChIP-seq/DATA/enhancer_amplitude_value.tsv contains enhancers amplitude analysis code:
 1. Removes peaks that intersect the range +/-2000 nucleotide from TSS
 2. Calculates mean amplitudes from a 12-time course and samples and selects peak which has the strongest value. If one peak has been assigned to several genes, peak is matched to the gene to which the TSS is closer.
 3. Creates a graph of amplitude changes for peaks
@@ -152,12 +152,18 @@ zcat ~/ChIP-seq/DATA/gencode.v36.annotation.gtf |
 ```
 
 
-
 Przy pomocy komendy ściągnięto plik gtf:
 
 Następnie wybrano geny kodujące białka i zapisuje do [Homo_sapiens.GRCh38.95.protein_coding.gtf](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/Homo_sapiens.GRCh38.95.protein_coding.gtf):
 
-Uruchomić [visualization_enhancer_range.R](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/visualization_enhancer_range.R)
+[visualization_enhancer_range.R](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/visualization_enhancer_range.R) using data from ~/ChIP-seq/DATA/enhancer_bigrange_value.tsv contains enhancer analysis code:
+1. Creates a line graph showing changes in binding TF to DNA +/-2000 from amplitude in peak
+2. Create line graph showing chages in binding TF to DNA relative to random genes.
+3. Calculate two-way ANOVA where time and gene.regulation are factors, next make pairwise.t.test between time equla zero and each other time and also pairwise.t.test between gene.regulation, then results are saved to [enhancer_relative_amplitude_ANOVA.txt](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/enhancer_relative_amplitude_ANOVA.txt), [enhancer_post_hoc_between_time.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/enhancer_post_hoc_between_time.tsv), [enhancer_post_hoc_between_regulation.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/enhancer_post_hoc_between_regulation.tsv) respectively.
+4. Creates heatmap showing for each gene changes in binding TF to DNA +/-2000 from amplitude in peak. 
+5. Loads the [Homo_sapiens.GRCh38.95.protein_coding.gtf](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/Homo_sapiens.GRCh38.95.protein_coding.gtf) based on which prepares the [range_all_genes.bed](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/range_all_genes.bed) with ranges +/-100000 nucleotide position from TSS for each gene coding protein.
+
+
 - wczytuje plik ~/ChIP-seq/DATA/enhancer_bigrange_value.tsv, będący wynikiem skryptu [extract_data_chipseq2.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/extract_data_chipseq2.sh)
 - wykres liniowy predstawiający średnią z grupy przyłączenia się TF (wybrane cztery TF: EP300, H3K27ac, H3K4me1, NR3C1) do enhancerów w pozycjach +/- 2000 od wyznaczonego środka peaku,
 - wykres liniowy predstawiający średnią z grupy przyłączenia się TF (wybrane cztery TF: EP300, H3K27ac, H3K4me1, NR3C1) do enhancerów w pozycjach +/- 2000 od wyznaczonego środka peaku, w odniesieniu do peaków z grupy random
