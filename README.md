@@ -82,8 +82,8 @@ Chipseq data were extracted with [extract_data_chipseq1.sh)](https://github.com/
 4. Creates a graph showing the expression and dyamics of expression
 5. Calculates MWT (Mean Weighted Time) binding TF to DNA in enhancers for up-regulated genes and also calculates MCTP (Max Change Time Point) for expression of up-regulated genes and both remove outliers.
 6. Creates a boxplot showing MWT and MCTP
-7. Calculates vasic statistics: Q1, Q2, Q3, minimum, and maximum value for MWT and MCTP and [save to](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/MWT_MCTP_basic_summary.tsv) 
-8. For data MWT and MCTP do one-way ANOVA with Error(gene.name) and next make pairwise.t.test with correction "bonferroni" where are expression and NR3C1. Saves the results to [MWT_MCTP_ANOVA.txt](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/MWT_MCTP_ANOVA.txt) and [zapisuje do](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/MWT_MCTP_pairwise.t.test_bonferroni.tsv) respectively.
+7. Calculates basic statistics: Q1, Q2, Q3, minimum, and maximum value for MWT and MCTP and [save to](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/MWT_MCTP_basic_summary.tsv) 
+8. For data MWT and MCTP do one-way ANOVA with Error(gene.name) and next make pairwise.t.test with correction "bonferroni" where are expression and NR3C1. Saves the results to [MWT_MCTP_ANOVA.txt](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/MWT_MCTP_ANOVA.txt) and [MWT_MCTP_pairwise.t.test_bonferroni.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/MWT_MCTP_pairwise.t.test_bonferroni.tsv) respectively.
 9.  For selected peaks prepare file [enhancer_bigrange_info.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/enhancer_bigrange_info.tsv) with range +/-10000 nucleotide position from calculating mean position amplitude of peak, based on all timepoint except time equal zero.
 
 
@@ -205,6 +205,18 @@ Uruchomić skrypt [extract_data_chipseq3.sh](https://github.com/ippas/ifpan-chip
 [delta_ep300.R](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/delta_ep300.R) contains code:
 1. Read ~/ChIP-seq/DATA/peaks_all_genes_ep300_nr3c1_amplitude.tsv
 2. Calculates the difference between the minimum and maximum values for each peak. If one peak has been assigned to several genesm it is assigned to the closest TSS gene and if more than one peaks have been assigned to one gene, the peak colsest to the TSS gene has been selected. In the end, it chooses the 100 genes with the biggest difference.
+3. Create a heatmap of expression for selected genes.
+4. Selected genes are divided into two clusters down-delta-ep300 (n = 15) and up-delta-ep300 (n = 85)
+5. Calculates MWT binding TF to DNA in enhancer for up-delta-ep300 genes and also calculates MCTP for expression of up-delta-ep300 genes and both remove outliers.
+6. Creates a boxplot showing MWT and MCTP
+7. Calculates basic statistics: Q1, Q2, Q3 , minimum and maximum value for MWT and MCTP [save to](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/MWT_MCTP_delta_ep300_basic_summary.tsv) 
+8. For data MWT and MCTP do one-way ANOVA with Eroor(gene.name) and next make pairwise.t.test with correction "bonferroni" where are expression and NR3C1. Saves the results to [MWT_MCTP_delta_ep300_ANOVA.txt](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/MWT_MCTP_delta_ep300_ANOVA.txt) and [MWT_MCTP_delta_ep300_pairwise.t.test_bonferroni.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/MWT_MCTP_delta_ep300_pairwise.t.test_bonferroni.tsv) respectively.
+9. Creates a combined MWT and MCTP bocplot for upregulated and up-delta-ep300 genes.
+10. Calculates two-way ANOVA between type genes (upregulated or up-delta-ep300) and inside MWT and MCTP, next do pairwise.t.tes between upregulated and up-delta-ep300. Results save to [MWT_MCTP_upregulated_delta_ep300_ANOVA.txt](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/MWT_MCTP_upregulated_delta_ep300_ANOVA.txt) and [upregulated_delta_ep300_pairwise.t.test.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/upregulated_delta_ep300_pairwise.t.test.tsv) respectively.
+11. Creates boxplot expression for up-delta-ep300 genes and also line showing dynamic expression.
+12. Creates boxplot amplitude value binding EP300 and NR3C1 to enhancer for up-delta-ep300 genes.
+13. For selected peaks prepare file [enhancer_delta_ep300_info.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/enhancer_delta_ep300_info.tsv) which contains the infromation to extract data of TF binding to entire peak range.
+
 
 
 Uruchomić skrypt [delta_ep300.R](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/delta_ep300.R), którego kod wykonuje:
@@ -214,7 +226,6 @@ Uruchomić skrypt [delta_ep300.R](https://github.com/ippas/ifpan-chipseq-timecou
 - w przypadku gdy zostało przypisane kilka genów do jednego peaku, to wybiera ten gen którego TSS jest najbliżej peaku
 - w przypakdu gdy do jednego genu zostało przypisane kilka peaków, to wybiera ten peak który znajduje się bliżej TSS
 - wybiera 100 peaków z wcześniej obliczoną różnicą
-
 - wykonuje heatmape ekspressji dla wybranych 100 genów
 - dokonuje podziału na dwa klastry down-delta_ep300 i up-delta_ep300
 - tworzy wykres zmian amplitud z przłączania TF (NR3C1, EP300) w przygotowancyh peakach, zpodziałem na up-delta_ep300 i down-delta_ep300
@@ -223,7 +234,9 @@ Uruchomić skrypt [delta_ep300.R](https://github.com/ippas/ifpan-chipseq-timecou
 - oblicza dla MWT i MCTP minimalną wartość kwantyle: Q1, Q2, Q3 i maksymalną wartość i zapisuje [do pliku](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/MWT_MCTP_delta_ep300_basic_summary.tsv)
 - wykonuje one-way ANOVE dla MWT i MCTP z poprawką na gene.name (+Error(gene.name)) wynik [zapisuje do](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/MWT_MCTP_delta_ep300_ANOVA.txt)
 - wykouje pairwise.t.test i wykonuje poprawkę bonferroniego w grupach tam gdzie występuje expression i NR3C1, wynik [zapisuje do](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/MWT_MCTP_delta_ep300_pairwise.t.test_bonferroni.tsv)
-- wykonuje boxplot MWT (EP300, NR3C1, H3K27ac, H3K4me1) i MCTP dla genów up-delta_ep300
+- wykonuje boxplot MWT (EP300, NR3C1, H3K27ac, H3K4me1) i MCTP dla genów up-delta_ep300.
+- Calculates two-way ANOVA between type genes (upregulated or up-delta-ep300) and inside MWT and MCTP, next do pairwise.t.tes between upregulated and up-delta-ep300. Results save to [MWT_MCTP_upregulated_delta_ep300_ANOVA.txt](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/MWT_MCTP_upregulated_delta_ep300_ANOVA.txt) and [upregulated_delta_ep300_pairwise.t.test.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/upregulated_delta_ep300_pairwise.t.test.tsv) respectively.
+
 - tworzy połączony boxplot MWT i MCTP dla genów upregulowanych i up-delta_ep300
 - wykonuje two-way ANOVA pomiędzy typem genów i w obrębie MWT i MCTP, wynik [zapisuje do](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/MWT_MCTP_upregulated_delta_ep300_ANOVA.txt)
 - wykonuje pairwise.t.test pomiędzy upregulated i up-delta_ep300, a wynik [zapisuje do](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/upregulated_delta_ep300_pairwise.t.test.tsv)
