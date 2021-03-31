@@ -300,6 +300,38 @@ Uruchomić skrypt [analysis_enhancer_range_ep300.R](https://github.com/ippas/ifp
 ![Kiku](PLOTS/heatmap_enhancer_delta_ep300.png)
 
 
+Scripts were used to extract data for chip-seq from type bigWig files:
+
+<a id="1">[1]</a> [bigwig_genomic_bucket500_extract_normalize_to_tsv.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/bigwig_genomic_bucket500_extract_normalize_to_tsv.sh)
+1. Extracts values in the range of 20001 position nucleotide, the result collects 500 items and calculates the mean to reduce the amount of data and eliminate noise, in the case of the last collection, it counts the mean of 501 items.
+2. To extract data it uses [bigWigToBedGraph](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/bigWigToBedGraph) [downloaded form](http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64.v369/)
+3. Extracts data fro all TF found in [chipseq-file-info.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/chipseq-file-info.tsv)
+
+<a id="2">[2]</a> [bigwig_genomic_amplitude_extract_normalize_to_tsv.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/bigwig_genomic_amplitude_extract_normalize_to_tsv.sh)
+1. In the given range extracts amplitudes value from type bigwig files.
+2. To extract amplitude value it uses [bigWigSummary](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/bigWigSummary) [downloaded form](http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64.v369/)
+3. Extracts data for all TF found in [chipseq-file-info.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/chipseq-file-info.tsv)
+
+<a id="3">[3]</a> [bigwig_genomic_range_extract_normalize_to_tsv.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/bigwig_genomic_range_extract_normalize_to_tsv.sh)
+1. In the given range extracts the values for each nucleotide position.
+2. To extract data it ueses [bigWigToBedGraph](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/bigWigToBedGraph) [downloaded form](http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64.v369/)
+3. Extracts data for four TF: EP300, H3K27ac, H3K4me1, NR3C1
+
+<a id="4">[4]</a> [bigwig_genomic_range_extract_normalize_to_tsv_bucket10.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/bigwig_genomic_range_extract_normalize_to_tsv_bucket10.sh)
+1. Extracts values in the range of 20001 position nucleotide, the result collects 10 items and calculates the mean to reduce the amount of data and eliminate noise, in the case of the last collection, it counts the mean of 11 items.
+2. To extract data it uses [bigWigToBedGraph](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/bigWigToBedGraph) [downloaded form](http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64.v369/).
+3. Extracts data for four TF: EP300, H3K27ac, H3K4me1, NR3C1
+
+<a id="5">[5]</a> [bigwig_genomic_amplitude_extract_normalize_to_tsv.NR3C1-EP300.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/bigwig_genomic_amplitude_extract_normalize_to_tsv.NR3C1-EP300.sh)
+1. In the given range extracts amplitudes value from type bigwig files.
+2. To extract amplitude value it uses [bigWigSummary](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/bigWigSummary) [downloaded form](http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64.v369/).
+3. Extracts data for four TF: EP300, H3K27ac, H3K4me1, NR3C1
+
+The above scripts perform data normalization using scripts:
+1. [bigWigToBedGraph](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/bigWigToBedGraph) [downloaded form](http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64.v369/)
+2. [normalize_bedgraph.py](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/normalize_bedgraph.py) [downloaded form](https://github.com/porchard/normalize_bedgraph)
+3. [bedGraphToBigWig](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/bedGraphToBigWig) [downloaded form](http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64.v369/)
+
 
 Do wyciągania danych dla Chip-seq z plików bigWig przygotowano skrypty:
 - <a id="1">[1]</a> [bigwig_genomic_bucket500_extract_normalize_to_tsv.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/bigwig_genomic_bucket500_extract_normalize_to_tsv.sh)
