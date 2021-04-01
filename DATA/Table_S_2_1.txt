@@ -1,0 +1,36 @@
+$EP300
+                       Df Sum Sq Mean Sq F value   Pr(>F)    
+time                    1   1181  1180.5   41.93 1.06e-10 ***
+gene.regulation         1   1998  1997.9   70.97  < 2e-16 ***
+time:gene.regulation    1    637   636.6   22.61 2.05e-06 ***
+Residuals            3956 111371    28.2                     
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+$H3K27ac
+                       Df Sum Sq Mean Sq F value   Pr(>F)    
+time                    1     13   12.62   4.706   0.0301 *  
+gene.regulation         1     79   79.34  29.598 5.64e-08 ***
+time:gene.regulation    1     47   46.51  17.349 3.18e-05 ***
+Residuals            3956  10604    2.68                     
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+$H3K4me1
+                       Df Sum Sq Mean Sq F value   Pr(>F)    
+time                    1      3   2.622   1.546 0.213813    
+gene.regulation         1      1   1.258   0.742 0.389177    
+time:gene.regulation    1     25  25.373  14.959 0.000112 ***
+Residuals            3956   6710   1.696                     
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+$NR3C1
+                       Df Sum Sq Mean Sq F value Pr(>F)    
+time                    1      2       2   0.073 0.7876    
+gene.regulation         1   3236    3236 124.976 <2e-16 ***
+time:gene.regulation    1    167     167   6.431 0.0113 *  
+Residuals            3956 102420      26                   
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+

@@ -1,0 +1,6 @@
+group	group1	group2	p.value
+EP300	up-regulated	up-delta_ep300	0.010272949309738
+expression	up-regulated	up-delta_ep300	3.85268803357357e-07
+H3K27ac	up-regulated	up-delta_ep300	0.737663531183052
+H3K4me1	up-regulated	up-delta_ep300	0.621009205467295
+NR3C1	up-regulated	up-delta_ep300	0.000218754947178948
