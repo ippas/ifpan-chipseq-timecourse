@@ -285,23 +285,24 @@ to.plot %>%
 
 dev.off()
 ##################################################################
-data[order(results$pvalue)[1:number_signification_genes],] %>%
+data[order(results$pvalue)[1:number_signification_genes],] %>% 
   as.matrix() %>% 
   set_rownames(., rownames(raw.data[match(results.filtered$Geneid, rownames(raw.data)),3:48])) %>% 
   set_colnames(colnames(raw.data[match(results.filtered$Geneid, rownames(raw.data)),3:48])) %>% 
   {rownames(.) <- results$gene.name[order(results$pvalue)[1:number_signification_genes]]; .}  %>%
-  {colnames(.) <- colnames(data); .} %>%
+  {colnames(.) <- colnames(data); .} %>% 
   as.data.frame() %>% 
   rownames_to_column(., var = "gene.name") %>% 
   mutate(mean = apply(., 1, function(x){mean(as.numeric(x[2:47]))})) %>% 
   left_join(., results.filtered[, c(4, 6)], by = "gene.name") %>% 
   left_join(., gene_regulation, by = "gene.name") %>% 
-  left_join(., results[, c(4,5)], by = "gene.name") %>%
+  # left_join(., results[, c(4,5)], by = "gene.name") %>% 
   fwrite("~/ifpan-chipseq-timecourse/DATA/expression_significant_genes.tsv", 
          sep="\t", 
          col.names = TRUE, 
          row.names = FALSE)
 
+  
 # File to suplementary
 data[order(results$pvalue)[1:number_signification_genes],] %>%
   as.matrix() %>% 
@@ -316,6 +317,21 @@ data[order(results$pvalue)[1:number_signification_genes],] %>%
   left_join(., gene_regulation, by = "gene.name") %>% 
   left_join(., results[, c(4,5)], by = "gene.name") %>%
   fwrite("~/ifpan-chipseq-timecourse/DATA/Table_S_1_1.tsv", 
+         sep="\t", 
+         col.names = TRUE, 
+         row.names = FALSE)
+
+
+# File with random genes
+data %>% 
+  as.data.frame() %>%
+  rownames_to_column(., var = "ensemblid") %>% 
+  mutate(mean = apply(., 1, function(x){mean(as.numeric(x[2:47]))})) %>% 
+  right_join(., {random %>% 
+      mutate(fdr = p.adjust(.$pvalue, method = "fdr")) %>% select(ensemblid, gene.name, fdr)}, by = "ensemblid") %>% 
+  select(-ensemblid) %>% 
+  select(gene.name, everything()) %>%
+  fwrite("~/ifpan-chipseq-timecourse/DATA/expression_random_genes.tsv", 
          sep="\t", 
          col.names = TRUE, 
          row.names = FALSE)
@@ -519,3 +535,7 @@ random %>%
          sep="\t", 
          col.names = TRUE, 
          row.names = FALSE)
+
+
+rm(expression.pattern,
+   tmp_transcript_length)

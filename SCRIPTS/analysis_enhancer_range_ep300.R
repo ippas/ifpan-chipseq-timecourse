@@ -93,6 +93,12 @@ grid.arrange(tmp_heatmap_up_delta_ep300 + guides(fill = FALSE),
              nrow = 3, heights = c(2.5, 2.5, 0.3))
 dev.off()
 
-rm(tmp_heatmap_up_delta_ep300, tmp_heatmap_down_delta_ep300, tmp.heatmap, tmp.enhancer.bigrange.delta.ep300, tmp.legend)
+rm(tmp_heatmap_up_delta_ep300, tmp_heatmap_down_delta_ep300, tmp.heatmap, tmp.enhancer.bigrange.delta.ep300)
+
+rm(peaks_all_genes_ep300_nr3c1_amplitude,
+   max.change.time.point.significant,
+   tmp_gene_regulation_ep300,
+   gene_chromosome_start_end_strand,
+   enhancer_amplitude)
 
 #################################################################################################

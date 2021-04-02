@@ -113,6 +113,10 @@ sink("~/ifpan-chipseq-timecourse/DATA/enhancer_relative_amplitude_ANOVA.txt")
 lapply(split(tmp.enhancer.bigrange, tmp.enhancer.bigrange$TF),function(x) {aov(amplitude ~ time*gene.regulation, data = x) %>% summary})
 sink()
 
+# File to suplementary
+sink("~/ifpan-chipseq-timecourse/DATA/Table_S_2_1.txt")
+lapply(split(tmp.enhancer.bigrange, tmp.enhancer.bigrange$TF),function(x) {aov(amplitude ~ time*gene.regulation, data = x) %>% summary})
+sink()
 # posthoc: pairwise.t.test, ech time to time = 0
 tmp.enhancer.bigrange %>% mutate(group = paste(gene.regulation, TF, sep = "_")) -> tmp.enhancer.bigrange.id.gene.regulation
 
@@ -133,6 +137,23 @@ lapply(split(tmp.enhancer.bigrange.id.gene.regulation, tmp.enhancer.bigrange.id.
          col.names = TRUE, 
          row.names = FALSE)
 
+# File to seuplementary
+lapply(split(tmp.enhancer.bigrange.id.gene.regulation, tmp.enhancer.bigrange.id.gene.regulation$group),function(x) {pairwise.t.test(x$amplitude, x$time, p.adjust.method = "none")}) %>%
+  lapply(., function(x) {x[[3]] %>% 
+      as.data.frame() %>% 
+      rownames_to_column(., var = "group1") %>% 
+      gather(., "group2", "p.value", -group1) %>% 
+      na.omit()}) %>% 
+  melt %>%
+  select(-variable) %>%
+  set_colnames(c("time1", "time2", "p.value", "group")) %>% 
+  separate(group, c("gene.regulation", "TF"), "_") %>%
+  select("TF", "gene.regulation", "time1", "time2", "p.value") %>% 
+  filter(time2 == 0) %>%
+  fwrite("~/ifpan-chipseq-timecourse/DATA/Table_S_2_2.tsv", 
+         sep="\t", 
+         col.names = TRUE, 
+         row.names = FALSE)
 
 # posthoc: pairwise.t.test, between down-regulation and up-regulation
 tmp.enhancer.bigrange %>% mutate(group = paste(time, TF, sep = "_")) -> tmp.enhancer.bigrange.id.time
@@ -148,6 +169,22 @@ lapply(split(tmp.enhancer.bigrange.id.time, tmp.enhancer.bigrange.id.time$group)
   separate(group, c("time", "TF"), "_") %>%
   select("TF", "time", "group1", "group2", "p.value") %>%
   fwrite("~/ifpan-chipseq-timecourse/DATA/enhancer_post_hoc_between_regulation.tsv", 
+         sep="\t", 
+         col.names = TRUE, 
+         row.names = FALSE)
+
+# File to suplementary
+lapply(split(tmp.enhancer.bigrange.id.time, tmp.enhancer.bigrange.id.time$group),function(x) {pairwise.t.test(x$amplitude, x$gene.regulation, p.adjust.method = "none")}) %>%
+  lapply(., function(x) {x[[3]] %>% 
+      as.data.frame() %>% 
+      rownames_to_column(., var = "group1") %>% 
+      gather(., "group2", "p.value", -group1)}) %>% 
+  melt() %>%
+  select(-variable) %>%
+  set_colnames(c("group1", "group2", "p.value", "group")) %>% 
+  separate(group, c("time", "TF"), "_") %>%
+  select("TF", "time", "group1", "group2", "p.value") %>%
+  fwrite("~/ifpan-chipseq-timecourse/DATA/Table_S_2_3.tsv", 
          sep="\t", 
          col.names = TRUE, 
          row.names = FALSE)

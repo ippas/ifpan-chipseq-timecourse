@@ -103,7 +103,6 @@ heatmap.2(to.heatmap,
 
 dev.off()
 
-rm(tmp_dend)
 
 ##########################
 # divide on two clusters #
@@ -355,6 +354,12 @@ rbind(MCTP_delta_ep300, MWT_delta_ep300, {tmp_combine_MWT_MCTP %>% rename(type.d
   aov(value ~ type.data*gene.regulation + Error(gene.name), data = .) %>% summary
 sink()
 
+# File to suplementary
+sink("~/ifpan-chipseq-timecourse/DATA/Table_S_4_1.txt")
+rbind(MCTP_delta_ep300, MWT_delta_ep300, {tmp_combine_MWT_MCTP %>% rename(type.data = group)}) %>%
+  aov(value ~ type.data*gene.regulation + Error(gene.name), data = .) %>% summary
+sink()
+
 rbind(MCTP_delta_ep300, MWT_delta_ep300, {tmp_combine_MWT_MCTP %>% rename(type.data = group)}) -> tmp_MWT_MCTP_upregulated_deltaep300 
 
 
@@ -369,6 +374,22 @@ lapply(split(tmp_MWT_MCTP_upregulated_deltaep300,
   set_colnames(c("group1", "group2", "p.value", "group")) %>% 
   select("group", "group1", "group2", "p.value") %>%
   fwrite("~/ifpan-chipseq-timecourse/DATA/upregulated_delta_ep300_pairwise.t.test.tsv", 
+         sep="\t", 
+         col.names = TRUE, 
+         row.names = FALSE)
+
+# File to suplementary
+lapply(split(tmp_MWT_MCTP_upregulated_deltaep300, 
+             tmp_MWT_MCTP_upregulated_deltaep300$type.data),function(x) {pairwise.t.test(x$value, x$gene.regulation, p.adjust.method = "none")}) %>%
+  lapply(., function(x) {x[[3]] %>% 
+      as.data.frame() %>% 
+      rownames_to_column(., var = "group1") %>% 
+      gather(., "group2", "p.value", -group1)}) %>% 
+  melt() %>%
+  select(-variable) %>%
+  set_colnames(c("group1", "group2", "p.value", "group")) %>% 
+  select("group", "group1", "group2", "p.value") %>%
+  fwrite("~/ifpan-chipseq-timecourse/DATA/Table_S_4_2.tsv", 
          sep="\t", 
          col.names = TRUE, 
          row.names = FALSE)
@@ -553,7 +574,8 @@ rm(up_delta_ep300,
    pdat.gr.delta.ep300,
    mod.ep.delta.ep300,
    pdat.ep.delta.ep300,
-   lineplot.data.delta.ep300)
+   lineplot.data.delta.ep300,
+   spline.exp.delta.ep300)
 
 
 

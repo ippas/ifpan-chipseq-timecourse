@@ -86,7 +86,11 @@
 ##################
 # Choose four TF #
 ##################
-filtered_TF <- tmp_significant_random_genes_peak_normalized_amplitude %>% 
+filtered_TF <-  read.table("~/ChIP-seq/DATA/enhancer_amplitude_value.tsv", 
+                           header = FALSE, 
+                           sep = "\t", 
+                           stringsAsFactors = FALSE) %>% 
+  set_colnames(c("gene.name", "chromosome", "start.range", "end.range", "gene.regulation", "TF", "time", "file", "amplitude")) %>%
   select(TF) %>% 
   unique() %>% 
   .$TF %>% 
