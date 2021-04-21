@@ -65,11 +65,6 @@ Chipseq data were extracted with [extract_data_chipseq1.sh](https://github.com/i
 2. Second line graph show changes in binding TF to DNA relative to random genes.
 
 
-3. Uruchomić skrypt [visualization_promoters.R](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/visualization_promoters.R), który wykonuje wykresy:
-- wczytuje plik ~/ChIP-seq/DATA/promotores_peaks_value.tsv, który jest wynikiem skryptu [extract_data_chipseq1.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/extract_data_chipseq1.sh)
-- wykres liniowy predstawiający średnią z grupy przyłączenia się TF (wybrane cztery TF: EP300, H3K27ac, H3K4me1, NR3C1) do promotorów w pozycjach =/- 10000 od TSS,
-- wykres liniowy predstawiający średnią z grupy przyłączenia się TF (wybrane cztery TF: EP300, H3K27ac, H3K4me1, NR3C1) do promotorów w pozycjach =/- 10000 od TSS, w odniesieniu do genów z grupy random
-
 ![Kiku](PLOTS/lineplot_promotores_fourTF.svg)
 
 ![Kiku](PLOTS/lineplot_promotores_relative_changes_fourTF.svg)
@@ -85,23 +80,6 @@ Chipseq data were extracted with [extract_data_chipseq1.sh](https://github.com/i
 7. Calculates basic statistics: Q1, Q2, Q3, minimum, and maximum value for MWT and MCTP and [save to](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/MWT_MCTP_basic_summary.tsv) 
 8. For data MWT and MCTP do one-way ANOVA with Error(gene.name) and next make pairwise.t.test with correction "bonferroni" where are expression and NR3C1. Saves the results to [MWT_MCTP_ANOVA.txt](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/MWT_MCTP_ANOVA.txt) and [MWT_MCTP_pairwise.t.test_bonferroni.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/MWT_MCTP_pairwise.t.test_bonferroni.tsv) respectively.
 9.  For selected peaks prepare file [enhancer_bigrange_info.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/enhancer_bigrange_info.tsv) with range +/-10000 nucleotide position from calculating mean position amplitude of peak, based on all timepoint except time equal zero.
-
-
-4. Uruchomić skrypt [visualization_amplitudes.R](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/visualization_amplitudes.R), który:
-- wczytuje plik ~/ChIP-seq/DATA/enhancer_amplitude_value.tsv, będący wynikiem skryptu [extract_data_chipseq1.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/extract_data_chipseq1.sh
-- usuwa peaki które nachodzą na zakres +/- 2000 od TSS
-- wybiera najsilniejszy peak z pośród zbioru peaków przypisanych do jednego genu. Wybranie najsilniejszych odbywa się poprzes obliczenie średniej amplitudy z 12 punktów czasowych we wszystkich próbkach, i najsilniejszy peak to ten który posiada najwyższą średnią
-- w przypadku gdy jeden peak został przypisany do kilku genów, to wybierany jest ten gen który znajduje się najbliżej TSS, pozostałe peaki zostają usunięte
-- tworzy wykres zmian amplitud z przłączania TF (NR3C1, EP300, H3K27ac, H3K4me1) w przygotowancyh peakach, zpodziałem na up-regulated i down-regulated 
-- wykonuje boxplot ekspresji genów up-regulated oraz linię przedstawiającą pochodną ekspresji tych genów
-- wykonuje boxplot amplitud przyłączania się EP300 i NR3C1 do enhancerów dla genów up-regulated
-- oblicza mean weighted time (MWT) przyłączania TF (NR3C1, EP300, H3K27ac, H3K4me1) do enhancerów w genach uprulowanych
-- oblicza max change time point (MCTP) dla expressji genów upregulowanych dla których zostały wybrane enhancery
-- tworzy boxplot na którym zostaje przedstawiony mean weighted time przyłączania TF oraz max change time point ekspressji genów upregulowanych 
-- oblicza dla MWT i MCTP minimalną wartość kwantyle: Q1, Q2, Q3 i maksymalną wartość i zapisuje [do plikue](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/MWT_MCTP_basic_summary.tsv)
-- wykonuje jednoczynnikową ANOVE z poprawką z poprawką na błąd Error(gene.name), a wynik za [pisuje do](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/MWT_MCTP_ANOVA.txt)
-- wykonuje pairwise.t.test i wykonuje poprawkę bonferroniego w porównaniach gdzie występuje expression i NR3C1 i tabelę [zapisuje do](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/MWT_MCTP_pairwise.t.test_bonferroni.tsv)
-- dla wybranych peaków przygotowuje plik [enhancer_bigrange_info.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/enhancer_bigrange_info.tsv) z zakresem +/- 10000 pozycji nukleotydów od wyliczonej średniej pozycji amplitudy w peaku na podstawie wszystkich timepointów z wyłączenie time = 0
 
 
 ![Kiku](PLOTS/boxplot_enhancer_amplitude_fourTF.svg)
@@ -121,14 +99,6 @@ Chipseq data were extracted with [extract_data_chipseq1.sh](https://github.com/i
  ~/ifpan-chipseq-timecourse/SCRIPTS/./extract_data_chipseq2.sh
  ```
 - Script uses [bigwig_genomic_range_extract_normalize_to_tsv_bucket10.sh [4]](#4) and [enhancer_bigrange_info.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/enhancer_bigrange_info.tsv), and extracts value TF binding to DNA in the ranges given in a file
-
-
-Uruchomić [extract_data_chipseq2.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/extract_data_chipseq2.sh) komendą:
-
-```bash
- ~/ifpan-chipseq-timecourse/SCRIPTS/./extract_data_chipseq2.sh
- ```
-- skrypt korzysta z [bigwig_genomic_range_extract_normalize_to_tsv_bucket10.sh [4]](#4) i pliku [enhancer_bigrange_info.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/enhancer_bigrange_info.tsv), zostają wyciągnięte dane dla enhancerów w zakresie +/-10000 od środka peaku i zapisane do pliku ~/ChIP-seq/DATA/enhancer_bigrange_value.tsv
 
 
 Download the gtf file using command:
@@ -152,10 +122,6 @@ zcat ~/ChIP-seq/DATA/gencode.v36.annotation.gtf |
 ```
 
 
-Przy pomocy komendy ściągnięto plik gtf:
-
-Następnie wybrano geny kodujące białka i zapisuje do [Homo_sapiens.GRCh38.95.protein_coding.gtf](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/Homo_sapiens.GRCh38.95.protein_coding.gtf):
-
 [visualization_enhancer_range.R](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/visualization_enhancer_range.R) using data from ~/ChIP-seq/DATA/enhancer_bigrange_value.tsv contains enhancer analysis code:
 1. Creates a line graph showing changes in binding TF to DNA +/-2000 from amplitude in peak
 2. Create line graph showing chages in binding TF to DNA relative to random genes.
@@ -163,16 +129,6 @@ Następnie wybrano geny kodujące białka i zapisuje do [Homo_sapiens.GRCh38.95.
 4. Creates heatmap showing for each gene changes in binding TF to DNA +/-2000 from amplitude in peak. 
 5. Loads the [Homo_sapiens.GRCh38.95.protein_coding.gtf](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/Homo_sapiens.GRCh38.95.protein_coding.gtf) based on which prepares the [range_all_genes.bed](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/range_all_genes.bed) with ranges +/-100000 nucleotide position from TSS for each gene coding protein.
 
-
-- wczytuje plik ~/ChIP-seq/DATA/enhancer_bigrange_value.tsv, będący wynikiem skryptu [extract_data_chipseq2.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/extract_data_chipseq2.sh
-- wykres liniowy predstawiający średnią z grupy przyłączenia się TF (wybrane cztery TF: EP300, H3K27ac, H3K4me1, NR3C1) do enhancerów w pozycjach +/- 2000 od wyznaczonego środka peaku,
-- wykres liniowy predstawiający średnią z grupy przyłączenia się TF (wybrane cztery TF: EP300, H3K27ac, H3K4me1, NR3C1) do enhancerów w pozycjach +/- 2000 od wyznaczonego środka peaku, w odniesieniu do peaków z grupy random
-- wykonuje dwczuczynnikową ANOVE na każdym z TF (NR3C1, EP300, H3K37ac, H3K4me1) uwzględniając jako czynniki time i gene.regulation, a wynik [zapisuje do](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/enhancer_relative_amplitude_ANOVA.txt)
-- wykonuje pairwaise.t.test dla wcześniejszej ANOVY gdzie porównuje dane z każdego czasu w konkretnym TF do time = 0, a wynik [zapisuje do](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/enhancer_post_hoc_between_time.tsv)
-- wykonuje pairwaise.t.test dla wcześniejszej ANOVY gdzie porównuje dane pomiędzy up-regulation i down-regulation w tym samym czasie i TF i tabelę z wynikami [zapisuje do](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/enhancer_post_hoc_between_regulation.tsv)
-- wykonuje heatmape przedstawiając przyłączania się TF (EP300, H3k27ac, H3K4me1, NR3C1) do enhancerów w pozycjach +/- 2000 od wyznaczonego środka peaku dla genów up-regulated, randomowych i down-regulated
-- wczytuje [Homo_sapiens.GRCh38.95.protein_coding.gtf](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/Homo_sapiens.GRCh38.95.protein_coding.gtf) zawierający nazwy genów kodujących białka i ich numery ensemblid 
-- przygotowuje plik [range_all_genes.bed](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/range_all_genes.bed) z zakresem +/- 100000 pozycji nukleotydów od TSS genów kodujących białka, plik jest potrzebny do znalezienia peaków nachodzących w tym zakresie
 
 ![Kiku](PLOTS/lineplot_enhancer_fourTF.svg)
 
@@ -193,13 +149,6 @@ Script executes:
 
 
 
-Uruchomić skrypt [extract_data_chipseq3.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/extract_data_chipseq3.sh) komendą:
-
- - korzystając z bedtools intersect i trzech próbek tworzy część wspólną peaków w genomie dla NR3C1 dla time = 60
- - przy pomocy wyznaczonej części wspólnej próbek, wyciąga enhancery znajdujące się w zakresach znajdujących się w [range_all_genes.bed](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/range_all_genes.bed) (+/-100000 od TSS)
- - dla wybranych enhancerów korzystając z [bigwig_genomic_amplitude_extract_normalize_to_tsv.NR3C1-EP300.sh [5]](#5) wyciąga maksymalną wartość przyłączania się TF (NR3C1 i EP300) do peaku i zapisuje dane do: ~/ChIP-seq/DATA/enhancer_amplitude_value.tsv 
-
-
 ### Analiza EP300 
 
 [delta_ep300.R](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/delta_ep300.R) contains code:
@@ -217,32 +166,6 @@ Uruchomić skrypt [extract_data_chipseq3.sh](https://github.com/ippas/ifpan-chip
 12. Creates boxplot amplitude value binding EP300 and NR3C1 to enhancer for up-delta-ep300 genes.
 13. For selected peaks prepare file [enhancer_delta_ep300_info.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/enhancer_delta_ep300_info.tsv) which contains the infromation to extract data of TF binding to entire peak range.
 
-
-
-Uruchomić skrypt [delta_ep300.R](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/delta_ep300.R), którego kod wykonuje:
-- wczytuje ~/ChIP-seq/DATA/peaks_all_genes_ep300_nr3c1_amplitude.tsv będący wynikiem [extract_data_chipseq3.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/extract_data_chipseq3.sh) i usuwa peaki które nachodzą na zakres +/- 2000 od TSS
-- oblicza różnicę pomiędzy maksymalną wartością amplitudy a miniwalną wartością amplitudy dla EP300
-- sortuje obliczoną różnicę od największej do najmniejszej, 
-- w przypadku gdy zostało przypisane kilka genów do jednego peaku, to wybiera ten gen którego TSS jest najbliżej peaku
-- w przypakdu gdy do jednego genu zostało przypisane kilka peaków, to wybiera ten peak który znajduje się bliżej TSS
-- wybiera 100 peaków z wcześniej obliczoną różnicą
-- wykonuje heatmape ekspressji dla wybranych 100 genów
-- dokonuje podziału na dwa klastry down-delta_ep300 i up-delta_ep300
-- tworzy wykres zmian amplitud z przłączania TF (NR3C1, EP300) w przygotowancyh peakach, zpodziałem na up-delta_ep300 i down-delta_ep300
-- oblicza mean weighted time (MWT) przyłączania TF (NR3C1, EP300, H3K27ac, H3K4me1) do enhancerów w genach up-delta_ep300
-- oblicza max change time point (MCTP) dla expressji genów up-delta_ep300 dla których zostały wybrane enhancery
-- oblicza dla MWT i MCTP minimalną wartość kwantyle: Q1, Q2, Q3 i maksymalną wartość i zapisuje [do pliku](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/MWT_MCTP_delta_ep300_basic_summary.tsv)
-- wykonuje one-way ANOVE dla MWT i MCTP z poprawką na gene.name (+Error(gene.name)) wynik [zapisuje do](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/MWT_MCTP_delta_ep300_ANOVA.txt)
-- wykouje pairwise.t.test i wykonuje poprawkę bonferroniego w grupach tam gdzie występuje expression i NR3C1, wynik [zapisuje do](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/MWT_MCTP_delta_ep300_pairwise.t.test_bonferroni.tsv)
-- wykonuje boxplot MWT (EP300, NR3C1, H3K27ac, H3K4me1) i MCTP dla genów up-delta_ep300.
-- Calculates two-way ANOVA between type genes (upregulated or up-delta-ep300) and inside MWT and MCTP, next do pairwise.t.tes between upregulated and up-delta-ep300. Results save to [MWT_MCTP_upregulated_delta_ep300_ANOVA.txt](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/MWT_MCTP_upregulated_delta_ep300_ANOVA.txt) and [upregulated_delta_ep300_pairwise.t.test.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/upregulated_delta_ep300_pairwise.t.test.tsv) respectively.
-
-- tworzy połączony boxplot MWT i MCTP dla genów upregulowanych i up-delta_ep300
-- wykonuje two-way ANOVA pomiędzy typem genów i w obrębie MWT i MCTP, wynik [zapisuje do](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/MWT_MCTP_upregulated_delta_ep300_ANOVA.txt)
-- wykonuje pairwise.t.test pomiędzy upregulated i up-delta_ep300, a wynik [zapisuje do](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/upregulated_delta_ep300_pairwise.t.test.tsv)
-- wykonuje boxplot ekspresji genów up-delta_ep300 oraz linię przedstawiającą pochodną ekspresji tych genów
-- wykonuje boxplot amplitud przyłączania się EP300 i NR3C1 do enhancerów dla genów up-delta_ep300
-- tworzy [enhancer_delta_ep300_info.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/enhancer_delta_ep300_info.tsv), który zawiera informacje do wyciągnięcia dancyh o przyłączaniu TF do całego zakresu peaku
 
 ![Kiku](PLOTS/heatmap_expression_delta_ep300.svg)
 
@@ -262,26 +185,15 @@ Uruchomić skrypt [delta_ep300.R](https://github.com/ippas/ifpan-chipseq-timecou
 2. Results save to ~/ChIP-seq/DATA/enhancer_peaks_delta_ep300.tsv
 
 
-Uruchomić skrypt [extract_data_chipseq1_ep300.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/extract_data_chipseq1_ep300.sh), który:
-- korzystając z [enhancer_delta_ep300_info.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/enhancer_delta_ep300_info.tsv) i [bigwig_genomic_range_extract_normalize_to_tsv.sh [3]](#3) wyciąga wartości przyłączeń się TF na całym zakresie peaku i zapisuje dane do: ~/ChIP-seq/DATA/enhancer_peaks_delta_ep300.tsv
-
 [centering_peaks_ep300.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/centering_peaks_ep300.R) contains code:
 1. read  ~/ChIP-seq/DATA/enhancer_peaks_delta_ep300.tsv.
 2. Based on NR3C1 binding to enhancers calculates the mean peak center for the time points excluding time equal zero.
 3. Creates [enhancer_bigrange_delta_ep300_info.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/enhancer_bigrange_delta_ep300_info.tsv) with ranges of +/-10000 position nucleotide from the calculated peak center.
 
-Uruchomić [centering_peaks_ep300.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/centering_peaks_ep300.R), który:
-- wczytyje plik stworzony przez [extract_data_chipseq1_ep300.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/extract_data_chipseq1_ep300.sh)
-- określa środek peaku poprzez obliczenie średniej z amplitud dla NR3C1 z wszystkich czasów i próbek z wyłączeniem timepoint = 0
-- wyznacza przedział +/- 10000 od środka peaku i potrzebne informacje zapisuje do [enhancer_bigrange_delta_ep300_info.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/enhancer_bigrange_delta_ep300_info.tsv)
-
 
 [extract_data_chipseq2_ep300.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/extract_data_chipseq2_ep300.sh) executes:
 1. Using [extract_data_chipseq2_ep300.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/extract_data_chipseq2_ep300.sh) extract values binding TF to DNA in range contained in [enhancer_bigrange_delta_ep300_info.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/enhancer_bigrange_delta_ep300_info.tsv).
 2. Results save to ~/ChIP-seq/DATA/enhancer_bigrange_delta_ep300.tsv.
-
-Uruchomić skrypt [extract_data_chipseq2_ep300.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/extract_data_chipseq2_ep300.sh), który:
-- korzystając z [bigwig_genomic_range_extract_normalize_to_tsv_bucket10.sh [4]](#4) i pliku [enhancer_bigrange_delta_ep300_info.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/enhancer_bigrange_delta_ep300_info.tsv) wyciąga dane z przyłączania TF w enhancerach, a wynik zapisuje do pliku ~/ChIP-seq/DATA/enhancer_bigrange_delta_ep300.tsv
 
 
 [analysis_enhancer_range_ep300.R](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/analysis_enhancer_range_ep300.R) contain analysis code:
@@ -289,11 +201,6 @@ Uruchomić skrypt [extract_data_chipseq2_ep300.sh](https://github.com/ippas/ifpa
 2. Creata a line graph showing changes in binding TF to DNA +/-2000 from amplitude in peak.
 3. Creates heatmap showing for each gene changes  in binding TF to DNA +/-2000 from amplitude in peak
 
-Uruchomić skrypt [analysis_enhancer_range_ep300.R](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/analysis_enhancer_range_ep300.R), który wykonuje:
-- wczytuje dane peków delta ep300 ~/ChIP-seq/DATA/enhancer_bigrange_delta_ep300.tsv, który zawiera wartości przyłączeń TF +/- 10000 od pozycji amplitudy dla peaków NR3C1
--wykonuje uśredniony wykres liniowy zmian przyłączania TF w zakresie +/- 2000 od pozycji wyznaczonego środka peaków względem NR3C1 dla czterech TF EP300, H3K27ac, H3K4me1, NR3C1, dla genów delta ep300
-- tworzy heatmape zmian przyłączania TF w zakresie +/- 2000 od pozycji amplitudy peaków dla NR3C1, dla dancyh delta ep300
-- wykonuje heatmape przedstawiając przyłączania się TF (EP300, H3k27ac, H3K4me1, NR3C1) do enhancerów w pozycjach +/- 2000 od wyznaczonego środka peaku dla genów up-delta_ep300 i down-delta_ep300
 
 ![Kiku](PLOTS/lineplot_enhancer_range_delta_ep300.svg)
 
@@ -331,31 +238,4 @@ The above scripts perform data normalization using scripts:
 1. [bigWigToBedGraph](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/bigWigToBedGraph) [downloaded form](http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64.v369/)
 2. [normalize_bedgraph.py](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/normalize_bedgraph.py) [downloaded form](https://github.com/porchard/normalize_bedgraph)
 3. [bedGraphToBigWig](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/bedGraphToBigWig) [downloaded form](http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64.v369/)
-
-
-Do wyciągania danych dla Chip-seq z plików bigWig przygotowano skrypty:
-- <a id="1">[1]</a> [bigwig_genomic_bucket500_extract_normalize_to_tsv.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/bigwig_genomic_bucket500_extract_normalize_to_tsv.sh)
-    - wyciąga dane z plików bigwig o zakresie 20001, wynik zbiera po 500 pozycji i liczy średnią w celu zmniejszenia ilości danych i wyeliminowania szumów, w przypadku ostaniego baketowania liczy średnią z 501 pozycji
-    - wyciąganie zakresów przy pomocy [bigWigToBedGraph](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/bigWigToBedGraph) [pobrane z](http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64.v369/)
-    - wyciąga dane dla wszystkich czynników transkrypcyjnych znajdujących się w pliku [chipseq-file-info.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/chipseq-file-info.tsv)
-- <a id="2">[2]</a> [bigwig_genomic_amplitude_extract_normalize_to_tsv.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/bigwig_genomic_amplitude_extract_normalize_to_tsv.sh)
-    - wyciąga amplitudy z podanych zakresów w plikach bigwig
-    - wyciąga amplitudy przy pomocy [bigWigSummary](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/bigWigSummary) [pobrane z](http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64.v369/)
-    - wyciąga dane dla wszystkich czynników transkrypcyjnych znajdujących się w pliku [chipseq-file-info.tsv](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/DATA/chipseq-file-info.tsv)
-- <a id="3">[3]</a> [bigwig_genomic_range_extract_normalize_to_tsv.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/bigwig_genomic_range_extract_normalize_to_tsv.sh)
-    - wyciąga cały podany zakres z plików bigwig
-    - wyciąganie zakresów przy pomocy [bigWigToBedGraph](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/bigWigToBedGraph) [pobrane z](http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64.v369/)
-    - wyciąga dane dla czterech czynników transkrypcyjnych: EP300, H3K27ac, H3K4me1, NR3C1
-- <a id="4">[4]</a> [bigwig_genomic_range_extract_normalize_to_tsv_bucket10.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/bigwig_genomic_range_extract_normalize_to_tsv_bucket10.sh)
-    - wyciąga dane z plików bigwig o zakresie 20001, wynik zbiera po 10 i liczy średnią w celu zmniejszenia ilości danych i wyeliminowania szumów, w przypadku ostatniego baketowania liczy średnią z 11 pozycji
-    - wyciąganie zakresów przy pomocy [bigWigToBedGraph](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/bigWigToBedGraph) [pobrane z](http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64.v369/)
-    - - wyciąga dane dla czterech czynników transkrypcyjnych: EP300, H3K27ac, H3K4me1, NR3C1
-- <a id="5">[5]</a> [bigwig_genomic_amplitude_extract_normalize_to_tsv.NR3C1-EP300.sh](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/bigwig_genomic_amplitude_extract_normalize_to_tsv.NR3C1-EP300.sh)
-    - wyciąga amplitudy z podanych zakresów w plikach bigwig
-    - wyciąga amplitudy przy pomocy [bigWigSummary](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/bigWigSummary) [pobrane z](http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64.v369/)
-    - wyciąga dane dla czterech czynników transkrypcyjnych: NR3C1, EP300, H3K27ac i H3K4me1
-- wszystkie powyższe skrypty wykonują normalizację danych korzystając ze skryptów:
-    - [bigWigToBedGraph](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/bigWigToBedGraph) [pobrane z](http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64.v369/)
-    - [normalize_bedgraph.py](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/normalize_bedgraph.py) [pobrane z](https://github.com/porchard/normalize_bedgraph)
-    - [bedGraphToBigWig](https://github.com/ippas/ifpan-chipseq-timecourse/blob/master/SCRIPTS/bedGraphToBigWig) [pobrane z](http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64.v369/)
 
